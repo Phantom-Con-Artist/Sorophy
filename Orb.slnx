@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Orb.Engine.Tests/Orb.Engine.Tests.csproj" />
   <Project Path="Orb.Engine/Orb.Engine.csproj" />
 </Solution>

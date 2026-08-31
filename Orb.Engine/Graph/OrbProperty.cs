@@ -6,5 +6,5 @@ public sealed class OrbProperty
 {
     public string Name { get; set; } = string.Empty;
 
-    public OrbValue Value { get; set; }
+    public required OrbValue Value { get; set; }
 }

@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace Orb.Engine.Graph;
 
 public sealed class OrbGraph
@@ -5,9 +7,23 @@ public sealed class OrbGraph
     private readonly Dictionary<Guid, OrbEntity> _entities = new();
     private readonly Dictionary<Guid, OrbRelationship> _relationships = new();
 
-    public IReadOnlyDictionary<Guid, OrbEntity> Entities => _entities;
+    private readonly ReadOnlyDictionary<Guid, OrbEntity> _readOnlyEntities;
+    private readonly ReadOnlyDictionary<Guid, OrbRelationship> _readOnlyRelationships;
 
-    public IReadOnlyDictionary<Guid, OrbRelationship> Relationships => _relationships;
+    public OrbGraph()
+    {
+        _readOnlyEntities =
+            new ReadOnlyDictionary<Guid, OrbEntity>(_entities);
+
+        _readOnlyRelationships =
+            new ReadOnlyDictionary<Guid, OrbRelationship>(_relationships);
+    }
+
+    public IReadOnlyDictionary<Guid, OrbEntity> Entities =>
+        _readOnlyEntities;
+
+    public IReadOnlyDictionary<Guid, OrbRelationship> Relationships =>
+        _readOnlyRelationships;
 
     public void AddEntity(OrbEntity entity)
     {
@@ -233,5 +249,58 @@ public sealed class OrbGraph
                 queue.Enqueue(targetId);
             }
         }
+    }
+
+    public IReadOnlyList<string> Validate()
+    {
+        var errors = new List<string>();
+
+        foreach (var pair in _entities)
+        {
+            if (pair.Value is null)
+            {
+                errors.Add(
+                    $"Entity dictionary contains a null entity for ID '{pair.Key}'.");
+                continue;
+            }
+
+            if (pair.Key != pair.Value.Id)
+            {
+                errors.Add(
+                    $"Entity dictionary key '{pair.Key}' does not match entity ID '{pair.Value.Id}'.");
+            }
+        }
+
+        foreach (var pair in _relationships)
+        {
+            if (pair.Value is null)
+            {
+                errors.Add(
+                    $"Relationship dictionary contains a null relationship for ID '{pair.Key}'.");
+                continue;
+            }
+
+            var relationship = pair.Value;
+
+            if (pair.Key != relationship.Id)
+            {
+                errors.Add(
+                    $"Relationship dictionary key '{pair.Key}' does not match relationship ID '{relationship.Id}'.");
+            }
+
+            if (!_entities.ContainsKey(relationship.SourceId))
+            {
+                errors.Add(
+                    $"Relationship '{relationship.Id}' references missing source entity '{relationship.SourceId}'.");
+            }
+
+            if (!_entities.ContainsKey(relationship.TargetId))
+            {
+                errors.Add(
+                    $"Relationship '{relationship.Id}' references missing target entity '{relationship.TargetId}'.");
+            }
+        }
+
+        return errors;
     }
 }

@@ -1,5 +1,3 @@
-using Orb.Engine.Types;
-
 namespace Orb.Engine.Graph;
 
 public sealed class OrbEntity
@@ -10,9 +8,9 @@ public sealed class OrbEntity
     // Human-readable name
     public string? Name { get; set; }
 
-    // Classification
+    // Optional classification
     public string? Type { get; set; }
 
-    // Entity properties
-    public Dictionary<string, OrbProperty> Properties { get; set; } = new();
+    // User-defined properties
+    public Dictionary<string, OrbProperty> Properties { get; } = new();
 }

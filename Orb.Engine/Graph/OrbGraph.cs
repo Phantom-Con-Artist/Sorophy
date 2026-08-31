@@ -153,4 +153,85 @@ public sealed class OrbGraph
             }
         }
     }
+
+    public bool IsReachable(
+        Guid sourceId,
+        Guid targetId)
+    {
+        if (!ContainsEntity(sourceId) ||
+            !ContainsEntity(targetId))
+        {
+            return false;
+        }
+
+        if (sourceId == targetId)
+        {
+            return true;
+        }
+
+        var visited = new HashSet<Guid>();
+        var queue = new Queue<Guid>();
+
+        queue.Enqueue(sourceId);
+        visited.Add(sourceId);
+
+        while (queue.Count > 0)
+        {
+            var currentId = queue.Dequeue();
+
+            foreach (var relationship in GetOutgoingRelationships(currentId))
+            {
+                var nextId = relationship.TargetId;
+
+                if (nextId == targetId)
+                {
+                    return true;
+                }
+
+                if (visited.Add(nextId))
+                {
+                    queue.Enqueue(nextId);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public IEnumerable<OrbEntity> Traverse(Guid sourceId)
+    {
+        if (!ContainsEntity(sourceId))
+        {
+            yield break;
+        }
+
+        var visited = new HashSet<Guid> { sourceId };
+        var queue = new Queue<Guid>();
+
+        queue.Enqueue(sourceId);
+
+        while (queue.Count > 0)
+        {
+            var currentId = queue.Dequeue();
+
+            foreach (var relationship in GetOutgoingRelationships(currentId))
+            {
+                var targetId = relationship.TargetId;
+
+                if (!visited.Add(targetId))
+                {
+                    continue;
+                }
+
+                if (_entities.TryGetValue(
+                        targetId,
+                        out var entity))
+                {
+                    yield return entity;
+                }
+
+                queue.Enqueue(targetId);
+            }
+        }
+    }
 }

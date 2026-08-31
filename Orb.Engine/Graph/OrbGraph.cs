@@ -50,7 +50,6 @@ public sealed class OrbGraph
             return false;
         }
 
-        // Remove relationships connected to the deleted entity.
         var relationshipsToRemove = _relationships
             .Where(pair =>
                 pair.Value.SourceId == entityId ||
@@ -81,5 +80,25 @@ public sealed class OrbGraph
         out OrbRelationship? relationship)
     {
         return _relationships.TryGetValue(relationshipId, out relationship);
+    }
+
+    public IEnumerable<OrbRelationship> GetOutgoingRelationships(Guid entityId)
+    {
+        return _relationships.Values
+            .Where(relationship => relationship.SourceId == entityId);
+    }
+
+    public IEnumerable<OrbRelationship> GetIncomingRelationships(Guid entityId)
+    {
+        return _relationships.Values
+            .Where(relationship => relationship.TargetId == entityId);
+    }
+
+    public IEnumerable<OrbRelationship> GetRelationships(Guid entityId)
+    {
+        return _relationships.Values
+            .Where(relationship =>
+                relationship.SourceId == entityId ||
+                relationship.TargetId == entityId);
     }
 }

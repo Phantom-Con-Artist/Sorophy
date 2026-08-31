@@ -80,9 +80,13 @@ public sealed class OrbGraph
         return _relationships.ContainsKey(relationshipId);
     }
 
-    public bool TryGetEntity(Guid entityId, out OrbEntity? entity)
+    public bool TryGetEntity(
+        Guid entityId,
+        out OrbEntity? entity)
     {
-        return _entities.TryGetValue(entityId, out entity);
+        return _entities.TryGetValue(
+            entityId,
+            out entity);
     }
 
     public bool TryGetRelationship(
@@ -117,5 +121,36 @@ public sealed class OrbGraph
             .Where(relationship =>
                 relationship.SourceId == entityId ||
                 relationship.TargetId == entityId);
+    }
+
+    public IEnumerable<OrbEntity> GetNeighbors(
+        Guid entityId)
+    {
+        var neighborIds = new HashSet<Guid>();
+
+        foreach (var relationship in _relationships.Values)
+        {
+            if (relationship.SourceId == entityId &&
+                relationship.TargetId != entityId)
+            {
+                neighborIds.Add(relationship.TargetId);
+            }
+
+            if (relationship.TargetId == entityId &&
+                relationship.SourceId != entityId)
+            {
+                neighborIds.Add(relationship.SourceId);
+            }
+        }
+
+        foreach (var neighborId in neighborIds)
+        {
+            if (_entities.TryGetValue(
+                    neighborId,
+                    out var entity))
+            {
+                yield return entity;
+            }
+        }
     }
 }

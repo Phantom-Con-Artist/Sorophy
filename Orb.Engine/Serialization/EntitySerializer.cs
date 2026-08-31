@@ -63,10 +63,8 @@ public static class EntitySerializer
                 new EntityPropertyDocument
                 {
                     Type = property.Value.Value.Type.ToString(),
-                    Value = JsonSerializer.SerializeToElement(
-                        property.Value.Value.Value,
-                        property.Value.Value.Value?.GetType()
-                    )
+                    Value = SerializeValue(
+                        property.Value.Value)
                 };
         }
 
@@ -85,7 +83,8 @@ public static class EntitySerializer
 
         foreach (var property in document.Properties)
         {
-            var type = ParseValueType(property.Value.Type);
+            var type = ParseValueType(
+                property.Value.Type);
 
             var value = DeserializeValue(
                 type,
@@ -95,11 +94,27 @@ public static class EntitySerializer
                 new OrbProperty
                 {
                     Name = property.Key,
-                    Value = new OrbValue(type, value)
+                    Value = new OrbValue(
+                        type,
+                        value)
                 };
         }
 
         return entity;
+    }
+
+    private static JsonElement SerializeValue(
+        OrbValue value)
+    {
+        if (value.Type == OrbValueType.Null)
+        {
+            return JsonSerializer.SerializeToElement<object?>(
+                null);
+        }
+
+        return JsonSerializer.SerializeToElement(
+            value.Value,
+            value.Value!.GetType());
     }
 
     private static OrbValueType ParseValueType(

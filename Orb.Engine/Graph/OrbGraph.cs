@@ -70,6 +70,16 @@ public sealed class OrbGraph
         return _relationships.Remove(relationshipId);
     }
 
+    public bool ContainsEntity(Guid entityId)
+    {
+        return _entities.ContainsKey(entityId);
+    }
+
+    public bool ContainsRelationship(Guid relationshipId)
+    {
+        return _relationships.ContainsKey(relationshipId);
+    }
+
     public bool TryGetEntity(Guid entityId, out OrbEntity? entity)
     {
         return _entities.TryGetValue(entityId, out entity);
@@ -79,22 +89,29 @@ public sealed class OrbGraph
         Guid relationshipId,
         out OrbRelationship? relationship)
     {
-        return _relationships.TryGetValue(relationshipId, out relationship);
+        return _relationships.TryGetValue(
+            relationshipId,
+            out relationship);
     }
 
-    public IEnumerable<OrbRelationship> GetOutgoingRelationships(Guid entityId)
+    public IEnumerable<OrbRelationship> GetOutgoingRelationships(
+        Guid entityId)
     {
         return _relationships.Values
-            .Where(relationship => relationship.SourceId == entityId);
+            .Where(relationship =>
+                relationship.SourceId == entityId);
     }
 
-    public IEnumerable<OrbRelationship> GetIncomingRelationships(Guid entityId)
+    public IEnumerable<OrbRelationship> GetIncomingRelationships(
+        Guid entityId)
     {
         return _relationships.Values
-            .Where(relationship => relationship.TargetId == entityId);
+            .Where(relationship =>
+                relationship.TargetId == entityId);
     }
 
-    public IEnumerable<OrbRelationship> GetRelationships(Guid entityId)
+    public IEnumerable<OrbRelationship> GetRelationships(
+        Guid entityId)
     {
         return _relationships.Values
             .Where(relationship =>

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Orb.Engine.Graph;
 
 public sealed class OrbRelationship
@@ -13,4 +16,7 @@ public sealed class OrbRelationship
 
     // Entity toward which the relationship points
     public Guid TargetId { get; set; }
+
+    // Properties describing the relationship itself
+    public Dictionary<string, OrbProperty> Properties { get; } = new();
 }

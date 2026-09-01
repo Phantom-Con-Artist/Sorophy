@@ -1,10 +1,6 @@
 <div align="center">
 
   <p>
-    <img src="docs/orbisecosystemlogo.png"
-         alt="Orb Ecosystem"
-         width="90"/>
-    &nbsp;&nbsp;&nbsp;
     <img src="docs/orbenginelogo.png"
          alt="The Orb Engine"
          width="90"/>
@@ -40,27 +36,14 @@
 
   <br/><br/>
 
-  <p>
-    <a href="https://github.com/Phantom-Con-Artist/Orb">
-      <img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github"
-           alt="GitHub"/>
-    </a>
+<div align="center">
 
-    <a href="https://github.com/Phantom-Con-Artist/Orb/releases">
-      <img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge"
-           alt="Version"/>
-    </a>
+[![GitHub](https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github)](https://github.com/Phantom-Con-Artist/Orb)
+[![Version](https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge)](https://github.com/Phantom-Con-Artist/Orb/releases)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/License-GPL--3.0-2E7D32?style=for-the-badge)](LICENSE)
 
-    <a href="https://dotnet.microsoft.com/">
-      <img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet"
-           alt=".NET 10"/>
-    </a>
-
-    <a href="LICENSE">
-      <img src="https://img.shields.io/badge/License-GPL--3.0-2E7D32?style=for-the-badge"
-           alt="GPL-3.0"/>
-    </a>
-  </p>
+</div>
 
   <p>
     <strong>🚧 1.0.0-beta.1</strong>

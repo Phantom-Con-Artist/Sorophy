@@ -6,7 +6,7 @@ namespace Orb.Engine.Serialization;
 public sealed class EntityDocument
 {
     [JsonPropertyName("formatVersion")]
-    public int FormatVersion { get; set; } = 1;
+    public int? FormatVersion { get; set; }
 
     [JsonPropertyName("id")]
     public Guid Id { get; set; }

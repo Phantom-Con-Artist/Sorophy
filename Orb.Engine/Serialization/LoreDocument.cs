@@ -6,7 +6,7 @@ namespace Orb.Engine.Serialization;
 public sealed class LoreDocument
 {
     [JsonPropertyName("formatVersion")]
-    public int FormatVersion { get; set; } = 1;
+    public int? FormatVersion { get; set; }
 
     [JsonPropertyName("entities")]
     public List<LoreEntityDocument> Entities { get; set; } = new();

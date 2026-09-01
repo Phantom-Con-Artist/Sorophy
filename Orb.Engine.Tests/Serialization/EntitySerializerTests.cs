@@ -520,4 +520,329 @@ public void Serialize_ShouldRejectEmptyPropertyName()
         StringComparison.Ordinal);
   }
 
+      [Fact]
+    public void Deserialize_ShouldRejectMalformedJson()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectMissingFormatVersion()
+    {
+        var json = """
+        {
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {}
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectEmptyEntityId()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000000",
+          "name": "Avaria",
+          "properties": {}
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectInvalidEntityId()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "not-a-guid",
+          "name": "Avaria",
+          "properties": {}
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullProperties()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": null
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullPropertyDocument()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "population": null
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectPropertyMissingType()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "population": {
+              "value": 2400000
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectUnknownPropertyType()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "population": {
+              "type": "Banana",
+              "value": 2400000
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectIntegerString()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "population": {
+              "type": "Integer",
+              "value": "2400000"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectIntegerOverflow()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "population": {
+              "type": "Integer",
+              "value": 9223372036854775808
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectBooleanNumber()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "active": {
+              "type": "Boolean",
+              "value": 1
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectDecimalString()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "rate": {
+              "type": "Decimal",
+              "value": "12.5"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectInvalidDateTime()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "founded": {
+              "type": "DateTime",
+              "value": "not-a-date"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectInvalidGuidProperty()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "reference": {
+              "type": "Guid",
+              "value": "not-a-guid"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullTypeWithNonNullValue()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "unknown": {
+              "type": "Null",
+              "value": "something"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectListWithWrongJsonShape()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "tags": {
+              "type": "List",
+              "value": "not-a-list"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectObjectWithWrongJsonShape()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "id": "00000000-0000-0000-0000-000000000001",
+          "name": "Avaria",
+          "properties": {
+            "metadata": {
+              "type": "Object",
+              "value": "not-an-object"
+            }
+          }
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EntitySerializer.Deserialize(json));
+    }
+
 }

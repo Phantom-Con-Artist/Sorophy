@@ -652,4 +652,435 @@ public void Serialize_ShouldRejectMismatchedRelationshipPropertyName()
         StringComparison.Ordinal);
 }
 
+    [Fact]
+    public void Deserialize_ShouldRejectMalformedJson()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": [
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectMissingFormatVersion()
+    {
+        var json = """
+        {
+          "entities": [],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullEntities()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": null,
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullRelationships()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": [],
+          "relationships": null
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullEntity()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": [
+            null
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectEmptyEntityId()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "00000000-0000-0000-0000-000000000000",
+              "name": "Avaria",
+              "properties": {}
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectDuplicateEntityIds()
+    {
+        var id = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{id}}",
+              "name": "Avaria",
+              "properties": {}
+            },
+            {
+              "id": "{{id}}",
+              "name": "Duplicate",
+              "properties": {}
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullRelationship()
+    {
+        var json = """
+        {
+          "formatVersion": 1,
+          "entities": [],
+          "relationships": [
+            null
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectEmptyRelationshipId()
+    {
+        var sourceId = Guid.NewGuid();
+        var targetId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{sourceId}}",
+              "name": "Source",
+              "properties": {}
+            },
+            {
+              "id": "{{targetId}}",
+              "name": "Target",
+              "properties": {}
+            }
+          ],
+          "relationships": [
+            {
+              "id": "00000000-0000-0000-0000-000000000000",
+              "type": "connects",
+              "sourceId": "{{sourceId}}",
+              "targetId": "{{targetId}}",
+              "properties": {}
+            }
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectDuplicateRelationshipIds()
+    {
+        var sourceId = Guid.NewGuid();
+        var targetId = Guid.NewGuid();
+        var relationshipId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{sourceId}}",
+              "name": "Source",
+              "properties": {}
+            },
+            {
+              "id": "{{targetId}}",
+              "name": "Target",
+              "properties": {}
+            }
+          ],
+          "relationships": [
+            {
+              "id": "{{relationshipId}}",
+              "type": "connects",
+              "sourceId": "{{sourceId}}",
+              "targetId": "{{targetId}}",
+              "properties": {}
+            },
+            {
+              "id": "{{relationshipId}}",
+              "type": "connects",
+              "sourceId": "{{targetId}}",
+              "targetId": "{{sourceId}}",
+              "properties": {}
+            }
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectRelationshipWithMissingTarget()
+    {
+        var sourceId = Guid.NewGuid();
+        var missingTargetId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{sourceId}}",
+              "name": "Source",
+              "properties": {}
+            }
+          ],
+          "relationships": [
+            {
+              "id": "{{Guid.NewGuid()}}",
+              "type": "connects",
+              "sourceId": "{{sourceId}}",
+              "targetId": "{{missingTargetId}}",
+              "properties": {}
+            }
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectRelationshipWithEmptyType()
+    {
+        var sourceId = Guid.NewGuid();
+        var targetId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{sourceId}}",
+              "name": "Source",
+              "properties": {}
+            },
+            {
+              "id": "{{targetId}}",
+              "name": "Target",
+              "properties": {}
+            }
+          ],
+          "relationships": [
+            {
+              "id": "{{Guid.NewGuid()}}",
+              "type": "",
+              "sourceId": "{{sourceId}}",
+              "targetId": "{{targetId}}",
+              "properties": {}
+            }
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullEntityProperties()
+    {
+        var entityId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{entityId}}",
+              "name": "Avaria",
+              "properties": null
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullRelationshipProperties()
+    {
+        var sourceId = Guid.NewGuid();
+        var targetId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{sourceId}}",
+              "name": "Source",
+              "properties": {}
+            },
+            {
+              "id": "{{targetId}}",
+              "name": "Target",
+              "properties": {}
+            }
+          ],
+          "relationships": [
+            {
+              "id": "{{Guid.NewGuid()}}",
+              "type": "connects",
+              "sourceId": "{{sourceId}}",
+              "targetId": "{{targetId}}",
+              "properties": null
+            }
+          ]
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectNullPropertyDocument()
+    {
+        var entityId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{entityId}}",
+              "name": "Avaria",
+              "properties": {
+                "population": null
+              }
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectPropertyMissingType()
+    {
+        var entityId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{entityId}}",
+              "name": "Avaria",
+              "properties": {
+                "population": {
+                  "value": 2400000
+                }
+              }
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
+    [Fact]
+    public void Deserialize_ShouldRejectInvalidPropertyValueShape()
+    {
+        var entityId = Guid.NewGuid();
+
+        var json = $$"""
+        {
+          "formatVersion": 1,
+          "entities": [
+            {
+              "id": "{{entityId}}",
+              "name": "Avaria",
+              "properties": {
+                "population": {
+                  "type": "Integer",
+                  "value": "2400000"
+                }
+              }
+            }
+          ],
+          "relationships": []
+        }
+        """;
+
+        Assert.Throws<InvalidOperationException>(() =>
+            LoreSerializer.Deserialize(json));
+    }
+
 }

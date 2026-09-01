@@ -1,11 +1,9 @@
 <div align="center">
 
   <p>
-    <img src="docs/orbisecosystemlogo.png" alt="Orb Ecosystem" width="90"/>
-    &nbsp;&nbsp;&nbsp;
-    <img src="docs/orbisecosystemlogo1.png" alt="Orb Ecosystem" width="90"/>
-    &nbsp;&nbsp;&nbsp;
-    <img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
+    <img src="docs/orbisecosystemlogo.png" alt="Orb Ecosystem" width="50"/>
+    <img src="docs/orbisecosystemlogo1.png" alt="Orb Ecosystem" width="50"/>
+    <img src="docs/orbisprojectlogo.png" alt="Orb Project" width="50"/>
   </p>
 
   <br/>

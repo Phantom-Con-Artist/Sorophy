@@ -1,9 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Build -->
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- Package Identity -->
+    <PackageId>Orb.Engine</PackageId>
+    <Version>1.0.0-beta.1</Version>
+
+    <!-- Package Metadata -->
+    <Title>Orb Engine</Title>
+    <Authors>Subhradeep Sarkar</Authors>
+    <Description>
+      Orb Engine is the core engine of Orbis, providing structured entities,
+      relationships, typed values, graph operations, serialization, and storage
+      for interconnected structured information.
+    </Description>
+    <PackageTags>orbis;orb;engine;dotnet;dotnet10;csharp;graph;knowledge-graph;structured-data;serialization;storage;worldbuilding</PackageTags>
+
+    <!-- License -->
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+
+    <!-- Documentation -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- Repository -->
+    <RepositoryUrl>https://github.com/Phantom-Con-Artist/Orb</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Phantom-Con-Artist/Orb</PackageProjectUrl>
+
+    <!-- NuGet -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Release Configuration -->
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md"
+          Pack="true"
+          PackagePath="\" />
+
+    <None Include="LICENSE"
+          Pack="true"
+          PackagePath="\" />
+  </ItemGroup>
 
 </Project>

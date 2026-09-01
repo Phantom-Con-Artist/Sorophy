@@ -1,8 +1,20 @@
 <div align="center">
 
-  <img src="docs/orbislogo.png" alt="Orbis Logo" width="180"/>
+  <p>
+    <img src="docs/orbisecosystemlogo.png" alt="Orb Ecosystem" width="90"/>
+    &nbsp;&nbsp;&nbsp;
+    <img src="docs/orbisecosystemlogo1.png" alt="Orb Ecosystem" width="90"/>
+    &nbsp;&nbsp;&nbsp;
+    <img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
+  </p>
 
-  <h1>Orbis Engine</h1>
+  <br/>
+
+  <img src="docs/orbisecosystemlogo.png"
+       alt="Orb Ecosystem"
+       width="220"/>
+
+  <h1>The Orb Engine</h1>
 
   <p>
     <strong>A structured data and graph engine for building interconnected information.</strong>
@@ -12,20 +24,35 @@
     Entities · Relationships · Typed Values · Graphs · Serialization · Storage
   </p>
 
-  <p>
-    <a href="https://github.com/Phantom-Con-Artist/Orb">
-      <img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
-    </a>
-    <a href="https://github.com/Phantom-Con-Artist/Orb/releases">
-      <img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge" alt="Version"/>
-    </a>
-    <a href="https://dotnet.microsoft.com/">
-      <img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
-    </a>
-    <a href="LICENSE">
-      <img src="https://img.shields.io/badge/License-GPL--3.0-2E7D32?style=for-the-badge" alt="GPL-3.0"/>
-    </a>
-  </p>
+  <br/>
+
+  <img src="docs/orbisprojectcover.png"
+       alt="Orb Project"
+       width="900"/>
+
+  <br/><br/>
+
+  <img src="docs/orbenginecover.png"
+       alt="The Orb Engine"
+       width="900"/>
+
+  <br/><br/>
+
+  <a href="https://github.com/Phantom-Con-Artist/Orb">
+    <img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
+  </a>
+
+  <a href="https://github.com/Phantom-Con-Artist/Orb/releases">
+    <img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge" alt="Version"/>
+  </a>
+
+  <a href="https://dotnet.microsoft.com/">
+    <img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
+  </a>
+
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL--3.0-2E7D32?style=for-the-badge" alt="GPL-3.0"/>
+  </a>
 
   <p>
     <strong>🚧 1.0.0-beta.1</strong>

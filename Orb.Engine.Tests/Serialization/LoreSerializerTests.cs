@@ -1303,4 +1303,275 @@ public void SelfRelationshipWithProperties_ShouldSurviveMultipleRoundTrips()
         restored.Properties["weight"].Value.Value);
 }
 
+[Fact]
+public void SerializeDeserialize_ShouldPreserveNestedDateTimeAndGuidInLore()
+{
+    var born = new DateTime(
+        1842,
+        5,
+        12,
+        14,
+        30,
+        45,
+        DateTimeKind.Utc);
+
+    var identifier = Guid.NewGuid();
+
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["metadata"] = new OrbProperty
+    {
+        Name = "metadata",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["born"] = born,
+                ["identifier"] = identifier,
+
+                ["history"] = new List<object?>
+                {
+                    born,
+                    identifier,
+
+                    new Dictionary<string, object?>
+                    {
+                        ["nestedDate"] = born,
+                        ["nestedGuid"] = identifier
+                    }
+                }
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    var json = LoreSerializer.Serialize(graph);
+    var restored = LoreSerializer.Deserialize(json);
+
+    var metadata =
+        Assert.IsType<Dictionary<string, object?>>(
+            restored.Entities[entity.Id]
+                .Properties["metadata"]
+                .Value.Value);
+
+    Assert.IsType<DateTime>(metadata["born"]);
+    Assert.IsType<Guid>(metadata["identifier"]);
+
+    Assert.Equal(born, metadata["born"]);
+    Assert.Equal(identifier, metadata["identifier"]);
+
+    var history =
+        Assert.IsType<List<object?>>(
+            metadata["history"]);
+
+    Assert.IsType<DateTime>(history[0]);
+    Assert.IsType<Guid>(history[1]);
+
+    Assert.Equal(born, history[0]);
+    Assert.Equal(identifier, history[1]);
+
+    var nested =
+        Assert.IsType<Dictionary<string, object?>>(
+            history[2]);
+
+    Assert.IsType<DateTime>(nested["nestedDate"]);
+    Assert.IsType<Guid>(nested["nestedGuid"]);
+
+    Assert.Equal(born, nested["nestedDate"]);
+    Assert.Equal(identifier, nested["nestedGuid"]);
+}
+
+[Fact]
+public void SerializeDeserialize_ShouldPreserveNestedPrimitiveClrTypesInLore()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Primitive Types"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["byte"] = (byte)7,
+                ["sbyte"] = (sbyte)-8,
+                ["short"] = (short)12,
+                ["ushort"] = (ushort)24,
+                ["int"] = 42,
+                ["uint"] = (uint)84,
+                ["long"] = (long)168,
+                ["ulong"] = (ulong)336,
+                ["float"] = 1.25f,
+                ["double"] = 2.5d,
+                ["decimal"] = 3.75m
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    var json =
+        LoreSerializer.Serialize(graph);
+
+    var restored =
+        LoreSerializer.Deserialize(json);
+
+    var restoredEntity =
+        Assert.Single(restored.Entities.Values);
+
+    var values =
+        Assert.IsType<Dictionary<string, object?>>(
+            restoredEntity
+                .Properties["values"]
+                .Value
+                .Value);
+
+    Assert.IsType<byte>(values["byte"]);
+    Assert.IsType<sbyte>(values["sbyte"]);
+    Assert.IsType<short>(values["short"]);
+    Assert.IsType<ushort>(values["ushort"]);
+    Assert.IsType<int>(values["int"]);
+    Assert.IsType<uint>(values["uint"]);
+    Assert.IsType<long>(values["long"]);
+    Assert.IsType<ulong>(values["ulong"]);
+    Assert.IsType<float>(values["float"]);
+    Assert.IsType<double>(values["double"]);
+    Assert.IsType<decimal>(values["decimal"]);
+
+    Assert.Equal((byte)7, values["byte"]);
+    Assert.Equal((sbyte)-8, values["sbyte"]);
+    Assert.Equal((short)12, values["short"]);
+    Assert.Equal((ushort)24, values["ushort"]);
+    Assert.Equal(42, values["int"]);
+    Assert.Equal((uint)84, values["uint"]);
+    Assert.Equal((long)168, values["long"]);
+    Assert.Equal((ulong)336, values["ulong"]);
+    Assert.Equal(1.25f, values["float"]);
+    Assert.Equal(2.5d, values["double"]);
+    Assert.Equal(3.75m, values["decimal"]);
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedNaNInLore()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                1.0,
+                double.NaN
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedPositiveInfinityInLore()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                double.PositiveInfinity
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedNegativeInfinityInLore()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["value"] = double.NegativeInfinity
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+}
+
+[Fact]
+public void Serialize_ShouldRejectUnsupportedNestedClrObjectInLore()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Unsupported Nested Object"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                new UnsupportedNestedObject()
+            })
+    };
+
+    graph.AddEntity(entity);
+
+    Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+}
+
+private sealed class UnsupportedNestedObject
+{
+    public string Value { get; } = "unsupported";
+}
+
 }

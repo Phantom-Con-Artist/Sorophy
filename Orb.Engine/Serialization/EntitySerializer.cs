@@ -74,9 +74,12 @@ public static class EntitySerializer
             document.Properties[property.Key] =
                 new EntityPropertyDocument
                 {
-                    Type = property.Value.Value.Type.ToString(),
-                    Value = SerializeValue(
-                        property.Value.Value)
+                    Type =
+                        property.Value.Value.Type.ToString(),
+
+                    Value =
+                        OrbValueCodec.Serialize(
+                            property.Value.Value)
                 };
         }
 
@@ -101,50 +104,30 @@ public static class EntitySerializer
                     $"Property '{property.Key}' cannot be null.");
             }
 
-            if (string.IsNullOrWhiteSpace(property.Value.Type))
+            if (string.IsNullOrWhiteSpace(
+                    property.Value.Type))
             {
                 throw new InvalidOperationException(
                     $"Property '{property.Key}' is missing its type.");
             }
 
-            var type = ParseValueType(
-                property.Value.Type);
-
-            var value = DeserializeValue(
-                type,
-                property.Value.Value);
+            var type =
+                ParseValueType(
+                    property.Value.Type);
 
             entity.Properties[property.Key] =
                 new OrbProperty
                 {
                     Name = property.Key,
-                    Value = new OrbValue(
-                        type,
-                        value)
+
+                    Value =
+                        OrbValueCodec.Deserialize(
+                            type,
+                            property.Value.Value)
                 };
         }
 
         return entity;
-    }
-
-    private static JsonElement SerializeValue(
-        OrbValue value)
-    {
-        if (value.Type == OrbValueType.Null)
-        {
-            return JsonSerializer.SerializeToElement<object?>(
-                null);
-        }
-
-        if (value.Value is null)
-        {
-            throw new InvalidOperationException(
-                $"OrbValue of type '{value.Type}' cannot contain a null value.");
-        }
-
-        return JsonSerializer.SerializeToElement(
-            value.Value,
-            value.Value.GetType());
     }
 
     private static OrbValueType ParseValueType(
@@ -162,238 +145,11 @@ public static class EntitySerializer
         return result;
     }
 
-    private static object? DeserializeValue(
-        OrbValueType type,
-        JsonElement element)
-    {
-        try
-        {
-            return type switch
-            {
-                OrbValueType.Null =>
-                    DeserializeNull(element),
-
-                OrbValueType.String =>
-                    DeserializeString(element),
-
-                OrbValueType.Boolean =>
-                    DeserializeBoolean(element),
-
-                OrbValueType.Integer =>
-                    DeserializeInteger(element),
-
-                OrbValueType.Decimal =>
-                    DeserializeDecimal(element),
-
-                OrbValueType.DateTime =>
-                    DeserializeDateTime(element),
-
-                OrbValueType.Guid =>
-                    DeserializeGuid(element),
-
-                OrbValueType.List =>
-                    DeserializeList(element),
-
-                OrbValueType.Object =>
-                    DeserializeObject(element),
-
-                _ => throw new InvalidOperationException(
-                    $"Unsupported OrbValueType '{type}'.")
-            };
-        }
-        catch (InvalidOperationException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-            when (ex is FormatException ||
-                  ex is OverflowException)
-        {
-            throw new InvalidOperationException(
-                $"Invalid value for OrbValueType '{type}'.",
-                ex);
-        }
-    }
-
-    private static object? DeserializeNull(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.Null)
-        {
-            throw new InvalidOperationException(
-                "Null OrbValue must be represented by JSON null.");
-        }
-
-        return null;
-    }
-
-    private static string DeserializeString(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.String)
-        {
-            throw new InvalidOperationException(
-                "String OrbValue must be represented by a JSON string.");
-        }
-
-        return element.GetString()
-            ?? throw new InvalidOperationException(
-                "String OrbValue cannot contain a null value.");
-    }
-
-    private static bool DeserializeBoolean(
-        JsonElement element)
-    {
-        if (element.ValueKind is not
-            (JsonValueKind.True or JsonValueKind.False))
-        {
-            throw new InvalidOperationException(
-                "Boolean OrbValue must be represented by a JSON boolean.");
-        }
-
-        return element.GetBoolean();
-    }
-
-    private static long DeserializeInteger(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.Number)
-        {
-            throw new InvalidOperationException(
-                "Integer OrbValue must be represented by a JSON number.");
-        }
-
-        return element.GetInt64();
-    }
-
-    private static decimal DeserializeDecimal(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.Number)
-        {
-            throw new InvalidOperationException(
-                "Decimal OrbValue must be represented by a JSON number.");
-        }
-
-        return element.GetDecimal();
-    }
-
-    private static DateTime DeserializeDateTime(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.String)
-        {
-            throw new InvalidOperationException(
-                "DateTime OrbValue must be represented by a JSON string.");
-        }
-
-        return element.GetDateTime();
-    }
-
-    private static Guid DeserializeGuid(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.String)
-        {
-            throw new InvalidOperationException(
-                "Guid OrbValue must be represented by a JSON string.");
-        }
-
-        return element.GetGuid();
-    }
-
-    private static List<object?> DeserializeList(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.Array)
-        {
-            throw new InvalidOperationException(
-                "List OrbValue must be represented by a JSON array.");
-        }
-
-        var result = new List<object?>();
-
-        foreach (var item in element.EnumerateArray())
-        {
-            result.Add(
-                DeserializeJsonElement(item));
-        }
-
-        return result;
-    }
-
-    private static Dictionary<string, object?> DeserializeObject(
-        JsonElement element)
-    {
-        if (element.ValueKind != JsonValueKind.Object)
-        {
-            throw new InvalidOperationException(
-                "Object OrbValue must be represented by a JSON object.");
-        }
-
-        var result =
-            new Dictionary<string, object?>();
-
-        foreach (var property in element.EnumerateObject())
-        {
-            result[property.Name] =
-                DeserializeJsonElement(property.Value);
-        }
-
-        return result;
-    }
-
-    private static object? DeserializeJsonElement(
-        JsonElement element)
-    {
-        return element.ValueKind switch
-        {
-            JsonValueKind.Null =>
-                null,
-
-            JsonValueKind.String =>
-                element.GetString(),
-
-            JsonValueKind.True =>
-                true,
-
-            JsonValueKind.False =>
-                false,
-
-            JsonValueKind.Number =>
-                DeserializeNumber(element),
-
-            JsonValueKind.Array =>
-                DeserializeList(element),
-
-            JsonValueKind.Object =>
-                DeserializeObject(element),
-
-            _ => throw new InvalidOperationException(
-                $"Unsupported JSON value kind '{element.ValueKind}'.")
-        };
-    }
-
-    private static object DeserializeNumber(
-        JsonElement element)
-    {
-        if (element.TryGetInt64(out var integer))
-        {
-            return integer;
-        }
-
-        if (element.TryGetDecimal(out var decimalValue))
-        {
-            return decimalValue;
-        }
-
-        return element.GetDouble();
-    }
-
     private static void ValidateDocument(
         EntityDocument document)
     {
-        if (document.FormatVersion != CurrentFormatVersion)
+        if (document.FormatVersion !=
+            CurrentFormatVersion)
         {
             throw new InvalidOperationException(
                 $"Unsupported entity format version: " +
@@ -420,13 +176,15 @@ public static class EntitySerializer
                     $"Property '{property.Key}' cannot be null.");
             }
 
-            if (string.IsNullOrWhiteSpace(property.Key))
+            if (string.IsNullOrWhiteSpace(
+                    property.Key))
             {
                 throw new InvalidOperationException(
                     "Entity document contains a property with an empty name.");
             }
 
-            if (string.IsNullOrWhiteSpace(property.Value.Type))
+            if (string.IsNullOrWhiteSpace(
+                    property.Value.Type))
             {
                 throw new InvalidOperationException(
                     $"Property '{property.Key}' is missing its type.");
@@ -473,7 +231,8 @@ public static class EntitySerializer
                 $"Property '{key}' cannot be null.");
         }
 
-        if (string.IsNullOrWhiteSpace(property.Name))
+        if (string.IsNullOrWhiteSpace(
+                property.Name))
         {
             throw new InvalidOperationException(
                 $"Property '{key}' has an empty name.");
@@ -499,85 +258,108 @@ public static class EntitySerializer
         string typeName,
         JsonElement element)
     {
-        var type = ParseValueType(typeName);
+        var type =
+            ParseValueType(typeName);
 
         switch (type)
         {
             case OrbValueType.Null:
-                if (element.ValueKind != JsonValueKind.Null)
+                if (element.ValueKind !=
+                    JsonValueKind.Null)
                 {
                     throw new InvalidOperationException(
                         "Null OrbValue must be represented by JSON null.");
                 }
+
                 break;
 
             case OrbValueType.String:
-                if (element.ValueKind != JsonValueKind.String)
+                if (element.ValueKind !=
+                    JsonValueKind.String)
                 {
                     throw new InvalidOperationException(
                         "String OrbValue must be represented by a JSON string.");
                 }
+
                 break;
 
             case OrbValueType.Boolean:
                 if (element.ValueKind is not
-                    (JsonValueKind.True or JsonValueKind.False))
+                    (JsonValueKind.True or
+                     JsonValueKind.False))
                 {
                     throw new InvalidOperationException(
                         "Boolean OrbValue must be represented by a JSON boolean.");
                 }
+
                 break;
 
             case OrbValueType.Integer:
-                if (element.ValueKind != JsonValueKind.Number ||
-                    !element.TryGetInt64(out _))
+                if (element.ValueKind !=
+                        JsonValueKind.Number ||
+                    !element.TryGetInt64(
+                        out _))
                 {
                     throw new InvalidOperationException(
                         "Integer OrbValue must be represented by a valid Int64 JSON number.");
                 }
+
                 break;
 
             case OrbValueType.Decimal:
-                if (element.ValueKind != JsonValueKind.Number ||
-                    !element.TryGetDecimal(out _))
+                if (element.ValueKind !=
+                        JsonValueKind.Number ||
+                    !element.TryGetDecimal(
+                        out _))
                 {
                     throw new InvalidOperationException(
                         "Decimal OrbValue must be represented by a valid Decimal JSON number.");
                 }
+
                 break;
 
             case OrbValueType.DateTime:
-                if (element.ValueKind != JsonValueKind.String ||
-                    !element.TryGetDateTime(out _))
+                if (element.ValueKind !=
+                        JsonValueKind.String ||
+                    !element.TryGetDateTime(
+                        out _))
                 {
                     throw new InvalidOperationException(
                         "DateTime OrbValue must be represented by a valid DateTime JSON string.");
                 }
+
                 break;
 
             case OrbValueType.Guid:
-                if (element.ValueKind != JsonValueKind.String ||
-                    !element.TryGetGuid(out _))
+                if (element.ValueKind !=
+                        JsonValueKind.String ||
+                    !element.TryGetGuid(
+                        out _))
                 {
                     throw new InvalidOperationException(
                         "Guid OrbValue must be represented by a valid GUID JSON string.");
                 }
+
                 break;
 
             case OrbValueType.List:
-                if (element.ValueKind != JsonValueKind.Array)
+                if (element.ValueKind !=
+                    JsonValueKind.Array)
                 {
                     throw new InvalidOperationException(
                         "List OrbValue must be represented by a JSON array.");
                 }
+
                 break;
 
             case OrbValueType.Object:
-                if (element.ValueKind != JsonValueKind.Object)
+                if (element.ValueKind !=
+                    JsonValueKind.Object)
                 {
                     throw new InvalidOperationException(
                         "Object OrbValue must be represented by a JSON object.");
                 }
+
                 break;
 
             default:

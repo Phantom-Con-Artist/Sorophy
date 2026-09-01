@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Orb.Engine.Serialization;
 
-public sealed class LoreDocument
+internal sealed class LoreDocument
 {
     [JsonPropertyName("formatVersion")]
     public int? FormatVersion { get; set; }
@@ -15,7 +15,7 @@ public sealed class LoreDocument
     public List<LoreRelationshipDocument> Relationships { get; set; } = new();
 }
 
-public sealed class LoreEntityDocument
+internal sealed class LoreEntityDocument
 {
     [JsonPropertyName("id")]
     public Guid Id { get; set; }
@@ -30,7 +30,7 @@ public sealed class LoreEntityDocument
     public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
 }
 
-public sealed class LoreRelationshipDocument
+internal sealed class LoreRelationshipDocument
 {
     [JsonPropertyName("id")]
     public Guid Id { get; set; }

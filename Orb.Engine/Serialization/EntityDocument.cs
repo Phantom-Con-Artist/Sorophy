@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Orb.Engine.Serialization;
 
-public sealed class EntityDocument
+internal sealed class EntityDocument
 {
     [JsonPropertyName("formatVersion")]
     public int? FormatVersion { get; set; }
@@ -21,7 +21,7 @@ public sealed class EntityDocument
     public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
 }
 
-public sealed class EntityPropertyDocument
+internal sealed class EntityPropertyDocument
 {
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;

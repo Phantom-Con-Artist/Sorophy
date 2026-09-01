@@ -1085,4 +1085,237 @@ public void SerializeDeserialize_ShouldPreserveSecondRoundTrip()
         tags);
 }
 
+[Fact]
+public void SerializeDeserialize_ShouldPreserveNestedDateTimeAndGuid()
+{
+    var born = new DateTime(
+        1842,
+        5,
+        12,
+        14,
+        30,
+        45,
+        DateTimeKind.Utc);
+
+    var identifier = Guid.NewGuid();
+
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["metadata"] = new OrbProperty
+    {
+        Name = "metadata",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["born"] = born,
+                ["identifier"] = identifier,
+
+                ["history"] = new List<object?>
+                {
+                    born,
+                    identifier,
+
+                    new Dictionary<string, object?>
+                    {
+                        ["nestedDate"] = born,
+                        ["nestedGuid"] = identifier
+                    }
+                }
+            })
+    };
+
+    var json = EntitySerializer.Serialize(entity);
+    var restored = EntitySerializer.Deserialize(json);
+
+    var metadata =
+        Assert.IsType<Dictionary<string, object?>>(
+            restored.Properties["metadata"].Value.Value);
+
+    Assert.IsType<DateTime>(metadata["born"]);
+    Assert.IsType<Guid>(metadata["identifier"]);
+
+    Assert.Equal(born, metadata["born"]);
+    Assert.Equal(identifier, metadata["identifier"]);
+
+    var history =
+        Assert.IsType<List<object?>>(
+            metadata["history"]);
+
+    Assert.IsType<DateTime>(history[0]);
+    Assert.IsType<Guid>(history[1]);
+
+    Assert.Equal(born, history[0]);
+    Assert.Equal(identifier, history[1]);
+
+    var nested =
+        Assert.IsType<Dictionary<string, object?>>(
+            history[2]);
+
+    Assert.IsType<DateTime>(nested["nestedDate"]);
+    Assert.IsType<Guid>(nested["nestedGuid"]);
+
+    Assert.Equal(born, nested["nestedDate"]);
+    Assert.Equal(identifier, nested["nestedGuid"]);
+}
+
+[Fact]
+public void SerializeDeserialize_ShouldPreserveNestedPrimitiveClrTypes()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Primitive Types"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["byte"] = (byte)7,
+                ["short"] = (short)12,
+                ["int"] = 42,
+                ["uint"] = (uint)84,
+                ["long"] = (long)168,
+                ["float"] = 1.25f,
+                ["double"] = 2.5d,
+                ["decimal"] = 3.75m
+            })
+    };
+
+    var json =
+        EntitySerializer.Serialize(entity);
+
+    var restored =
+        EntitySerializer.Deserialize(json);
+
+    var values =
+        Assert.IsType<Dictionary<string, object?>>(
+            restored.Properties["values"]
+                .Value
+                .Value);
+
+    Assert.IsType<byte>(values["byte"]);
+    Assert.IsType<short>(values["short"]);
+    Assert.IsType<int>(values["int"]);
+    Assert.IsType<uint>(values["uint"]);
+    Assert.IsType<long>(values["long"]);
+    Assert.IsType<float>(values["float"]);
+    Assert.IsType<double>(values["double"]);
+    Assert.IsType<decimal>(values["decimal"]);
+
+    Assert.Equal((byte)7, values["byte"]);
+    Assert.Equal((short)12, values["short"]);
+    Assert.Equal(42, values["int"]);
+    Assert.Equal((uint)84, values["uint"]);
+    Assert.Equal((long)168, values["long"]);
+    Assert.Equal(1.25f, values["float"]);
+    Assert.Equal(2.5d, values["double"]);
+    Assert.Equal(3.75m, values["decimal"]);
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedNaN()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                1.0,
+                double.NaN
+            })
+    };
+
+    Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedPositiveInfinity()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                1.0,
+                double.PositiveInfinity
+            })
+    };
+
+    Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+}
+
+[Fact]
+public void Serialize_ShouldRejectNestedNegativeInfinity()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Invalid Numeric Entity"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>
+            {
+                ["value"] = double.NegativeInfinity
+            })
+    };
+
+    Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+}
+
+[Fact]
+public void Serialize_ShouldRejectUnsupportedNestedClrObject()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Unsupported Nested Object"
+    };
+
+    entity.Properties["values"] = new OrbProperty
+    {
+        Name = "values",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                new UnsupportedNestedObject()
+            })
+    };
+
+    Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+}
+
+private sealed class UnsupportedNestedObject
+{
+    public string Value { get; } = "unsupported";
+}
+
 }

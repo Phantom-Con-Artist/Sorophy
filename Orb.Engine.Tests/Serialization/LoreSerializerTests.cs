@@ -578,4 +578,78 @@ public class LoreSerializerTests
         Assert.Equal(true, metadata["active"]);
     }
 
+
+[Fact]
+public void Serialize_ShouldRejectMismatchedEntityPropertyName()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["population"] = new OrbProperty
+    {
+        Name = "banana",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            2400000L)
+    };
+
+    graph.AddEntity(entity);
+
+    var exception = Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+
+    Assert.Contains(
+        "does not match property name",
+        exception.Message,
+        StringComparison.Ordinal);
+}
+
+[Fact]
+public void Serialize_ShouldRejectMismatchedRelationshipPropertyName()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity
+    {
+        Name = "Source"
+    };
+
+    var target = new OrbEntity
+    {
+        Name = "Target"
+    };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var relationship = new OrbRelationship
+    {
+        Type = "connects",
+        SourceId = source.Id,
+        TargetId = target.Id
+    };
+
+    relationship.Properties["strength"] = new OrbProperty
+    {
+        Name = "banana",
+        Value = new OrbValue(
+            OrbValueType.Decimal,
+            42.5m)
+    };
+
+    graph.AddRelationship(relationship);
+
+    var exception = Assert.Throws<InvalidOperationException>(
+        () => LoreSerializer.Serialize(graph));
+
+    Assert.Contains(
+        "does not match property name",
+        exception.Message,
+        StringComparison.Ordinal);
+}
+
 }

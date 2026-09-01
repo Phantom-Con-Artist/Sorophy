@@ -63,7 +63,8 @@ public static class LoreSerializer
                     Name = entity.Name,
                     Type = entity.Type,
                     Properties = ConvertProperties(
-                        entity.Properties)
+                        entity.Properties,
+                        $"Entity '{entity.Id}'")
                 });
         }
 
@@ -77,7 +78,8 @@ public static class LoreSerializer
                     SourceId = relationship.SourceId,
                     TargetId = relationship.TargetId,
                     Properties = ConvertProperties(
-                        relationship.Properties)
+                        relationship.Properties,
+                        $"Relationship '{relationship.Id}'")
                 });
         }
 
@@ -127,13 +129,41 @@ public static class LoreSerializer
 
     private static Dictionary<string, EntityPropertyDocument>
         ConvertProperties(
-            Dictionary<string, OrbProperty> properties)
+            Dictionary<string, OrbProperty> properties,
+            string ownerDescription)
     {
         var result =
             new Dictionary<string, EntityPropertyDocument>();
 
         foreach (var property in properties)
         {
+            if (property.Value is null)
+            {
+                throw new InvalidOperationException(
+                    $"{ownerDescription} contains a null property for key '{property.Key}'.");
+            }
+
+            if (string.IsNullOrWhiteSpace(property.Key))
+            {
+                throw new InvalidOperationException(
+                    $"{ownerDescription} contains a property with an empty dictionary key.");
+            }
+
+            if (string.IsNullOrWhiteSpace(property.Value.Name))
+            {
+                throw new InvalidOperationException(
+                    $"{ownerDescription} property '{property.Key}' has an empty name.");
+            }
+
+            if (!string.Equals(
+                    property.Key,
+                    property.Value.Name,
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"{ownerDescription} property dictionary key '{property.Key}' does not match property name '{property.Value.Name}'.");
+            }
+
             result[property.Key] =
                 new EntityPropertyDocument
                 {

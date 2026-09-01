@@ -59,6 +59,33 @@ public static class EntitySerializer
 
         foreach (var property in entity.Properties)
         {
+            if (property.Value is null)
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{entity.Id}' contains a null property for key '{property.Key}'.");
+            }
+
+            if (string.IsNullOrWhiteSpace(property.Key))
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{entity.Id}' contains a property with an empty dictionary key.");
+            }
+
+            if (string.IsNullOrWhiteSpace(property.Value.Name))
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{entity.Id}' property '{property.Key}' has an empty name.");
+            }
+
+            if (!string.Equals(
+                    property.Key,
+                    property.Value.Name,
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{entity.Id}' property dictionary key '{property.Key}' does not match property name '{property.Value.Name}'.");
+            }
+
             document.Properties[property.Key] =
                 new EntityPropertyDocument
                 {

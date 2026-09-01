@@ -469,4 +469,55 @@ public class EntitySerializerTests
         Assert.Equal(true, metadata["active"]);
     }
 
+  
+[Fact]
+public void Serialize_ShouldRejectMismatchedPropertyName()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["population"] = new OrbProperty
+    {
+        Name = "banana",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            2400000L)
+    };
+
+    var exception = Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+
+    Assert.Contains(
+        "does not match property name",
+        exception.Message,
+        StringComparison.Ordinal);
+}
+
+[Fact]
+public void Serialize_ShouldRejectEmptyPropertyName()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["population"] = new OrbProperty
+    {
+        Name = " ",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            2400000L)
+    };
+
+    var exception = Assert.Throws<InvalidOperationException>(
+        () => EntitySerializer.Serialize(entity));
+
+    Assert.Contains(
+        "has an empty name",
+        exception.Message,
+        StringComparison.Ordinal);
+  }
+
 }

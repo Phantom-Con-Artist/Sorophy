@@ -845,4 +845,244 @@ public void Serialize_ShouldRejectEmptyPropertyName()
             EntitySerializer.Deserialize(json));
     }
 
+    [Fact]
+public void SerializeDeserialize_ShouldPreserveAllScalarTypes()
+{
+    var id = Guid.NewGuid();
+    var date = new DateTime(2026, 8, 31, 14, 30, 45, DateTimeKind.Utc);
+    var guid = Guid.NewGuid();
+
+    var entity = new OrbEntity
+    {
+        Id = id,
+        Name = "Avaria",
+        Type = "Kingdom"
+    };
+
+    entity.Properties["string"] = new OrbProperty
+    {
+        Name = "string",
+        Value = new OrbValue(
+            OrbValueType.String,
+            "Avarian")
+    };
+
+    entity.Properties["integer"] = new OrbProperty
+    {
+        Name = "integer",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            long.MaxValue)
+    };
+
+    entity.Properties["decimal"] = new OrbProperty
+    {
+        Name = "decimal",
+        Value = new OrbValue(
+            OrbValueType.Decimal,
+            123456789.123456789m)
+    };
+
+    entity.Properties["boolean"] = new OrbProperty
+    {
+        Name = "boolean",
+        Value = new OrbValue(
+            OrbValueType.Boolean,
+            true)
+    };
+
+    entity.Properties["datetime"] = new OrbProperty
+    {
+        Name = "datetime",
+        Value = new OrbValue(
+            OrbValueType.DateTime,
+            date)
+    };
+
+    entity.Properties["guid"] = new OrbProperty
+    {
+        Name = "guid",
+        Value = new OrbValue(
+            OrbValueType.Guid,
+            guid)
+    };
+
+    entity.Properties["null"] = new OrbProperty
+    {
+        Name = "null",
+        Value = new OrbValue(
+            OrbValueType.Null,
+            null)
+    };
+
+    var json = EntitySerializer.Serialize(entity);
+    var restored = EntitySerializer.Deserialize(json);
+
+    Assert.Equal(entity.Id, restored.Id);
+    Assert.Equal(entity.Name, restored.Name);
+    Assert.Equal(entity.Type, restored.Type);
+
+    Assert.Equal(
+        "Avarian",
+        restored.Properties["string"].Value.Value);
+
+    Assert.Equal(
+        long.MaxValue,
+        restored.Properties["integer"].Value.Value);
+
+    Assert.Equal(
+        123456789.123456789m,
+        restored.Properties["decimal"].Value.Value);
+
+    Assert.Equal(
+        true,
+        restored.Properties["boolean"].Value.Value);
+
+    Assert.Equal(
+        date,
+        restored.Properties["datetime"].Value.Value);
+
+    Assert.Equal(
+        guid,
+        restored.Properties["guid"].Value.Value);
+
+    Assert.Equal(
+        OrbValueType.Null,
+        restored.Properties["null"].Value.Type);
+
+    Assert.Null(
+        restored.Properties["null"].Value.Value);
+}
+
+[Fact]
+public void SerializeDeserialize_ShouldPreserveEmptyCollections()
+{
+    var entity = new OrbEntity
+    {
+        Name = "Avaria"
+    };
+
+    entity.Properties["emptyList"] = new OrbProperty
+    {
+        Name = "emptyList",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>())
+    };
+
+    entity.Properties["emptyObject"] = new OrbProperty
+    {
+        Name = "emptyObject",
+        Value = new OrbValue(
+            OrbValueType.Object,
+            new Dictionary<string, object?>())
+    };
+
+    var json = EntitySerializer.Serialize(entity);
+    var restored = EntitySerializer.Deserialize(json);
+
+    var list = Assert.IsType<List<object?>>(
+        restored.Properties["emptyList"].Value.Value);
+
+    var obj = Assert.IsType<Dictionary<string, object?>>(
+        restored.Properties["emptyObject"].Value.Value);
+
+    Assert.Empty(list);
+    Assert.Empty(obj);
+}
+
+[Fact]
+public void SerializeDeserialize_ShouldPreserveUnicodeStrings()
+{
+    var entity = new OrbEntity
+    {
+        Name = "অ্যাভারিয়া",
+        Type = "王国"
+    };
+
+    entity.Properties["description"] = new OrbProperty
+    {
+        Name = "description",
+        Value = new OrbValue(
+            OrbValueType.String,
+            "Avaria — बंगाल — アヴァリア — 🜂")
+    };
+
+    var json = EntitySerializer.Serialize(entity);
+    var restored = EntitySerializer.Deserialize(json);
+
+    Assert.Equal(entity.Name, restored.Name);
+    Assert.Equal(entity.Type, restored.Type);
+
+    Assert.Equal(
+        "Avaria — बंगाल — アヴァリア — 🜂",
+        restored.Properties["description"].Value.Value);
+}
+
+[Fact]
+public void SerializeDeserialize_ShouldPreserveSecondRoundTrip()
+{
+    var entity = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Avaria",
+        Type = "Kingdom"
+    };
+
+    entity.Properties["population"] = new OrbProperty
+    {
+        Name = "population",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            2400000L)
+    };
+
+    entity.Properties["ratio"] = new OrbProperty
+    {
+        Name = "ratio",
+        Value = new OrbValue(
+            OrbValueType.Decimal,
+            42.75m)
+    };
+
+    entity.Properties["tags"] = new OrbProperty
+    {
+        Name = "tags",
+        Value = new OrbValue(
+            OrbValueType.List,
+            new List<object?>
+            {
+                "capital",
+                2400000L,
+                true,
+                null
+            })
+    };
+
+    var firstJson = EntitySerializer.Serialize(entity);
+    var firstRestored = EntitySerializer.Deserialize(firstJson);
+
+    var secondJson = EntitySerializer.Serialize(firstRestored);
+    var secondRestored = EntitySerializer.Deserialize(secondJson);
+
+    Assert.Equal(entity.Id, secondRestored.Id);
+    Assert.Equal(entity.Name, secondRestored.Name);
+    Assert.Equal(entity.Type, secondRestored.Type);
+
+    Assert.Equal(
+        2400000L,
+        secondRestored.Properties["population"].Value.Value);
+
+    Assert.Equal(
+        42.75m,
+        secondRestored.Properties["ratio"].Value.Value);
+
+    var tags = Assert.IsType<List<object?>>(
+        secondRestored.Properties["tags"].Value.Value);
+
+    Assert.Equal(
+        new object?[] { "capital", 2400000L, true, null },
+        tags);
+}
+
 }

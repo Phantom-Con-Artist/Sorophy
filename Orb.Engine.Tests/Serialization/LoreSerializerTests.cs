@@ -1083,4 +1083,224 @@ public void Serialize_ShouldRejectMismatchedRelationshipPropertyName()
             LoreSerializer.Deserialize(json));
     }
 
+    [Fact]
+public void CompleteGraph_ShouldPreserveAllIdentityAndTopologyAfterSecondRoundTrip()
+{
+    var graph = new OrbGraph();
+
+    var a = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Avaria",
+        Type = "Kingdom"
+    };
+
+    var b = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Valor",
+        Type = "City"
+    };
+
+    var c = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Eldoria",
+        Type = "Province"
+    };
+
+    a.Properties["population"] = new OrbProperty
+    {
+        Name = "population",
+        Value = new OrbValue(
+            OrbValueType.Integer,
+            2400000L)
+    };
+
+    b.Properties["founded"] = new OrbProperty
+    {
+        Name = "founded",
+        Value = new OrbValue(
+            OrbValueType.DateTime,
+            new DateTime(1842, 5, 12))
+    };
+
+    c.Properties["identifier"] = new OrbProperty
+    {
+        Name = "identifier",
+        Value = new OrbValue(
+            OrbValueType.Guid,
+            Guid.NewGuid())
+    };
+
+    graph.AddEntity(a);
+    graph.AddEntity(b);
+    graph.AddEntity(c);
+
+    var r1 = new OrbRelationship
+    {
+        Id = Guid.NewGuid(),
+        Type = "contains",
+        SourceId = a.Id,
+        TargetId = b.Id
+    };
+
+    r1.Properties["strength"] = new OrbProperty
+    {
+        Name = "strength",
+        Value = new OrbValue(
+            OrbValueType.Decimal,
+            87.25m)
+    };
+
+    var r2 = new OrbRelationship
+    {
+        Id = Guid.NewGuid(),
+        Type = "contains",
+        SourceId = a.Id,
+        TargetId = c.Id
+    };
+
+    var r3 = new OrbRelationship
+    {
+        Id = Guid.NewGuid(),
+        Type = "references",
+        SourceId = b.Id,
+        TargetId = c.Id
+    };
+
+    graph.AddRelationship(r1);
+    graph.AddRelationship(r2);
+    graph.AddRelationship(r3);
+
+    var firstJson = LoreSerializer.Serialize(graph);
+    var firstRestored = LoreSerializer.Deserialize(firstJson);
+
+    var secondJson = LoreSerializer.Serialize(firstRestored);
+    var secondRestored = LoreSerializer.Deserialize(secondJson);
+
+    Assert.Equal(
+        graph.Entities.Count,
+        secondRestored.Entities.Count);
+
+    Assert.Equal(
+        graph.Relationships.Count,
+        secondRestored.Relationships.Count);
+
+    foreach (var entity in graph.Entities.Values)
+    {
+        var restored = secondRestored.Entities[entity.Id];
+
+        Assert.Equal(entity.Id, restored.Id);
+        Assert.Equal(entity.Name, restored.Name);
+        Assert.Equal(entity.Type, restored.Type);
+        Assert.Equal(
+            entity.Properties.Count,
+            restored.Properties.Count);
+    }
+
+    foreach (var relationship in graph.Relationships.Values)
+    {
+        var restored =
+            secondRestored.Relationships[relationship.Id];
+
+        Assert.Equal(
+            relationship.Id,
+            restored.Id);
+
+        Assert.Equal(
+            relationship.Type,
+            restored.Type);
+
+        Assert.Equal(
+            relationship.SourceId,
+            restored.SourceId);
+
+        Assert.Equal(
+            relationship.TargetId,
+            restored.TargetId);
+
+        Assert.Equal(
+            relationship.Properties.Count,
+            restored.Properties.Count);
+    }
+
+    Assert.Equal(
+        87.25m,
+        secondRestored.Relationships[r1.Id]
+            .Properties["strength"]
+            .Value.Value);
+}
+
+[Fact]
+public void EmptyEntity_ShouldSurviveMultipleRoundTrips()
+{
+    var entity = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Empty",
+        Type = null
+    };
+
+    var json1 = EntitySerializer.Serialize(entity);
+    var restored1 = EntitySerializer.Deserialize(json1);
+
+    var json2 = EntitySerializer.Serialize(restored1);
+    var restored2 = EntitySerializer.Deserialize(json2);
+
+    Assert.Equal(entity.Id, restored2.Id);
+    Assert.Equal(entity.Name, restored2.Name);
+    Assert.Equal(entity.Type, restored2.Type);
+    Assert.Empty(restored2.Properties);
+}
+
+[Fact]
+public void SelfRelationshipWithProperties_ShouldSurviveMultipleRoundTrips()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Id = Guid.NewGuid(),
+        Name = "Avaria"
+    };
+
+    graph.AddEntity(entity);
+
+    var relationship = new OrbRelationship
+    {
+        Id = Guid.NewGuid(),
+        Type = "self_reference",
+        SourceId = entity.Id,
+        TargetId = entity.Id
+    };
+
+    relationship.Properties["weight"] = new OrbProperty
+    {
+        Name = "weight",
+        Value = new OrbValue(
+            OrbValueType.Decimal,
+            12.5m)
+    };
+
+    graph.AddRelationship(relationship);
+
+    var json1 = LoreSerializer.Serialize(graph);
+    var restored1 = LoreSerializer.Deserialize(json1);
+
+    var json2 = LoreSerializer.Serialize(restored1);
+    var restored2 = LoreSerializer.Deserialize(json2);
+
+    var restored =
+        restored2.Relationships[relationship.Id];
+
+    Assert.Equal(entity.Id, restored.SourceId);
+    Assert.Equal(entity.Id, restored.TargetId);
+    Assert.Equal("self_reference", restored.Type);
+
+    Assert.Equal(
+        12.5m,
+        restored.Properties["weight"].Value.Value);
+}
+
 }

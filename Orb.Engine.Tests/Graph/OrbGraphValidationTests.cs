@@ -1,4 +1,5 @@
 using Orb.Engine.Graph;
+using Orb.Engine.Types;
 
 namespace Orb.Engine.Tests.Graph;
 
@@ -174,5 +175,195 @@ public class OrbGraphValidationTests
 
         Assert.False(
             graph.Relationships is Dictionary<Guid, OrbRelationship>);
+    }
+
+    [Fact]
+    public void Validate_ShouldReturnNoErrorsForValidEntityProperty()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "A"
+        };
+
+        entity.Properties["population"] = new OrbProperty
+        {
+            Name = "population",
+            Value = new OrbValue(
+                OrbValueType.Integer,
+                2400000L)
+        };
+
+        graph.AddEntity(entity);
+
+        var errors = graph.Validate();
+
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectEntityPropertyNameMismatch()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "A"
+        };
+
+        entity.Properties["population"] = new OrbProperty
+        {
+            Name = "banana",
+            Value = new OrbValue(
+                OrbValueType.Integer,
+                2400000L)
+        };
+
+        graph.AddEntity(entity);
+
+        var errors = graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "property dictionary key 'population'",
+                    StringComparison.Ordinal) &&
+                error.Contains(
+                    "property name 'banana'",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectEntityEmptyPropertyName()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "A"
+        };
+
+        entity.Properties["population"] = new OrbProperty
+        {
+            Name = " ",
+            Value = new OrbValue(
+                OrbValueType.Integer,
+                2400000L)
+        };
+
+        graph.AddEntity(entity);
+
+        var errors = graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "has an empty name",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectRelationshipPropertyNameMismatch()
+    {
+        var graph = new OrbGraph();
+
+        var source = new OrbEntity
+        {
+            Name = "Source"
+        };
+
+        var target = new OrbEntity
+        {
+            Name = "Target"
+        };
+
+        graph.AddEntity(source);
+        graph.AddEntity(target);
+
+        var relationship = new OrbRelationship
+        {
+            Type = "connects",
+            SourceId = source.Id,
+            TargetId = target.Id
+        };
+
+        relationship.Properties["strength"] = new OrbProperty
+        {
+            Name = "wrong_name",
+            Value = new OrbValue(
+                OrbValueType.Decimal,
+                42.5m)
+        };
+
+        graph.AddRelationship(relationship);
+
+        var errors = graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "property dictionary key 'strength'",
+                    StringComparison.Ordinal) &&
+                error.Contains(
+                    "property name 'wrong_name'",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectEmptyPropertyDictionaryKey()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "A"
+        };
+
+        entity.Properties[""] = new OrbProperty
+        {
+            Name = "valid_name",
+            Value = new OrbValue(
+                OrbValueType.String,
+                "value")
+        };
+
+        graph.AddEntity(entity);
+
+        var errors = graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "empty dictionary key",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectNullEntityProperty()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "A"
+        };
+
+        entity.Properties["broken"] = null!;
+
+        graph.AddEntity(entity);
+
+        var errors = graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "property 'broken' is null",
+                    StringComparison.Ordinal));
     }
 }

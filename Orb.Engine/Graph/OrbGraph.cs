@@ -269,6 +269,11 @@ public sealed class OrbGraph
                 errors.Add(
                     $"Entity dictionary key '{pair.Key}' does not match entity ID '{pair.Value.Id}'.");
             }
+
+            ValidateProperties(
+                pair.Value.Properties,
+                $"Entity '{pair.Value.Id}'",
+                errors);
         }
 
         foreach (var pair in _relationships)
@@ -299,8 +304,54 @@ public sealed class OrbGraph
                 errors.Add(
                     $"Relationship '{relationship.Id}' references missing target entity '{relationship.TargetId}'.");
             }
+
+            ValidateProperties(
+                relationship.Properties,
+                $"Relationship '{relationship.Id}'",
+                errors);
         }
 
         return errors;
+    }
+
+    private static void ValidateProperties(
+        IReadOnlyDictionary<string, OrbProperty> properties,
+        string ownerDescription,
+        List<string> errors)
+    {
+        foreach (var pair in properties)
+        {
+            var propertyKey = pair.Key;
+            var property = pair.Value;
+
+            if (string.IsNullOrWhiteSpace(propertyKey))
+            {
+                errors.Add(
+                    $"{ownerDescription} contains a property with an empty dictionary key.");
+            }
+
+            if (property is null)
+            {
+                errors.Add(
+                    $"{ownerDescription} property '{propertyKey}' is null.");
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(property.Name))
+            {
+                errors.Add(
+                    $"{ownerDescription} property '{propertyKey}' has an empty name.");
+                continue;
+            }
+
+            if (!string.Equals(
+                    propertyKey,
+                    property.Name,
+                    StringComparison.Ordinal))
+            {
+                errors.Add(
+                    $"{ownerDescription} property dictionary key '{propertyKey}' does not match property name '{property.Name}'.");
+            }
+        }
     }
 }

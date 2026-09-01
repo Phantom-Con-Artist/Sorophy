@@ -70,7 +70,7 @@ public class EntityStorageTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         entity.Properties["language"] = new OrbProperty

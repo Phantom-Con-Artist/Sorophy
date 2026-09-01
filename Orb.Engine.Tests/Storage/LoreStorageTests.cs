@@ -85,7 +85,7 @@ public class LoreStorageTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         entity.Properties["language"] = new OrbProperty
@@ -224,7 +224,7 @@ public class LoreStorageTests
                 Name = "since",
                 Value = new OrbValue(
                     OrbValueType.Integer,
-                    482)
+                    482L)
             };
 
         graph.AddRelationship(relationship);
@@ -504,7 +504,7 @@ public class LoreStorageTests
                 Name = "population",
                 Value = new OrbValue(
                     OrbValueType.Integer,
-                    2400000)
+                    2400000L)
             };
 
         var valor = new OrbEntity
@@ -538,7 +538,7 @@ public class LoreStorageTests
                 Name = "since",
                 Value = new OrbValue(
                     OrbValueType.Integer,
-                    482)
+                    482L)
             };
 
         graph.AddRelationship(relationship);

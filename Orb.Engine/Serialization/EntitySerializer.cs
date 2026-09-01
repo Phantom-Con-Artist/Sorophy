@@ -160,13 +160,101 @@ public static class EntitySerializer
                 element.GetGuid(),
 
             OrbValueType.List =>
-                element,
+                DeserializeList(element),
 
             OrbValueType.Object =>
-                element,
+                DeserializeObject(element),
 
             _ => throw new InvalidOperationException(
                 $"Unsupported OrbValueType '{type}'.")
         };
+    }
+
+    private static List<object?> DeserializeList(
+        JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Array)
+        {
+            throw new InvalidOperationException(
+                "List OrbValue must be represented by a JSON array.");
+        }
+
+        var result = new List<object?>();
+
+        foreach (var item in element.EnumerateArray())
+        {
+            result.Add(
+                DeserializeJsonElement(item));
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, object?> DeserializeObject(
+        JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidOperationException(
+                "Object OrbValue must be represented by a JSON object.");
+        }
+
+        var result =
+            new Dictionary<string, object?>();
+
+        foreach (var property in element.EnumerateObject())
+        {
+            result[property.Name] =
+                DeserializeJsonElement(property.Value);
+        }
+
+        return result;
+    }
+
+    private static object? DeserializeJsonElement(
+        JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.Null =>
+                null,
+
+            JsonValueKind.String =>
+                element.GetString(),
+
+            JsonValueKind.True =>
+                true,
+
+            JsonValueKind.False =>
+                false,
+
+            JsonValueKind.Number =>
+                DeserializeNumber(element),
+
+            JsonValueKind.Array =>
+                DeserializeList(element),
+
+            JsonValueKind.Object =>
+                DeserializeObject(element),
+
+            _ => throw new InvalidOperationException(
+                $"Unsupported JSON value kind '{element.ValueKind}'.")
+        };
+    }
+
+    private static object DeserializeNumber(
+        JsonElement element)
+    {
+        if (element.TryGetInt64(out var integer))
+        {
+            return integer;
+        }
+
+        if (element.TryGetDecimal(out var decimalValue))
+        {
+            return decimalValue;
+        }
+
+        return element.GetDouble();
     }
 }

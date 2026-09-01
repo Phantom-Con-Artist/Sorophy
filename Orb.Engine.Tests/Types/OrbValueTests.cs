@@ -20,10 +20,35 @@ public class OrbValueTests
     {
         var value = new OrbValue(
             OrbValueType.Integer,
-            2400000);
+            2400000L);
 
         Assert.Equal(OrbValueType.Integer, value.Type);
-        Assert.Equal(2400000, value.Value);
+        Assert.Equal(2400000L, value.Value);
+        Assert.IsType<long>(value.Value);
+    }
+
+    [Fact]
+    public void IntegerValue_ShouldAcceptLongMinValue()
+    {
+        var value = new OrbValue(
+            OrbValueType.Integer,
+            long.MinValue);
+
+        Assert.Equal(OrbValueType.Integer, value.Type);
+        Assert.Equal(long.MinValue, value.Value);
+        Assert.IsType<long>(value.Value);
+    }
+
+    [Fact]
+    public void IntegerValue_ShouldAcceptLongMaxValue()
+    {
+        var value = new OrbValue(
+            OrbValueType.Integer,
+            long.MaxValue);
+
+        Assert.Equal(OrbValueType.Integer, value.Type);
+        Assert.Equal(long.MaxValue, value.Value);
+        Assert.IsType<long>(value.Value);
     }
 
     [Fact]
@@ -89,6 +114,109 @@ public class OrbValueTests
     }
 
     [Fact]
+    public void ListValue_ShouldBeAccepted()
+    {
+        var list = new List<object?>
+        {
+            "capital",
+            2400000L,
+            true,
+            null
+        };
+
+        var value = new OrbValue(
+            OrbValueType.List,
+            list);
+
+        Assert.Equal(OrbValueType.List, value.Type);
+        Assert.Same(list, value.Value);
+        Assert.IsType<List<object?>>(value.Value);
+    }
+
+    [Fact]
+    public void ObjectValue_ShouldBeAccepted()
+    {
+        var obj = new Dictionary<string, object?>
+        {
+            ["name"] = "Avaria",
+            ["population"] = 2400000L,
+            ["active"] = true,
+            ["unknown"] = null
+        };
+
+        var value = new OrbValue(
+            OrbValueType.Object,
+            obj);
+
+        Assert.Equal(OrbValueType.Object, value.Type);
+        Assert.Same(obj, value.Value);
+        Assert.IsType<Dictionary<string, object?>>(value.Value);
+    }
+
+    [Fact]
+    public void ListValue_ShouldAllowNestedObjectAndList()
+    {
+        var nestedList = new List<object?>
+        {
+            "coastal",
+            "capital"
+        };
+
+        var nestedObject = new Dictionary<string, object?>
+        {
+            ["population"] = 2400000L,
+            ["active"] = true
+        };
+
+        var list = new List<object?>
+        {
+            nestedList,
+            nestedObject
+        };
+
+        var value = new OrbValue(
+            OrbValueType.List,
+            list);
+
+        Assert.Equal(OrbValueType.List, value.Type);
+        Assert.Same(list, value.Value);
+    }
+
+    [Fact]
+    public void ObjectValue_ShouldAllowNestedObjectAndList()
+    {
+        var obj = new Dictionary<string, object?>
+        {
+            ["tags"] = new List<object?>
+            {
+                "capital",
+                "coastal"
+            },
+            ["metadata"] = new Dictionary<string, object?>
+            {
+                ["population"] = 2400000L,
+                ["active"] = true
+            }
+        };
+
+        var value = new OrbValue(
+            OrbValueType.Object,
+            obj);
+
+        Assert.Equal(OrbValueType.Object, value.Type);
+        Assert.Same(obj, value.Value);
+    }
+
+    [Fact]
+    public void IntegerType_ShouldRejectInt32()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.Integer,
+                123));
+    }
+
+    [Fact]
     public void IntegerType_ShouldRejectString()
     {
         Assert.Throws<ArgumentException>(() =>
@@ -98,12 +226,67 @@ public class OrbValueTests
     }
 
     [Fact]
+    public void IntegerType_ShouldRejectDouble()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.Integer,
+                123.45));
+    }
+
+    [Fact]
     public void BooleanType_ShouldRejectInteger()
     {
         Assert.Throws<ArgumentException>(() =>
             new OrbValue(
                 OrbValueType.Boolean,
                 123));
+    }
+
+    [Fact]
+    public void ListType_ShouldRejectArray()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.List,
+                new object?[]
+                {
+                    "A",
+                    "B"
+                }));
+    }
+
+    [Fact]
+    public void ListType_ShouldRejectDictionary()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.List,
+                new Dictionary<string, object?>
+                {
+                    ["name"] = "Avaria"
+                }));
+    }
+
+    [Fact]
+    public void ObjectType_ShouldRejectList()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.Object,
+                new List<object?>
+                {
+                    "Avaria"
+                }));
+    }
+
+    [Fact]
+    public void ObjectType_ShouldRejectString()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new OrbValue(
+                OrbValueType.Object,
+                "Not an object"));
     }
 
     [Fact]

@@ -39,7 +39,7 @@ public class EntitySerializerTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         var json = EntitySerializer.Serialize(entity);
@@ -274,7 +274,7 @@ public class EntitySerializerTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         entity.Properties["language"] = new OrbProperty
@@ -333,4 +333,140 @@ public class EntitySerializerTests
         Assert.Throws<InvalidOperationException>(() =>
             EntitySerializer.Deserialize(json));
     }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveListProperty()
+    {
+        var entity = new OrbEntity
+        {
+            Name = "Avaria",
+            Type = "Kingdom"
+        };
+
+        entity.Properties["tags"] = new OrbProperty
+        {
+            Name = "tags",
+            Value = new OrbValue(
+                OrbValueType.List,
+                new List<object?>
+                {
+                    "capital",
+                    "coastal",
+                    2400000L,
+                    true,
+                    null
+                })
+        };
+
+        var json = EntitySerializer.Serialize(entity);
+        var restored = EntitySerializer.Deserialize(json);
+
+        var property = restored.Properties["tags"];
+
+        Assert.Equal(
+            OrbValueType.List,
+            property.Value.Type);
+
+        var list = Assert.IsType<List<object?>>(
+            property.Value.Value);
+
+        Assert.Equal(5, list.Count);
+        Assert.Equal("capital", list[0]);
+        Assert.Equal("coastal", list[1]);
+        Assert.Equal(2400000L, list[2]);
+        Assert.Equal(true, list[3]);
+        Assert.Null(list[4]);
+    }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveObjectProperty()
+    {
+        var entity = new OrbEntity
+        {
+            Name = "Avaria",
+            Type = "Kingdom"
+        };
+
+        entity.Properties["metadata"] = new OrbProperty
+        {
+            Name = "metadata",
+            Value = new OrbValue(
+                OrbValueType.Object,
+                new Dictionary<string, object?>
+                {
+                    ["population"] = 2400000L,
+                    ["active"] = true,
+                    ["language"] = "Avarian",
+                    ["unknown"] = null
+                })
+        };
+
+        var json = EntitySerializer.Serialize(entity);
+        var restored = EntitySerializer.Deserialize(json);
+
+        var property = restored.Properties["metadata"];
+
+        Assert.Equal(
+            OrbValueType.Object,
+            property.Value.Type);
+
+        var obj = Assert.IsType<Dictionary<string, object?>>(
+            property.Value.Value);
+
+        Assert.Equal(4, obj.Count);
+        Assert.Equal(2400000L, obj["population"]);
+        Assert.Equal(true, obj["active"]);
+        Assert.Equal("Avarian", obj["language"]);
+        Assert.Null(obj["unknown"]);
+    }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveNestedListAndObject()
+    {
+        var entity = new OrbEntity
+        {
+            Name = "Avaria"
+        };
+
+        entity.Properties["data"] = new OrbProperty
+        {
+            Name = "data",
+            Value = new OrbValue(
+                OrbValueType.Object,
+                new Dictionary<string, object?>
+                {
+                    ["tags"] = new List<object?>
+                    {
+                        "capital",
+                        "coastal"
+                    },
+                    ["metadata"] = new Dictionary<string, object?>
+                    {
+                        ["population"] = 2400000L,
+                        ["active"] = true
+                    }
+                })
+        };
+
+        var json = EntitySerializer.Serialize(entity);
+        var restored = EntitySerializer.Deserialize(json);
+
+        var obj = Assert.IsType<Dictionary<string, object?>>(
+            restored.Properties["data"].Value.Value);
+
+        var tags = Assert.IsType<List<object?>>(
+            obj["tags"]);
+
+        var metadata =
+            Assert.IsType<Dictionary<string, object?>>(
+                obj["metadata"]);
+
+        Assert.Equal(
+            new[] { "capital", "coastal" },
+            tags.Cast<string>());
+
+        Assert.Equal(2400000L, metadata["population"]);
+        Assert.Equal(true, metadata["active"]);
+    }
+
 }

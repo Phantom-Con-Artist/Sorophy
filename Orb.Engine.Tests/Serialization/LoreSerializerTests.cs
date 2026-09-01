@@ -86,7 +86,7 @@ public class LoreSerializerTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         graph.AddEntity(entity);
@@ -128,7 +128,7 @@ public class LoreSerializerTests
             Name = "since",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                482)
+                482L)
         };
 
         graph.AddRelationship(relationship);
@@ -286,7 +286,7 @@ public class LoreSerializerTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         var valor = new OrbEntity
@@ -318,7 +318,7 @@ public class LoreSerializerTests
             Name = "since",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                482)
+                482L)
         };
 
         graph.AddRelationship(relationship);
@@ -419,4 +419,163 @@ public class LoreSerializerTests
         Assert.Throws<InvalidOperationException>(() =>
             LoreSerializer.Deserialize(json));
     }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveEntityListProperty()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "Avaria"
+        };
+
+        entity.Properties["tags"] = new OrbProperty
+        {
+            Name = "tags",
+            Value = new OrbValue(
+                OrbValueType.List,
+                new List<object?>
+                {
+                    "capital",
+                    "coastal",
+                    2400000L,
+                    true,
+                    null
+                })
+        };
+
+        graph.AddEntity(entity);
+
+        var json = LoreSerializer.Serialize(graph);
+        var restored = LoreSerializer.Deserialize(json);
+
+        var property =
+            restored.Entities[entity.Id]
+                .Properties["tags"];
+
+        Assert.Equal(
+            OrbValueType.List,
+            property.Value.Type);
+
+        var list = Assert.IsType<List<object?>>(
+            property.Value.Value);
+
+        Assert.Equal(5, list.Count);
+        Assert.Equal("capital", list[0]);
+        Assert.Equal("coastal", list[1]);
+        Assert.Equal(2400000L, list[2]);
+        Assert.Equal(true, list[3]);
+        Assert.Null(list[4]);
+    }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveRelationshipObjectProperty()
+    {
+        var graph = new OrbGraph();
+
+        var source = new OrbEntity
+        {
+            Name = "Avaria"
+        };
+
+        var target = new OrbEntity
+        {
+            Name = "Valor"
+        };
+
+        graph.AddEntity(source);
+        graph.AddEntity(target);
+
+        var relationship = new OrbRelationship
+        {
+            Type = "capital_of",
+            SourceId = source.Id,
+            TargetId = target.Id
+        };
+
+        relationship.Properties["metadata"] =
+            new OrbProperty
+            {
+                Name = "metadata",
+                Value = new OrbValue(
+                    OrbValueType.Object,
+                    new Dictionary<string, object?>
+                    {
+                        ["since"] = 482L,
+                        ["active"] = true,
+                        ["title"] = "Royal Capital"
+                    })
+            };
+
+        graph.AddRelationship(relationship);
+
+        var json = LoreSerializer.Serialize(graph);
+        var restored = LoreSerializer.Deserialize(json);
+
+        var obj = Assert.IsType<Dictionary<string, object?>>(
+            restored.Relationships[relationship.Id]
+                .Properties["metadata"]
+                .Value.Value);
+
+        Assert.Equal(482L, obj["since"]);
+        Assert.Equal(true, obj["active"]);
+        Assert.Equal("Royal Capital", obj["title"]);
+    }
+
+    [Fact]
+    public void SerializeDeserialize_ShouldPreserveNestedEntityProperty()
+    {
+        var graph = new OrbGraph();
+
+        var entity = new OrbEntity
+        {
+            Name = "Avaria"
+        };
+
+        entity.Properties["data"] = new OrbProperty
+        {
+            Name = "data",
+            Value = new OrbValue(
+                OrbValueType.Object,
+                new Dictionary<string, object?>
+                {
+                    ["tags"] = new List<object?>
+                    {
+                        "capital",
+                        "coastal"
+                    },
+                    ["metadata"] = new Dictionary<string, object?>
+                    {
+                        ["population"] = 2400000L,
+                        ["active"] = true
+                    }
+                })
+        };
+
+        graph.AddEntity(entity);
+
+        var json = LoreSerializer.Serialize(graph);
+        var restored = LoreSerializer.Deserialize(json);
+
+        var obj = Assert.IsType<Dictionary<string, object?>>(
+            restored.Entities[entity.Id]
+                .Properties["data"]
+                .Value.Value);
+
+        var tags = Assert.IsType<List<object?>>(
+            obj["tags"]);
+
+        var metadata =
+            Assert.IsType<Dictionary<string, object?>>(
+                obj["metadata"]);
+
+        Assert.Equal(
+            new[] { "capital", "coastal" },
+            tags.Cast<string>());
+
+        Assert.Equal(2400000L, metadata["population"]);
+        Assert.Equal(true, metadata["active"]);
+    }
+
 }

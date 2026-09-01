@@ -31,67 +31,103 @@ public sealed class OrbValue
         OrbValueType type,
         object? value)
     {
-        if (type == OrbValueType.Null)
+        switch (type)
         {
-            if (value is not null)
-            {
-                throw new ArgumentException(
-                    "A Null OrbValue must have a null value.");
-            }
+            case OrbValueType.Null:
+                if (value is not null)
+                {
+                    throw new ArgumentException(
+                        "Null OrbValue must have a null value.",
+                        nameof(value));
+                }
 
-            return;
-        }
+                break;
 
-        if (value is null)
-        {
-            throw new ArgumentException(
-                $"An OrbValue of type '{type}' cannot have a null value.");
-        }
+            case OrbValueType.String:
+                if (value is not string)
+                {
+                    throw new ArgumentException(
+                        "String OrbValue must contain a string value.",
+                        nameof(value));
+                }
 
-        var isValid = type switch
-        {
-            OrbValueType.String =>
-                value is string,
+                break;
 
-            OrbValueType.Boolean =>
-                value is bool,
+            case OrbValueType.Boolean:
+                if (value is not bool)
+                {
+                    throw new ArgumentException(
+                        "Boolean OrbValue must contain a boolean value.",
+                        nameof(value));
+                }
 
-            OrbValueType.Integer =>
-                value is sbyte
-                    or byte
-                    or short
-                    or ushort
-                    or int
-                    or uint
-                    or long
-                    or ulong,
+                break;
 
-            OrbValueType.Decimal =>
-                value is decimal
-                    or float
-                    or double,
+            case OrbValueType.Integer:
+                if (value is not long)
+                {
+                    throw new ArgumentException(
+                        "Integer OrbValue must contain an Int64 (long) value.",
+                        nameof(value));
+                }
 
-            OrbValueType.DateTime =>
-                value is DateTime,
+                break;
 
-            OrbValueType.Guid =>
-                value is Guid,
+            case OrbValueType.Decimal:
+                if (value is not decimal)
+                {
+                    throw new ArgumentException(
+                        "Decimal OrbValue must contain a Decimal value.",
+                        nameof(value));
+                }
 
-            OrbValueType.List =>
-                value is System.Collections.IEnumerable
-                && value is not string,
+                break;
 
-            OrbValueType.Object =>
-                value is System.Collections.IDictionary,
+            case OrbValueType.DateTime:
+                if (value is not DateTime)
+                {
+                    throw new ArgumentException(
+                        "DateTime OrbValue must contain a DateTime value.",
+                        nameof(value));
+                }
 
-            _ => false
-        };
+                break;
 
-        if (!isValid)
-        {
-            throw new ArgumentException(
-                $"Value of type '{value.GetType().Name}' " +
-                $"is not valid for OrbValueType '{type}'.");
+            case OrbValueType.Guid:
+                if (value is not Guid)
+                {
+                    throw new ArgumentException(
+                        "Guid OrbValue must contain a Guid value.",
+                        nameof(value));
+                }
+
+                break;
+
+            case OrbValueType.List:
+                if (value is not List<object?>)
+                {
+                    throw new ArgumentException(
+                        "List OrbValue must contain a List<object?> value.",
+                        nameof(value));
+                }
+
+                break;
+
+            case OrbValueType.Object:
+                if (value is not Dictionary<string, object?>)
+                {
+                    throw new ArgumentException(
+                        "Object OrbValue must contain a Dictionary<string, object?> value.",
+                        nameof(value));
+                }
+
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(type),
+                    type,
+                    "Unsupported OrbValueType.");
         }
     }
 }

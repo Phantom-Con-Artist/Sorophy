@@ -28,7 +28,7 @@ public class OrbEntityTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         entity.Properties["language"] = new OrbProperty
@@ -60,7 +60,7 @@ public class OrbEntityTests
             Name = "population",
             Value = new OrbValue(
                 OrbValueType.Integer,
-                2400000)
+                2400000L)
         };
 
         entity.Properties["active"] = new OrbProperty

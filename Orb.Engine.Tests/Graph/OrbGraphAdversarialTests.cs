@@ -390,4 +390,449 @@ public class OrbGraphAdversarialTests
         Assert.Single(
             graph.GetRelationships(entity.Id));
     }
+
+    [Fact]
+public void FailedDuplicateEntityInsertion_ShouldLeaveGraphUnchanged()
+{
+    var graph = new OrbGraph();
+
+    var id = Guid.NewGuid();
+
+    var first = new OrbEntity
+    {
+        Id = id,
+        Name = "First"
+    };
+
+    var duplicate = new OrbEntity
+    {
+        Id = id,
+        Name = "Duplicate"
+    };
+
+    graph.AddEntity(first);
+
+    Assert.Throws<InvalidOperationException>(() =>
+        graph.AddEntity(duplicate));
+
+    Assert.Single(graph.Entities);
+    Assert.Same(first, graph.Entities[id]);
+    Assert.Equal("First", graph.Entities[id].Name);
+    Assert.Empty(graph.Relationships);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void FailedRelationshipInsertion_ShouldLeaveGraphUnchanged()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity { Name = "Source" };
+    var target = new OrbEntity { Name = "Target" };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var valid = new OrbRelationship
+    {
+        Type = "valid",
+        SourceId = source.Id,
+        TargetId = target.Id
+    };
+
+    graph.AddRelationship(valid);
+
+    var invalid = new OrbRelationship
+    {
+        Type = "invalid",
+        SourceId = Guid.NewGuid(),
+        TargetId = target.Id
+    };
+
+    Assert.Throws<InvalidOperationException>(() =>
+        graph.AddRelationship(invalid));
+
+    
+    Assert.Equal(2, graph.Entities.Count);
+    Assert.Single(graph.Relationships);
+    Assert.Same(valid, graph.Relationships[valid.Id]);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingEntity_ShouldOnlyRemoveConnectedRelationships()
+{
+    var graph = new OrbGraph();
+
+    var a = new OrbEntity { Name = "A" };
+    var b = new OrbEntity { Name = "B" };
+    var c = new OrbEntity { Name = "C" };
+    var d = new OrbEntity { Name = "D" };
+
+    graph.AddEntity(a);
+    graph.AddEntity(b);
+    graph.AddEntity(c);
+    graph.AddEntity(d);
+
+    var ab = new OrbRelationship
+    {
+        Type = "ab",
+        SourceId = a.Id,
+        TargetId = b.Id
+    };
+
+    var bc = new OrbRelationship
+    {
+        Type = "bc",
+        SourceId = b.Id,
+        TargetId = c.Id
+    };
+
+    var cd = new OrbRelationship
+    {
+        Type = "cd",
+        SourceId = c.Id,
+        TargetId = d.Id
+    };
+
+    graph.AddRelationship(ab);
+    graph.AddRelationship(bc);
+    graph.AddRelationship(cd);
+
+    Assert.True(graph.RemoveEntity(b.Id));
+
+    Assert.False(graph.ContainsEntity(b.Id));
+
+    Assert.False(graph.ContainsRelationship(ab.Id));
+    Assert.False(graph.ContainsRelationship(bc.Id));
+
+    Assert.True(graph.ContainsEntity(a.Id));
+    Assert.True(graph.ContainsEntity(c.Id));
+    Assert.True(graph.ContainsEntity(d.Id));
+
+    Assert.True(graph.ContainsRelationship(cd.Id));
+
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingRelationship_ShouldNotRemoveEntities()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity { Name = "Source" };
+    var target = new OrbEntity { Name = "Target" };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var relationship = new OrbRelationship
+    {
+        Type = "connects",
+        SourceId = source.Id,
+        TargetId = target.Id
+    };
+
+    graph.AddRelationship(relationship);
+
+    Assert.True(graph.RemoveRelationship(relationship.Id));
+
+    Assert.True(graph.ContainsEntity(source.Id));
+    Assert.True(graph.ContainsEntity(target.Id));
+
+    Assert.False(graph.ContainsRelationship(relationship.Id));
+
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingEntityTwice_ShouldNotChangeGraphAfterFirstRemoval()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "A"
+    };
+
+    graph.AddEntity(entity);
+
+    Assert.True(graph.RemoveEntity(entity.Id));
+
+    var entityCount = graph.Entities.Count;
+    var relationshipCount = graph.Relationships.Count;
+
+    Assert.False(graph.RemoveEntity(entity.Id));
+
+    Assert.Equal(entityCount, graph.Entities.Count);
+    Assert.Equal(relationshipCount, graph.Relationships.Count);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingRelationshipTwice_ShouldNotChangeGraphAfterFirstRemoval()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity { Name = "Source" };
+    var target = new OrbEntity { Name = "Target" };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var relationship = new OrbRelationship
+    {
+        Type = "connects",
+        SourceId = source.Id,
+        TargetId = target.Id
+    };
+
+    graph.AddRelationship(relationship);
+
+    Assert.True(graph.RemoveRelationship(relationship.Id));
+
+    var entityCount = graph.Entities.Count;
+    var relationshipCount = graph.Relationships.Count;
+
+    Assert.False(graph.RemoveRelationship(relationship.Id));
+
+    Assert.Equal(entityCount, graph.Entities.Count);
+    Assert.Equal(relationshipCount, graph.Relationships.Count);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingEntityWithSelfRelationship_ShouldRemoveSelfRelationship()
+{
+    var graph = new OrbGraph();
+
+    var entity = new OrbEntity
+    {
+        Name = "Self"
+    };
+
+    graph.AddEntity(entity);
+
+    var relationship = new OrbRelationship
+    {
+        Type = "references",
+        SourceId = entity.Id,
+        TargetId = entity.Id
+    };
+
+    graph.AddRelationship(relationship);
+
+    Assert.True(graph.RemoveEntity(entity.Id));
+
+    Assert.Empty(graph.Entities);
+    Assert.Empty(graph.Relationships);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void RemovingEntity_ShouldRemoveAllConnectedRelationships_FromBothDirections()
+{
+    var graph = new OrbGraph();
+
+    var center = new OrbEntity { Name = "Center" };
+    var a = new OrbEntity { Name = "A" };
+    var b = new OrbEntity { Name = "B" };
+    var c = new OrbEntity { Name = "C" };
+
+    graph.AddEntity(center);
+    graph.AddEntity(a);
+    graph.AddEntity(b);
+    graph.AddEntity(c);
+
+    var outgoingA = new OrbRelationship
+    {
+        Type = "outgoing",
+        SourceId = center.Id,
+        TargetId = a.Id
+    };
+
+    var outgoingB = new OrbRelationship
+    {
+        Type = "outgoing",
+        SourceId = center.Id,
+        TargetId = b.Id
+    };
+
+    var incomingC = new OrbRelationship
+    {
+        Type = "incoming",
+        SourceId = c.Id,
+        TargetId = center.Id
+    };
+
+    graph.AddRelationship(outgoingA);
+    graph.AddRelationship(outgoingB);
+    graph.AddRelationship(incomingC);
+
+    Assert.True(graph.RemoveEntity(center.Id));
+
+    Assert.Empty(graph.Relationships);
+
+    Assert.True(graph.ContainsEntity(a.Id));
+    Assert.True(graph.ContainsEntity(b.Id));
+    Assert.True(graph.ContainsEntity(c.Id));
+
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void AddRelationship_WithMissingSourceAndTarget_ShouldLeaveGraphUnchanged()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity
+    {
+        Name = "Source"
+    };
+
+    var target = new OrbEntity
+    {
+        Name = "Target"
+    };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var originalRelationshipCount = graph.Relationships.Count;
+
+    var relationship = new OrbRelationship
+    {
+        Type = "invalid",
+        SourceId = Guid.NewGuid(),
+        TargetId = Guid.NewGuid()
+    };
+
+    Assert.Throws<InvalidOperationException>(() =>
+        graph.AddRelationship(relationship));
+
+    Assert.Equal(
+        originalRelationshipCount,
+        graph.Relationships.Count);
+
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void AddNullEntity_ShouldLeaveGraphUnchanged()
+{
+    var graph = new OrbGraph();
+
+    Assert.Throws<ArgumentNullException>(() =>
+        graph.AddEntity(null!));
+
+    Assert.Empty(graph.Entities);
+    Assert.Empty(graph.Relationships);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void AddNullRelationship_ShouldLeaveGraphUnchanged()
+{
+    var graph = new OrbGraph();
+
+    Assert.Throws<ArgumentNullException>(() =>
+        graph.AddRelationship(null!));
+
+    Assert.Empty(graph.Entities);
+    Assert.Empty(graph.Relationships);
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void FailedDuplicateRelationshipInsertion_ShouldPreserveOriginalRelationship()
+{
+    var graph = new OrbGraph();
+
+    var source = new OrbEntity { Name = "Source" };
+    var target = new OrbEntity { Name = "Target" };
+
+    graph.AddEntity(source);
+    graph.AddEntity(target);
+
+    var id = Guid.NewGuid();
+
+    var first = new OrbRelationship
+    {
+        Id = id,
+        Type = "first",
+        SourceId = source.Id,
+        TargetId = target.Id
+    };
+
+    var duplicate = new OrbRelationship
+    {
+        Id = id,
+        Type = "second",
+        SourceId = target.Id,
+        TargetId = source.Id
+    };
+
+    graph.AddRelationship(first);
+
+    Assert.Throws<InvalidOperationException>(() =>
+        graph.AddRelationship(duplicate));
+
+    Assert.Single(graph.Relationships);
+    Assert.Same(first, graph.Relationships[id]);
+    Assert.Equal("first", graph.Relationships[id].Type);
+    Assert.Equal(source.Id, graph.Relationships[id].SourceId);
+    Assert.Equal(target.Id, graph.Relationships[id].TargetId);
+
+    Assert.Empty(graph.Validate());
+}
+
+[Fact]
+public void MutationSequence_ShouldPreserveGraphInvariants()
+{
+    var graph = new OrbGraph();
+
+    var a = new OrbEntity { Name = "A" };
+    var b = new OrbEntity { Name = "B" };
+    var c = new OrbEntity { Name = "C" };
+
+    graph.AddEntity(a);
+    Assert.Empty(graph.Validate());
+
+    graph.AddEntity(b);
+    Assert.Empty(graph.Validate());
+
+    var ab = new OrbRelationship
+    {
+        Type = "connects",
+        SourceId = a.Id,
+        TargetId = b.Id
+    };
+
+    graph.AddRelationship(ab);
+    Assert.Empty(graph.Validate());
+
+    graph.AddEntity(c);
+    Assert.Empty(graph.Validate());
+
+    var bc = new OrbRelationship
+    {
+        Type = "connects",
+        SourceId = b.Id,
+        TargetId = c.Id
+    };
+
+    graph.AddRelationship(bc);
+    Assert.Empty(graph.Validate());
+
+    Assert.True(graph.RemoveRelationship(ab.Id));
+    Assert.Empty(graph.Validate());
+
+    Assert.True(graph.RemoveEntity(b.Id));
+    Assert.Empty(graph.Validate());
+
+    Assert.True(graph.ContainsEntity(a.Id));
+    Assert.True(graph.ContainsEntity(c.Id));
+
+    Assert.Empty(graph.Relationships);
+}
 }

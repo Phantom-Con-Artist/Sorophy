@@ -45,8 +45,7 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 </p>
 
 <p>
-<strong>🚧 1.0.0-beta.1</strong>
-<br/>
+<strong>🚧 1.0.0-beta.2</strong><br/>
 The API and file formats may change before stable release.
 </p>
 

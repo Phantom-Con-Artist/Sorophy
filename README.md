@@ -1,14 +1,12 @@
-<div *align*="center">
+<div align="center">
 
-<p>
+<p>A project under</p>
 
-<img src="docs/orbenginelogo.png" alt="The Orb Engine" width="90"/>
+<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
 
-&nbsp;&nbsp;&nbsp;
+<p>introduces</p>
 
-<img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
-
-</p>
+<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
 
 <h1>The Orb Engine</h1>
 
@@ -26,47 +24,11 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 
 <br/>
 
-<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
+<p align="center"><a href="https://github.com/Phantom-Con-Artist/Orb"><img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/releases"><img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version"/></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/></a></p>
 
-<br/><br/>
+<p align="center"><a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/></a>&nbsp;<a href="https://learn.microsoft.com/en-us/dotnet/csharp/"><img src="https://img.shields.io/badge/C%23-Language-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-E05735?style=for-the-badge" alt="Changelog"/></a></p>
 
-<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
-
-<br/><br/>
-
-<p>
-
-<a href="https://github.com/Phantom-Con-Artist/Orb">
-
-<img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
-
-</a>
-
-&nbsp;
-
-<a href="https://github.com/Phantom-Con-Artist/Orb/releases">
-
-<img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version"/>
-
-</a>
-
-&nbsp;
-
-<a href="https://dotnet.microsoft.com/">
-
-<img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
-
-</a>
-
-&nbsp;
-
-<a href="LICENSE">
-
-<img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/>
-
-</a>
-
-</p>
+<p align="center"><a href="https://discord.com/invite/Em2ur4J8PF"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/></a>&nbsp;<a href="mailto:personalsarkar345@gmail.com"><img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a></p>
 
 <p>
 
@@ -147,6 +109,8 @@ The engine is designed to sit underneath higher-level applications such as edito
 
 - [Contributing](#contributing)
 
+- [Community](#community)
+
 - [License](#license)
 
 - [The Philosophy](#the-philosophy)
@@ -193,39 +157,39 @@ Entities can carry structured properties and connect to one another through rela
 
 ┌───────────────┐
 
-│    Person     │
+│    Person     │
 
-│  Subhradeep   │
-
-└───────┬───────┘
-
-        │
-
-     created
-
-        │
-
-        ▼
-
-┌───────────────┐
-
-│    Project    │
-
-│    Orbis      │
+│  Subhradeep   │
 
 └───────┬───────┘
 
-        │
+        │
 
-     contains
+     created
 
-        │
+        │
 
-        ▼
+        ▼
 
 ┌───────────────┐
 
-│  Orb.Engine   │
+│    Project    │
+
+│    Orbis      │
+
+└───────┬───────┘
+
+        │
+
+     contains
+
+        │
+
+        ▼
+
+┌───────────────┐
+
+│  Orb.Engine   │
 
 └───────────────┘
 
@@ -239,37 +203,37 @@ Traditional documents are excellent for human-readable content, but they often p
 
 ```text
 
-                     ORBIS
+                     ORBIS
 
-                       │
+                       │
 
-               ┌────────┴────────┐
+               ┌────────┴────────┐
 
-               │                 │
+               │                 │
 
-         Structured Data      Applications
+         Structured Data      Applications
 
-               │                 │
+               │                 │
 
-               │        ┌────────┼────────┐
+               │        ┌────────┼────────┐
 
-               │        │        │        │
+               │        │        │        │
 
-               ▼        ▼        ▼        ▼
+               ▼        ▼        ▼        ▼
 
-           Entities   Orbpad   Editors   Other Tools
+           Entities   Orbpad   Editors   Other Tools
 
-               │
+               │
 
-               ▼
+               ▼
 
-         Relationships
+         Relationships
 
-               │
+               │
 
-               ▼
+               ▼
 
-              Graph
+              Graph
 
 ```
 
@@ -299,29 +263,29 @@ The ecosystem is built around structured document concepts. The engine currently
 
 ```text
 
-.entity                          .lore
+.entity                          .lore
 
-   │                                │
+   │                                │
 
-   ├── Identity                     ├── Entities
+   ├── Identity                     ├── Entities
 
-   ├── Type                         │    ├── Entity A
+   ├── Type                         │    ├── Entity A
 
-   └── Properties                   │    ├── Entity B
+   └── Properties                   │    ├── Entity B
 
-                                    │    └── Entity C
+                                    │    └── Entity C
 
-   a single, independently           │
+   a single, independently           │
 
-   identifiable object              └── Relationships
+   identifiable object              └── Relationships
 
-                                         ├── A → B
+                                         ├── A → B
 
-                                         ├── B → C
+                                         ├── B → C
 
-                                         └── A → C
+                                         └── A → C
 
-                                    a connected body of things
+                                    a connected body of things
 
 ```
 
@@ -333,25 +297,25 @@ A central architectural goal of Orbis is to avoid coupling the information model
 
 ```text
 
-                 Application
+                 Application
 
-                     │
+                     │
 
-                     ▼
+                     ▼
 
-              ┌──────────────┐
+              ┌──────────────┐
 
-              │  Orb.Engine  │
+              │  Orb.Engine  │
 
-              └──────┬───────┘
+              └──────┬───────┘
 
-                     │
+                     │
 
-          ┌──────────┼──────────┐
+          ┌──────────┼──────────┐
 
-          ▼          ▼          ▼
+          ▼          ▼          ▼
 
-       Entities   Graphs     Documents
+       Entities   Graphs     Documents
 
 ```
 
@@ -367,19 +331,19 @@ Orbpad is envisioned as the first application built on the Orbis foundation. Rat
 
 Orbis Engine
 
-     │
+     │
 
-     │ structured information
+     │ structured information
 
-     ▼
+     ▼
 
 Orbpad
 
-     │
+     │
 
-     │ user experience
+     │ user experience
 
-     ▼
+     ▼
 
 Human
 
@@ -395,35 +359,35 @@ Orbis is designed around the belief that structured information should not be pe
 
 ```text
 
-                 ┌───────────────┐
+                 ┌───────────────┐
 
-                 │   Application │
+                 │   Application │
 
-                 └───────┬───────┘
+                 └───────┬───────┘
 
-                         │
+                         │
 
-                         ▼
+                         ▼
 
-                 ┌───────────────┐
+                 ┌───────────────┐
 
-                 │ Orbis Engine  │
+                 │ Orbis Engine  │
 
-                 └───────┬───────┘
+                 └───────┬───────┘
 
-                         │
+                         │
 
-                    Structured
+                    Structured
 
-                   Information
+                   Information
 
-                         │
+                         │
 
-              ┌───────────┼───────────┐
+              ┌───────────┼───────────┐
 
-              ▼           ▼           ▼
+              ▼           ▼           ▼
 
-           Orbpad      Tool A       Tool B
+           Orbpad      Tool A       Tool B
 
 ```
 
@@ -437,7 +401,7 @@ Orb.Engine is the first major foundation for this vision, providing the primitiv
 
 OrbValue → OrbProperty → OrbEntity → OrbRelationship → OrbGraph
 
-   → Serialization → Storage → Applications
+   → Serialization → Storage → Applications
 
 ```
 
@@ -477,21 +441,21 @@ OrbGraph
 
 ├── Entities
 
-│   ├── Entity A
+│   ├── Entity A
 
-│   ├── Entity B
+│   ├── Entity B
 
-│   └── Entity C
+│   └── Entity C
 
 │
 
 └── Relationships
 
-    ├── A → B
+    ├── A → B
 
-    ├── B → C
+    ├── B → C
 
-    └── A → C
+    └── A → C
 
 ```
 
@@ -513,9 +477,9 @@ An entity represents a single identifiable object within the Orbis model. An ent
 
 var character = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Arannis");
+    "Arannis");
 
 character.Type = "Character";
 
@@ -531,11 +495,11 @@ A relationship connects two entities.
 
 Source
 
-   │
+   │
 
-   │ relationship
+   │ relationship
 
-   ▼
+   ▼
 
 Target
 
@@ -547,9 +511,9 @@ For example:
 
 King
 
- │
+ │
 
- └── rules → Kingdom
+ └── rules → Kingdom
 
 ```
 
@@ -575,13 +539,13 @@ var age = new OrbProperty
 
 {
 
-    Name = "Age",
+    Name = "Age",
 
-    Value = new OrbValue(
+    Value = new OrbValue(
 
-        OrbValueType.Integer,
+        OrbValueType.Integer,
 
-        42L)
+        42L)
 
 };
 
@@ -633,19 +597,19 @@ Orbis supports structured values inside lists and objects.
 
 var value = new OrbValue(
 
-    OrbValueType.Object,
+    OrbValueType.Object,
 
-    new Dictionary<string, object?>
+    new Dictionary<string, object?>
 
-    {
+    {
 
-        ["name"] = "Arannis",
+        ["name"] = "Arannis",
 
-        ["age"] = 42,
+        ["age"] = 42,
 
-        ["active"] = true
+        ["active"] = true
 
-    });
+    });
 
 ```
 
@@ -705,13 +669,13 @@ Relationships cannot be inserted against nonexistent entities. This prevents the
 
 Relationship
 
-     │
+     │
 
-     ├── Source → DOES NOT EXIST
+     ├── Source → DOES NOT EXIST
 
-     │
+     │
 
-     └── Target → Entity B
+     └── Target → Entity B
 
 ```
 
@@ -757,15 +721,15 @@ A
 
 ├── B
 
-│   ├── D
+│   ├── D
 
-│   └── E
+│   └── E
 
 │
 
 └── C
 
-    └── F
+    └── F
 
 ```
 
@@ -797,7 +761,7 @@ A → B → C → D
 
 A ───────────────→ D
 
-       reachable
+       reachable
 
 ```
 
@@ -825,7 +789,7 @@ string json = EntitySerializer.Serialize(entity);
 
 OrbEntity entity =
 
-    EntitySerializer.Deserialize(json);
+    EntitySerializer.Deserialize(json);
 
 ```
 
@@ -845,7 +809,7 @@ string json = LoreSerializer.Serialize(graph);
 
 OrbGraph graph =
 
-    LoreSerializer.Deserialize(json);
+    LoreSerializer.Deserialize(json);
 
 ```
 
@@ -899,55 +863,55 @@ The storage layer is intentionally kept separate from the graph and serializatio
 
 ┌──────────────────────────────────────────┐
 
-│              Applications                 │
+│              Applications                 │
 
-│                                           │
+│                                           │
 
-│  Orbpad · Worldbuilding · Other Tools     │
+│  Orbpad · Worldbuilding · Other Tools     │
 
 └─────────────────────┬──────────────────────┘
 
-                       │
+                       │
 
-                       ▼
+                       ▼
 
 ┌──────────────────────────────────────────┐
 
-│              Orbis Engine                  │
+│              Orbis Engine                  │
 
-│                                           │
+│                                           │
 
-│  Graph · Entities · Relationships          │
+│  Graph · Entities · Relationships          │
 
-│  Properties · Typed Values                 │
+│  Properties · Typed Values                 │
 
 └─────────────────────┬──────────────────────┘
 
-                       │
+                       │
 
-          ┌────────────┴────────────┐
+          ┌────────────┴────────────┐
 
-          ▼                         ▼
+          ▼                         ▼
 
-┌───────────────────┐    ┌───────────────────┐
+┌───────────────────┐    ┌───────────────────┐
 
-│    Serialization   │    │      Storage       │
+│    Serialization   │    │      Storage       │
 
-│                    │    │                   │
+│                    │    │                   │
 
-│  EntitySerializer  │    │  EntityStorage    │
+│  EntitySerializer  │    │  EntityStorage    │
 
-│  LoreSerializer    │    │  LoreStorage      │
+│  LoreSerializer    │    │  LoreStorage      │
 
-└──────────┬─────────┘    └──────────┬────────┘
+└──────────┬─────────┘    └──────────┬────────┘
 
-           │                         │
+           │                         │
 
-           └────────────┬────────────┘
+           └────────────┬────────────┘
 
-                        ▼
+                        ▼
 
-                 .entity / .lore
+                 .entity / .lore
 
 ```
 
@@ -963,19 +927,19 @@ The intended public API of Orb.Engine consists primarily of:
 
 ```text
 
-OrbGraph          OrbValue
+OrbGraph          OrbValue
 
-OrbEntity         OrbValueType
+OrbEntity         OrbValueType
 
 OrbRelationship
 
-OrbProperty       EntitySerializer
+OrbProperty       EntitySerializer
 
-                  LoreSerializer
+                  LoreSerializer
 
-                  EntityStorage
+                  EntityStorage
 
-                  LoreStorage
+                  LoreStorage
 
 ```
 
@@ -998,6 +962,12 @@ The current unit suite reports:
 
 **0 failed · 0 skipped**
 
+<img src="https://img.shields.io/badge/tests-251%20passing-2E7D32?style=for-the-badge&logo=checkmarx&logoColor=white" alt="251 tests passing"/>
+&nbsp;
+<img src="https://img.shields.io/badge/failed-0-2E7D32?style=for-the-badge" alt="0 failed"/>
+&nbsp;
+<img src="https://img.shields.io/badge/skipped-0-2E7D32?style=for-the-badge" alt="0 skipped"/>
+
 </div>
 
 The 251 unit tests cover the following aspects.
@@ -1014,7 +984,7 @@ The graph tests cover entity insertion/removal, relationship insertion/removal, 
 
 Entity and lore serialization are tested through object → JSON → object round trips. Tests cover nested lists and objects, `Guid`, `DateTime`, primitive CLR types, property preservation, document boundaries, malformed input, and serializer failure behavior. The goal is semantic fidelity, not merely syntactically valid JSON.
 
-### Storage
+### Storage Tests
 
 Entity and lore storage tests exercise save/load behavior, document boundaries, missing files, invalid documents, and persistence reconstruction. Storage remains separated from the graph and serializer layers so the data model is not coupled to a particular persistence mechanism.
 
@@ -1034,26 +1004,88 @@ The suite deliberately attacks the ugly cases: missing entities, invalid relatio
 
 # ✦ Test Arsenal & 1.0.0 Verification
 
-Version 1.0.0 was subjected to a broader stress program after the unit suite. These campaigns were designed to answer different questions; no single benchmark is sufficient to establish confidence in a foundational engine.
+Orb Engine `1.0.0` was subjected to the full **Orb Engine Test Arsenal** using the following release-gate configuration:
 
-The verification program covered **twelve named stress campaigns**, ranging from mutation chaos and deterministic replay to large-topology, persistence, differential-fuzzing, crash/recovery, and soak/endurance testing.
+- **Version:** `1.0.0`
+- **Release grade:** **Grade A — Silver Standard**
+- **Profile:** `full`
+- **Seed:** `12345`
+- **Configured operations:** `1,000,000`
+- **Audit interval:** `10,000`
+- **Target framework:** `.NET 10`
 
-## Stress Campaign Summary
+The release verification program was designed to test correctness, graph invariants, mutation integrity, deterministic behavior, serialization fidelity, persistence and recovery, memory behavior, allocation reuse, scalability, performance, fuzz resilience, and long-duration endurance.
 
-| Campaign | Primary purpose | Evidence / result |
+The `1,000,000` operation setting is the configured workload supplied to each campaign. Individual campaigns interpret that workload according to their test design. Some execute one-million-operation workloads directly, some execute multiple independent workloads, and others distribute the configured workload across graph sizes or specialized benchmark stages.
+
+## Benchmark Environment
+
+| Component | Detail |
+|---|---|
+| **CPU** | AMD Ryzen 5 3450U |
+| **GPU** | None / Not used |
+| **RAM** | 16 GB |
+| **OS** | Windows 10, version 22H2 (OS Build 19045.3803) |
+| **Architecture** | x64 |
+| **.NET SDK** | 10.0.400 |
+| **Target framework** | net10.0 |
+| **Build configuration** | Release |
+| **Orb Engine version** | 1.0.0 |
+| **Release grade** | Grade A — Silver Standard |
+| **Profile** | full |
+| **Seed** | 12345 |
+| **Operations** | 1,000,000 |
+| **Audit interval** | 10,000 |
+
+All throughput, memory, and timing figures reported in this section were measured on the environment above. Absolute numbers will vary on different hardware; the release-gate pass/fail results are configuration-driven (profile, seed, operation count, audit interval) and are reproducible independent of the host machine.
+
+## Verification Summary
+
+| Campaign | Verification Purpose | Result |
 |---|---|---|
-| **Mutation Chaos** | Randomized high-volume graph mutation; detect invariant violations under turbulence. | **1,000,000 operations — PASS**. Reached roughly 100K entities / tens of thousands of relationships during the run. |
-| **Deterministic Replay** | Prove identical operation journals produce identical state and deterministic behavior. | **Two independent 1,000,000-operation journals — PASS** with repeated audits. |
-| **Mutation Performance** | Measure isolated mutation latency and allocations without polluting timings with setup or validation. | **100K-operation run — PASS**. Entity add ~4.89M ops/s; relationship add ~760K ops/s; relationship remove ~1.34M ops/s; churn ~1.88M ops/s; mixed churn ~3.29M ops/s. |
-| **Performance Benchmark** | Establish baseline throughput for representative engine operations and provide regression reference points. | **PASS**; used as a general performance baseline rather than a correctness gate. |
-| **Relationship Scaling** | Determine how relationship queries behave from small to large sparse graphs and expose accidental total-edge dependence. | **1K → 100K entities — PASS**. At 100K: ~3.32M outgoing queries/s, ~3.10M incoming queries/s, ~1.21M all-relationship queries/s, ~867K neighbor queries/s. |
-| **Memory Benchmark** | Measure managed memory and working-set behavior as entities, relationships, and sparse properties scale. | **PASS through 100K entities**. Entity footprint stabilized near 271 B/entity; relationship/index footprint fell toward ~418 B/relationship at 100K. |
-| **Pool Reuse** | Verify reusable adjacency/pool capacity actually prevents repeated allocation growth. | **PASS**. Second allocation wave reached effectively **0 B** in the reuse measurement, a 100% reduction relative to the first wave. |
-| **High-Degree Topology** | Attack a pathological hub with very high incident degree; validate traversal, mutation, deletion, and validator behavior. | **PASS** with a 100K-edge hub, ~50K outgoing and ~50K incoming relationships, and ~99.9K distinct neighbors. |
-| **Differential Fuzzing** | Compare Orb.Engine against an independent reference model under deterministic randomized mutation workloads. | **5 seeds × 1,000,000 operations = 5,000,000 fuzz operations — PASS**. |
-| **Serialization Torture** | Stress the serializer with very large graphs and verify deep round-trip integrity. | **PASS at 1,000,000 entities / 1,000,049 relationships** with a ~374.97 MB lore document. |
-| **Crash / Recovery Torture** | Verify damaged/truncated documents are rejected and known-good state remains recoverable. | **1,000,000 operations — PASS**; 549,088 injected fault conditions and 49,923 disk-backed recovery cycles. |
-| **Soak / Endurance** | Detect cumulative state drift, leaks, allocator degradation, and performance collapse across repeated mutation/query/persistence cycles. | **1,000,000 cycles — PASS** at ~56,923 cycles/s; 10,000 in-memory persistence round trips, 1,000 disk round trips, 100 audits; retained managed delta only +255.77 KB. |
+| **Mutation Chaos** | Exercises randomized high-volume graph mutations to detect invariant violations, failed-mutation corruption, relationship inconsistencies, invalid state transitions, and query failures under sustained mutation pressure. | **PASS — 1,000,000-operation configuration.** The workload reached approximately **100,000 entities** and tens of thousands of relationships while maintaining graph integrity and query correctness. |
+| **Deterministic Replay** | Verifies that deterministic operation journals produce reproducible execution and equivalent graph state when independently replayed. | **PASS — two independent 1,000,000-operation journals.** Journal determinism, reference-model agreement, replay equivalence, repeated audits, and graph invariants all passed. |
+| **Mutation Performance** | Measures isolated entity and relationship mutation throughput and allocation behavior without including graph preparation, reference-model execution, or full validation in the timed mutation paths. | **PASS — 1,000,000-operation configuration.** The campaign completed successfully under the full release workload and established mutation-performance evidence for the stable release. |
+| **Pool Reuse** | Verifies that released adjacency storage can be reused during repeated relationship allocation/removal cycles instead of causing continuous allocation growth. | **PASS — 1,000,000-operation configuration.** Reuse behavior was observed, including an effectively **0 B second-wave allocation measurement** in the dedicated reuse test. |
+| **High-Degree Topology** | Exercises a pathological high-degree hub with large incident degree, parallel relationships, self-links, query operations, mass removal, and final graph validation. | **PASS — 1,000,000-operation configuration.** Verified a **100,000-edge hub** with approximately **50,000 outgoing**, **50,000 incoming**, and approximately **99,900 distinct neighbors**. |
+| **Performance Benchmark** | Establishes representative throughput baselines across multiple graph sizes and identifies scaling characteristics for common engine operations. | **PASS — 1,000,000-operation configuration.** Representative graph operations were benchmarked through the configured scale points. The fastest recorded operation in the full run was **Entity / Contains (10,000)** at approximately **21.2 million operations/s**. |
+| **Relationship Scaling** | Measures relationship-query behavior from small to large sparse graphs and identifies scaling characteristics that could indicate unintended dependence on total graph size. | **PASS — 1,000,000-operation configuration.** Tested graph sizes from **1,000 through 100,000 entities**. At 100,000 entities, representative throughput reached approximately **3.32M outgoing queries/s**, **3.10M incoming queries/s**, **1.21M all-relationship queries/s**, and **868K neighbor queries/s**. |
+| **Memory Benchmark** | Measures managed-memory usage and working-set behavior across entity, relationship, property, and relationship-churn workloads. | **PASS — 1,000,000-operation configuration.** Memory behavior was measured through **100,000 entities**. Entity footprint stabilized near **271 B/entity**, while relationship/index footprint decreased toward approximately **418 B/relationship** at 100,000 entities. |
+| **Differential Fuzzing** | Compares Orb Engine behavior with an independent reference model under deterministic randomized graph mutation workloads. | **PASS — 5,000,000 differential-fuzz operations.** Five independent seed families completed **1,000,000 operations each**, with the engine remaining equivalent to the reference model. |
+| **Serialization Torture** | Exercises serialization and deserialization using large graphs, filesystem I/O, deterministic output checks, round-trip reconstruction, and malformed-input cases. | **PASS — 1,000,000-operation configuration.** Large-scale serialization testing reached **1,000,000 entities** and **1,000,049 relationships**, producing a lore document of approximately **374.97 MB**. |
+| **Crash / Recovery Torture** | Verifies rejection of missing, empty, truncated, interrupted, corrupted, and structurally invalid documents and verifies restoration from known-good state. | **PASS — 1,000,000 recovery operations.** The workload included **549,088 injected fault conditions** and **49,923 disk-backed recovery cycles**. |
+| **Soak / Endurance** | Detects cumulative state drift, memory retention, allocator degradation, persistence instability, validation failures, and throughput collapse under repeated engine lifecycle activity. | **PASS — 1,000,000 cycles.** Executed **700,476 mutation cycles** and **299,524 query-heavy cycles**, with **1,400,952 relationship additions**, **1,400,952 relationship removals**, **700,476 entity additions**, **700,476 entity removals**, **10,000 in-memory persistence round trips**, **1,000 disk persistence round trips**, and **100 full audits**. The canonical serialized state remained unchanged, final state remained **16 entities / 19 relationships**, and final validation passed. Retained managed-memory delta was **+255.77 KB**, with **5.49 MB peak managed heap** and **41.93 MB peak working set**. Final throughput was approximately **56,923 cycles/s**. |
+
+## Release-Gate Result
+
+The complete release verification program consisted of **12 campaigns**.
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/Campaigns-12%2F12-2E7D32?style=for-the-badge" alt="12/12 campaigns"/>&nbsp;<img src="https://img.shields.io/badge/Checks-49%2F49-2E7D32?style=for-the-badge" alt="49/49 checks"/>&nbsp;<img src="https://img.shields.io/badge/Failures-0-2E7D32?style=for-the-badge" alt="0 failures"/>&nbsp;<img src="https://img.shields.io/badge/Profile-full-512BD4?style=for-the-badge" alt="Profile: full"/>&nbsp;<img src="https://img.shields.io/badge/Grade-A%20--%20Silver%20Standard-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A - Silver Standard"/>
+
+</div>
+
+The first ten campaigns — Mutation Chaos, Deterministic Replay, Mutation Performance, Pool Reuse, High-Degree Topology, Performance Benchmark, Relationship Scaling, Memory Benchmark, Serialization Torture, and Crash / Recovery Torture — completed as a single shared release-gate run:
+
+```text
+Campaigns: 10/10
+Checks:    47/47
+Status:    PASS
+```
+
+The remaining two campaigns, **Differential Fuzzing** (5,000,000 fuzz operations across five independent seed families) and **Soak / Endurance** (1,000,000 cycles), are independent long-form workloads and are tracked and reported separately from the shared release-gate run above. Combined across all twelve campaigns, the full release verification program reports:
+
+```text
+Campaigns: 12/12
+Checks:    49/49
+Status:    PASS
+Failures:  0
+```
+
+**12 campaigns · 49 checks · 0 failures · full profile · 1,000,000 configured operations · Grade A — Silver Standard.**
+
+The distinction around "configured operations" is intentional and worth preserving: it keeps this documentation auditable rather than implying that every campaign literally performed one million iterations of the same operation. Each campaign's actual workload — direct, distributed across graph sizes, or benchmark-staged — is documented per-campaign in the Verification Summary table above.
 
 ## What Each Stress Layer Proves
 
@@ -1109,9 +1141,15 @@ The most significant signal is **cross-test agreement**. The same internal struc
 
 ### 1.0.0 Stable Grade A Recommendation
 
+<p>
+
+<img src="https://img.shields.io/badge/Release-1.0.0-7C3AED?style=for-the-badge" alt="Release 1.0.0"/>&nbsp;<img src="https://img.shields.io/badge/Grade-A%20--%20Silver%20Standard-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A - Silver Standard"/>&nbsp;<img src="https://img.shields.io/badge/Campaigns-12%2F12-2E7D32?style=for-the-badge" alt="12/12 campaigns"/>&nbsp;<img src="https://img.shields.io/badge/Checks-49%2F49-2E7D32?style=for-the-badge" alt="49/49 checks"/>&nbsp;<img src="https://img.shields.io/badge/Status-Stable-2E7D32?style=for-the-badge" alt="Status: Stable"/>
+
+</p>
+
 **Recommendation: Version 1.0.0 qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
 
-The recommendation is based on the combination of the 251-test unit suite and the independent stress campaigns described below. Grade A does not mean that every possible workload, platform, failure mode, or future compatibility requirement has been proven. It means the current release has met the defined stable-core verification requirements for the capabilities and workload classes that were actually tested, and no unresolved correctness failure was observed in those release-gate paths.
+The recommendation is based on the combination of the 251-test unit suite and the independent stress campaigns described above: 12 campaigns, 49 checks, 0 failures, run under the `full` profile with seed `12345` and 1,000,000 configured operations. Grade A does not mean that every possible workload, platform, failure mode, or future compatibility requirement has been proven. It means the current release has met the defined stable-core verification requirements for the capabilities and workload classes that were actually tested, and no unresolved correctness failure was observed in those release-gate paths.
 
 In practical terms, 1.0.0 Grade A means:
 
@@ -1131,6 +1169,14 @@ The Grade A boundary is explicit: the release is recommended for applications an
 <div align="center">
 
 ## ✅ `1.0.0` · Stable · **Grade A — Silver Standard**
+
+<img src="https://img.shields.io/badge/Grade-A-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Standard-Silver-C0C0C0?style=for-the-badge" alt="Silver Standard"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Unit%20Tests-251%2F251-2E7D32?style=for-the-badge" alt="251/251 unit tests"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Fuzz%20Ops-5M%20passing-512BD4?style=for-the-badge" alt="5,000,000 fuzz ops passing"/>
 
 </div>
 
@@ -1159,6 +1205,12 @@ The Orbis release-grade system applies **only to stable releases**. It is delibe
 
 ## 🥈 Grade A — Silver Standard
 
+<p>
+<img src="https://img.shields.io/badge/Grade-A-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Coverage-Tested%20Scope-2E7D32?style=for-the-badge" alt="Coverage: Tested Scope"/>
+</p>
+
 **Definition:** A stable release that has passed every mandatory release-gate test for its declared engine capabilities and tested workload classes, with no unresolved correctness failure observed in those release-gate paths.
 
 A Grade A release must satisfy all of the following:
@@ -1172,6 +1224,14 @@ A Grade A release must satisfy all of the following:
 **Use recommendation:** Developers may use Grade A releases for the specific purposes, capabilities, and workload classes explicitly covered by the release verification record. A Grade A designation does not approve deployment scenarios outside that verified scope.
 
 ## 🥇 Grade S — Gold Standard
+
+<p>
+<img src="https://img.shields.io/badge/Grade-S-FFD700?style=for-the-badge&logo=shield&logoColor=white" alt="Grade S"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Coverage-Full%20Supported%20Scope-B8860B?style=for-the-badge" alt="Coverage: Full Supported Scope"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Status-Not%20Yet%20Awarded-lightgrey?style=for-the-badge" alt="Status: Not Yet Awarded"/>
+</p>
 
 **Definition:** A stable release that satisfies every Grade A requirement and has additionally passed verification for **every documented supported capability, every declared supported workload class, and every officially supported runtime environment** included in the release contract.
 
@@ -1232,29 +1292,29 @@ Orbis is being developed as an ecosystem rather than a single monolithic applica
 
 ```text
 
-                    ORBIS
+                    ORBIS
 
-                      │
+                      │
 
-          ┌───────────┴───────────┐
+          ┌───────────┴───────────┐
 
-          │                       │
+          │                       │
 
-          ▼                       ▼
+          ▼                       ▼
 
-     Orb.Engine                Applications
+     Orb.Engine                Applications
 
-          │                       │
+          │                       │
 
-          │              ┌────────┼────────┐
+          │              ┌────────┼────────┐
 
-          │              │        │        │
+          │              │        │        │
 
-          ▼              ▼        ▼        ▼
+          ▼              ▼        ▼        ▼
 
-     Graph/Data        Orbpad   Tools   Future Apps
+     Graph/Data        Orbpad   Tools   Future Apps
 
-     Foundation
+     Foundation
 
 ```
 
@@ -1278,7 +1338,7 @@ Or from a project file:
 
 <ItemGroup>
 
-  <PackageReference Include="Orb.Engine" Version="1.0.0" />
+  <PackageReference Include="Orb.Engine" Version="1.0.0" />
 
 </ItemGroup>
 
@@ -1302,17 +1362,17 @@ var graph = new OrbGraph();
 
 var author = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Subhradeep Sarkar");
+    "Subhradeep Sarkar");
 
 author.Type = "Person";
 
 var project = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Orbis");
+    "Orbis");
 
 project.Type = "Project";
 
@@ -1322,13 +1382,13 @@ graph.AddEntity(project);
 
 var relationship = new OrbRelationship(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    author.Id,
+    author.Id,
 
-    project.Id,
+    project.Id,
 
-    "created");
+    "created");
 
 graph.AddRelationship(relationship);
 
@@ -1340,13 +1400,13 @@ The resulting conceptual graph is:
 
 Subhradeep Sarkar
 
-        │
+        │
 
-        │ created
+        │ created
 
-        ▼
+        ▼
 
-      Orbis
+      Orbis
 
 ```
 
@@ -1364,63 +1424,63 @@ Orb/
 
 ├── Orb.Engine/
 
-│   │
+│   │
 
-│   ├── Graph/
+│   ├── Graph/
 
-│   │   ├── OrbGraph
+│   │   ├── OrbGraph
 
-│   │   ├── OrbEntity
+│   │   ├── OrbEntity
 
-│   │   ├── OrbRelationship
+│   │   ├── OrbRelationship
 
-│   │   └── OrbProperty
+│   │   └── OrbProperty
 
-│   │
+│   │
 
-│   ├── Types/
+│   ├── Types/
 
-│   │   ├── OrbValue
+│   │   ├── OrbValue
 
-│   │   └── OrbValueType
+│   │   └── OrbValueType
 
-│   │
+│   │
 
-│   ├── Serialization/
+│   ├── Serialization/
 
-│   │   ├── EntitySerializer
+│   │   ├── EntitySerializer
 
-│   │   ├── LoreSerializer
+│   │   ├── LoreSerializer
 
-│   │   └── internal serialization infrastructure
+│   │   └── internal serialization infrastructure
 
-│   │
+│   │
 
-│   ├── Storage/
+│   ├── Storage/
 
-│   │   ├── EntityStorage
+│   │   ├── EntityStorage
 
-│   │   └── LoreStorage
+│   │   └── LoreStorage
 
-│   │
+│   │
 
-│   └── Orb.Engine.csproj
+│   └── Orb.Engine.csproj
 
 │
 
 ├── Orb.Engine.Tests/
 
-│   ├── Graph/
+│   ├── Graph/
 
-│   ├── Serialization/
+│   ├── Serialization/
 
-│   └── PublicApiSurfaceTests
+│   └── PublicApiSurfaceTests
 
 │
 
 ├── docs/
 
-│   └── orbis.logo
+│   └── orbis.logo
 
 │
 
@@ -1582,6 +1642,22 @@ For bug reports, include:
 
 ---
 
+# ✦ Community
+
+<div align="center">
+
+<a href="https://discord.com/invite/Em2ur4J8PF">
+
+<img src="https://img.shields.io/badge/Join%20us%20on-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join us on Discord"/>
+
+</a>
+
+</div>
+
+Questions, design discussion, and community support happen on Discord. It's the fastest way to reach the maintainer and other developers building on Orb.Engine outside of formal GitHub issues.
+
+---
+
 # ✦ License
 
 Orb.Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
@@ -1620,23 +1696,29 @@ The ecosystem comes later. The foundation comes first.
 
 <p>
 
-  <a href="mailto:personalsarkar345@gmail.com">
+  <a href="mailto:personalsarkar345@gmail.com">
 
-    <img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
+    <img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
 
-  </a>
+  </a>
 
-  <a href="https://www.linkedin.com/in/subhradeepcs">
+  <a href="https://www.linkedin.com/in/subhradeepcs">
 
-    <img src="https://img.shields.io/badge/LinkedIn-Subhradeep%20Sarkar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+    <img src="https://img.shields.io/badge/LinkedIn-Subhradeep%20Sarkar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
 
-  </a>
+  </a>
 
-  <a href="https://subhradeepsarkarportfolio.pages.dev/">
+  <a href="https://subhradeepsarkarportfolio.pages.dev/">
 
-    <img src="https://img.shields.io/badge/Portfolio-Subhradeep%20Sarkar-7C3AED?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"/>
+    <img src="https://img.shields.io/badge/Portfolio-Subhradeep%20Sarkar-7C3AED?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"/>
 
-  </a>
+  </a>
+
+  <a href="https://discord.com/invite/Em2ur4J8PF">
+
+    <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/>
+
+  </a>
 
 </p>
 
@@ -1649,6 +1731,8 @@ The ecosystem comes later. The foundation comes first.
 **LinkedIn:** https://www.linkedin.com/in/subhradeepcs
 
 **Portfolio:** https://subhradeepsarkarportfolio.pages.dev/
+
+**Discord:** https://discord.com/invite/Em2ur4J8PF
 
 ---
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<p>A project under</p>
+<p>A REFERENCE IMPLEMENTATION OF</p>
 
 <img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
 

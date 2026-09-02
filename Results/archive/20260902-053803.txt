@@ -1,0 +1,23 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 5:38:03 AM -07:00
+Finished:    9/2/2026 5:38:24 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  100000
+Audit:       5000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      6.749s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay               13.561s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+
+SUMMARY
+-------
+Campaigns: 2/2
+Checks:    8/8
+Status:    PASS
+

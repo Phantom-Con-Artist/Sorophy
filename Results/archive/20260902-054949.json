@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T05:49:49.1995814-07:00",
+  "FinishedAt": "2026-09-02T05:49:49.5665436-07:00",
+  "Options": {
+    "Command": "performance",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 1,
+      "PassedChecks": 0,
+      "TotalChecks": 10,
+      "Duration": "00:00:00.3492077",
+      "Message": "Index was outside the bounds of the array.",
+      "ExceptionType": "System.IndexOutOfRangeException",
+      "Success": false
+    }
+  ],
+  "OverallPass": false,
+  "PassedCampaigns": 0,
+  "TotalCampaigns": 1,
+  "PassedChecks": 0,
+  "TotalChecks": 10
+}

@@ -21,7 +21,7 @@
     <PackageTags>orbis;orb;engine;dotnet;dotnet10;csharp;graph;knowledge-graph;structured-data;serialization;storage;worldbuilding</PackageTags>
 
     <!-- License -->
-    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 
     <!-- Documentation -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -29,7 +29,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
 
     <!-- Repository -->
-    <RepositoryUrl>https://github.com/Phantom-Con-Artist/Orb</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Phantom-Con-Artist/Orb.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Phantom-Con-Artist/Orb</PackageProjectUrl>
 

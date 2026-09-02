@@ -1,48 +1,46 @@
 <div align="center">
 
-  <p>
+<p>
 
-    <img src="docs/orbenginelogo.png"
-         alt="The Orb Engine"
-         width="90"/>
+<img src="docs/orbenginelogo.png"
+     alt="The Orb Engine"
+     width="90"/>
 
-    &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
 
-    <img src="docs/orbisprojectlogo.png"
-         alt="Orb Project"
-         width="90"/>
+<img src="docs/orbisprojectlogo.png"
+     alt="Orb Project"
+     width="90"/>
 
-  </p>
+</p>
 
-  <h1>The Orb Engine</h1>
+<h1>The Orb Engine</h1>
 
-  <p>
+<p>
 
-    <strong>
-      A structured data and graph engine for building interconnected information.
-    </strong>
+<strong>
+A structured data and graph engine for building interconnected information.
+</strong>
 
-  </p>
+</p>
 
-  <p>
+<p>
+Entities · Relationships · Typed Values · Graphs · Serialization · Storage
+</p>
 
-    Entities · Relationships · Typed Values · Graphs · Serialization · Storage
+<br/>
 
-  </p>
+<img src="docs/orbisprojectcover.png"
+     alt="Orb Project"
+     width="900"/>
 
-  <br/>
+<br/><br/>
 
-  <img src="docs/orbisprojectcover.png"
-       alt="Orb Project"
-       width="900"/>
+<img src="docs/orbenginecover.png"
+     alt="The Orb Engine"
+     width="900"/>
 
-  <br/><br/>
-
-  <img src="docs/orbenginecover.png"
-       alt="The Orb Engine"
-       width="900"/>
-
-  <br/><br/>
+<br/><br/>
 
 <div align="center">
 
@@ -53,6 +51,18 @@
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet)](https://dotnet.microsoft.com/)
 
 [![License](https://img.shields.io/badge/License-AGPL--3.0-2E7D32?style=for-the-badge)](LICENSE)
+
+</div>
+
+<p>
+
+<strong>🚧 1.0.0-beta.1</strong>
+
+<br/>
+
+The API and file formats may change before stable release.
+
+</p>
 
 </div>
 

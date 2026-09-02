@@ -1005,7 +1005,7 @@ The test suite is treated as part of the engine's V1 contract rather than merely
 
 <div align="center">
 
-## 🚧 `1.0.0-beta.1`
+## 🚧 `1.0.0-beta.2`
 
 </div>
 

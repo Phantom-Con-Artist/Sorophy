@@ -1,0 +1,21 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 8:22:40 AM -07:00
+Finished:    9/2/2026 8:22:46 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  100000
+Audit:       5000
+
+CAMPAIGNS
+---------
+Passed        1/1      Differential Fuzzing                5.147s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    1/1
+Status:    PASS
+

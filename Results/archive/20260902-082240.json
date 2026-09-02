@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T08:22:40.9122087-07:00",
+  "FinishedAt": "2026-09-02T08:22:46.0771894-07:00",
+  "Options": {
+    "Command": "differential-fuzz",
+    "Seed": 12345,
+    "Operations": 100000,
+    "AuditInterval": 5000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Differential Fuzzing",
+      "Command": "differential-fuzz",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:05.1466540",
+      "Message": "Deterministic randomized graph workloads matched an independent reference model across all configured seed families.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 1,
+  "TotalChecks": 1
+}

@@ -1,0 +1,64 @@
+﻿{
+  "StartedAt": "2026-09-02T06:17:35.7781649-07:00",
+  "FinishedAt": "2026-09-02T06:17:55.3114387-07:00",
+  "Options": {
+    "Command": "all",
+    "Seed": 12345,
+    "Operations": 100000,
+    "AuditInterval": 5000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Chaos",
+      "Command": "mutation",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:03.8297438",
+      "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:11.4563913",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.9199119",
+      "Message": "Fastest: Entities / Contains (100,000) at 29,797,378 ops/s. Slowest: Graph / Validate (100,000) at 5 ops/s. Peak working set: 283.5 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Relationship Scaling",
+      "Command": "relationship-scaling",
+      "Status": 0,
+      "PassedChecks": 8,
+      "TotalChecks": 8,
+      "Duration": "00:00:01.8768350",
+      "Message": "Measured 4 graph sizes. Outgoing query throughput changed 1.51x from 1,000 to 100,000 entities. Peak working set: 283.5 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 4,
+  "TotalCampaigns": 4,
+  "PassedChecks": 26,
+  "TotalChecks": 26
+}

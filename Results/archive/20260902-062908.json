@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T06:29:08.2280206-07:00",
+  "FinishedAt": "2026-09-02T06:29:08.9138767-07:00",
+  "Options": {
+    "Command": "memory",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Memory Benchmark",
+      "Command": "memory",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:00.6596898",
+      "Message": "Largest measured managed-memory footprint: Relationships \u002B indexes (10,000) at 11.10 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 10,
+  "TotalChecks": 10
+}

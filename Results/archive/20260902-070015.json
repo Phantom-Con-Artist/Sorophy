@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T07:00:15.8023722-07:00",
+  "FinishedAt": "2026-09-02T07:00:16.4387833-07:00",
+  "Options": {
+    "Command": "memory",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Memory Benchmark",
+      "Command": "memory",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:00.6143787",
+      "Message": "Largest measured managed-memory footprint: Relationship churn (10,000) at 5.37 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 10,
+  "TotalChecks": 10
+}

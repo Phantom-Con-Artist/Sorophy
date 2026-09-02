@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T07:33:50.5623384-07:00",
+  "FinishedAt": "2026-09-02T07:33:51.6073022-07:00",
+  "Options": {
+    "Command": "mutation-performance",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Performance",
+      "Command": "mutation-performance",
+      "Status": 0,
+      "PassedChecks": 7,
+      "TotalChecks": 7,
+      "Duration": "00:00:01.0246206",
+      "Message": "Pure entity and relationship mutation performance benchmarks passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 7,
+  "TotalChecks": 7
+}

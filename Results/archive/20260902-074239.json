@@ -1,8 +1,8 @@
 ﻿{
-  "StartedAt": "2026-09-02T08:32:06.4830033-07:00",
-  "FinishedAt": "2026-09-02T08:32:15.5386942-07:00",
+  "StartedAt": "2026-09-02T07:42:39.7061714-07:00",
+  "FinishedAt": "2026-09-02T07:42:40.4211425-07:00",
   "Options": {
-    "Command": "serialization-torture",
+    "Command": "pool-reuse",
     "Seed": 12345,
     "Operations": 100000,
     "AuditInterval": 1000,
@@ -12,13 +12,13 @@
   },
   "Campaigns": [
     {
-      "Name": "Serialization Torture",
-      "Command": "serialization-torture",
+      "Name": "Pool Reuse",
+      "Command": "pool-reuse",
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:09.0345514",
-      "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
+      "Duration": "00:00:00.6970106",
+      "Message": "Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.",
       "ExceptionType": null,
       "Success": true
     }

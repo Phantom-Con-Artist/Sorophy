@@ -1,8 +1,8 @@
 ﻿{
-  "StartedAt": "2026-09-02T08:32:06.4830033-07:00",
-  "FinishedAt": "2026-09-02T08:32:15.5386942-07:00",
+  "StartedAt": "2026-09-02T08:06:02.3157828-07:00",
+  "FinishedAt": "2026-09-02T08:06:06.8400074-07:00",
   "Options": {
-    "Command": "serialization-torture",
+    "Command": "high-degree",
     "Seed": 12345,
     "Operations": 100000,
     "AuditInterval": 1000,
@@ -12,13 +12,13 @@
   },
   "Campaigns": [
     {
-      "Name": "Serialization Torture",
-      "Command": "serialization-torture",
+      "Name": "High-Degree Topology",
+      "Command": "high-degree",
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:09.0345514",
-      "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
+      "Duration": "00:00:04.5054931",
+      "Message": "High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.",
       "ExceptionType": null,
       "Success": true
     }

@@ -1,16 +1,16 @@
 ﻿ORB ENGINE TEST ARSENAL REPORT
 ================================
 
-Started:     9/2/2026 8:32:06 AM -07:00
-Finished:    9/2/2026 8:32:15 AM -07:00
+Started:     9/2/2026 8:31:21 AM -07:00
+Finished:    9/2/2026 8:31:23 AM -07:00
 Seed:        12345
-Profile:     full
-Operations:  100000
+Profile:     quick
+Operations:  10000
 Audit:       1000
 
 CAMPAIGNS
 ---------
-Passed        1/1      Serialization Torture               9.035s
+Passed        1/1      Serialization Torture               1.669s
           Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
 
 SUMMARY

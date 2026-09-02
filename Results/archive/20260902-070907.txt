@@ -1,0 +1,29 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 7:09:07 AM -07:00
+Finished:    9/2/2026 7:09:26 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  100000
+Audit:       5000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      4.131s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay               10.346s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed       10/10     Performance Benchmark               1.226s
+          Fastest: Entities / Contains (100,000) at 27,770,064 ops/s. Slowest: Graph / Validate (100,000) at 5 ops/s. Peak working set: 158.6 MB.
+Passed        8/8      Relationship Scaling                1.321s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.78x from 1,000 to 100,000 entities. Peak working set: 158.7 MB.
+Passed       10/10     Memory Benchmark                    1.354s
+          Largest measured managed-memory footprint: Relationship churn (100,000) at 60.38 MB.
+
+SUMMARY
+-------
+Campaigns: 5/5
+Checks:    36/36
+Status:    PASS
+

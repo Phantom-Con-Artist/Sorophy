@@ -1,0 +1,21 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 8:06:02 AM -07:00
+Finished:    9/2/2026 8:06:06 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  100000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        1/1      High-Degree Topology                4.505s
+          High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    1/1
+Status:    PASS
+

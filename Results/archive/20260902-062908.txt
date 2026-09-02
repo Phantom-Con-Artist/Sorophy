@@ -1,0 +1,21 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 6:29:08 AM -07:00
+Finished:    9/2/2026 6:29:08 AM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed       10/10     Memory Benchmark                    0.660s
+          Largest measured managed-memory footprint: Relationships + indexes (10,000) at 11.10 MB.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    10/10
+Status:    PASS
+

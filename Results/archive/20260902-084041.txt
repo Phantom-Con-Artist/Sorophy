@@ -1,0 +1,39 @@
+﻿ORB ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 8:40:41 AM -07:00
+Finished:    9/2/2026 9:35:33 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  1000000
+Audit:       10000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                    758.651s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay             2189.040s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed        7/7      Mutation Performance               54.557s
+          Pure entity and relationship mutation performance benchmarks passed.
+Passed        1/1      Pool Reuse                          5.851s
+          Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.
+Passed        1/1      High-Degree Topology               32.399s
+          High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
+Passed       10/10     Performance Benchmark               1.464s
+          Fastest: Entities / Contains (10,000) at 21,204,411 ops/s. Slowest: Graph / Validate (100,000) at 4 ops/s. Peak working set: 3343.7 MB.
+Passed        8/8      Relationship Scaling                1.292s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.57x from 1,000 to 100,000 entities. Peak working set: 3343.7 MB.
+Passed       10/10     Memory Benchmark                    1.469s
+          Largest measured managed-memory footprint: Relationship churn (100,000) at 50.64 MB.
+Passed        1/1      Differential Fuzzing              162.462s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+Passed        1/1      Serialization Torture              84.686s
+          Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
+
+SUMMARY
+-------
+Campaigns: 10/10
+Checks:    47/47
+Status:    PASS
+

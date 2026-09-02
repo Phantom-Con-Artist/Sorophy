@@ -1,12 +1,12 @@
 ﻿{
-  "StartedAt": "2026-09-02T11:24:15.5179515-07:00",
-  "FinishedAt": "2026-09-02T11:24:33.6989859-07:00",
+  "StartedAt": "2026-09-02T11:22:54.7224749-07:00",
+  "FinishedAt": "2026-09-02T11:22:55.7212642-07:00",
   "Options": {
     "Command": "soak",
     "Seed": 12345,
-    "Operations": 1000000,
-    "AuditInterval": 10000,
-    "Profile": "full",
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
     "OutputDirectory": "Results",
     "ShowHelp": false
   },
@@ -17,7 +17,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:18.1613559",
+      "Duration": "00:00:00.9778582",
       "Message": "Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.",
       "ExceptionType": null,
       "Success": true

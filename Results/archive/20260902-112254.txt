@@ -1,16 +1,16 @@
 ﻿ORB ENGINE TEST ARSENAL REPORT
 ================================
 
-Started:     9/2/2026 11:24:15 AM -07:00
-Finished:    9/2/2026 11:24:33 AM -07:00
+Started:     9/2/2026 11:22:54 AM -07:00
+Finished:    9/2/2026 11:22:55 AM -07:00
 Seed:        12345
-Profile:     full
-Operations:  1000000
-Audit:       10000
+Profile:     quick
+Operations:  10000
+Audit:       1000
 
 CAMPAIGNS
 ---------
-Passed        1/1      Soak / Endurance                   18.161s
+Passed        1/1      Soak / Endurance                    0.978s
           Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.
 
 SUMMARY

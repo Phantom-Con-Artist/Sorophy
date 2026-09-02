@@ -1,27 +1,15 @@
 <div align="center">
 
 <p>
-
-<img src="docs/orbenginelogo.png"
-     alt="The Orb Engine"
-     width="90"/>
-
+<img src="docs/orbenginelogo.png" alt="The Orb Engine" width="90"/>
 &nbsp;&nbsp;&nbsp;
-
-<img src="docs/orbisprojectlogo.png"
-     alt="Orb Project"
-     width="90"/>
-
+<img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
 </p>
 
 <h1>The Orb Engine</h1>
 
 <p>
-
-<strong>
-A structured data and graph engine for building interconnected information.
-</strong>
-
+<strong>A structured data and graph engine for building interconnected information.</strong>
 </p>
 
 <p>
@@ -30,38 +18,36 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 
 <br/>
 
-<img src="docs/orbisprojectcover.png"
-     alt="Orb Project"
-     width="900"/>
+<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
 
 <br/><br/>
 
-<img src="docs/orbenginecover.png"
-     alt="The Orb Engine"
-     width="900"/>
+<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
 
 <br/><br/>
-
-<div align="center">
-
-[![GitHub](https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github)](https://github.com/Phantom-Con-Artist/Orb)
-
-[![Version](https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge)](https://github.com/Phantom-Con-Artist/Orb/releases)
-
-[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet)](https://dotnet.microsoft.com/)
-
-[![License](https://img.shields.io/badge/License-AGPL--3.0-2E7D32?style=for-the-badge)](LICENSE)
-
-</div>
 
 <p>
+<a href="https://github.com/Phantom-Con-Artist/Orb">
+<img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
+</a>
+&nbsp;
+<a href="https://github.com/Phantom-Con-Artist/Orb/releases">
+<img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge" alt="Version"/>
+</a>
+&nbsp;
+<a href="https://dotnet.microsoft.com/">
+<img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
+</a>
+&nbsp;
+<a href="LICENSE">
+<img src="https://img.shields.io/badge/License-AGPL--3.0-2E7D32?style=for-the-badge" alt="License"/>
+</a>
+</p>
 
+<p>
 <strong>🚧 1.0.0-beta.1</strong>
-
 <br/>
-
 The API and file formats may change before stable release.
-
 </p>
 
 </div>

@@ -8,7 +8,16 @@
 
     <!-- Package Identity -->
     <PackageId>Orb.Engine</PackageId>
-    <Version>1.0.0-beta.2</Version>
+    <Version>1.0.0</Version>
+
+    <!-- Stable Release Grade -->
+    <PackageReleaseNotes>
+      1.0.0 Stable — Grade A (Silver Standard).
+      Verified against the documented Orb Engine release scope,
+      including graph correctness, mutation integrity, serialization,
+      persistence, recovery, memory behavior, scaling, fuzzing,
+      pooling, and endurance testing.
+    </PackageReleaseNotes>
 
     <!-- Package Metadata -->
     <Title>Orb Engine</Title>
@@ -18,20 +27,22 @@
       relationships, typed values, graph operations, serialization, and storage
       for interconnected structured information.
     </Description>
-    <PackageTags>orbis;orb;engine;dotnet;dotnet10;csharp;graph;knowledge-graph;structured-data;serialization;storage;worldbuilding</PackageTags>
+
+    <PackageTags>
+      orbis;orb;engine;dotnet;dotnet10;csharp;graph;knowledge-graph;structured-data;serialization;storage;worldbuilding
+    </PackageTags>
 
     <!-- License -->
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-
-    <!-- Documentation -->
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
 
     <!-- Repository -->
     <RepositoryUrl>https://github.com/Phantom-Con-Artist/Orb.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Phantom-Con-Artist/Orb</PackageProjectUrl>
+
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  
 
     <!-- NuGet -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -44,10 +55,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md"
-          Pack="true"
-          PackagePath="\" />
-
+    <!-- Legal license text is included in the package. -->
     <None Include="LICENSE"
           Pack="true"
           PackagePath="\" />

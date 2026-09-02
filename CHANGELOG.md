@@ -2,176 +2,150 @@
 
 All notable changes to **Orbis Engine** are documented in this file.
 
-The project follows a versioned release model, with pre-release versions used to identify changes while the API and underlying formats continue to mature.
+Orbis Engine uses semantic-style versioning. Pre-release identifiers such as `-beta.N` and `-rc.N` identify development milestones and do not receive stable release grades. Stable releases may receive either **Grade A — Silver Standard** or **Grade S — Gold Standard** according to the verification requirements defined for that release.
 
 ---
 
-# [1.0.0-beta.1]
+# [1.0.0]
 
-**Release status:** Beta  
-**Release date:** September 1, 2026  
+**Release status:** Stable  
+**Release grade:** **Grade A — Silver Standard**  
+**Release date:** September 2, 2026  
 **Target framework:** .NET 10  
-**License:** GNU General Public License v3.0
+**Package ID:** `Orb.Engine`  
+**License:** GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)
 
-> **This is the first public beta release of Orbis Engine.**
+> **Grade A means that Orb Engine is stable enough for the particular purposes represented by its documented capabilities and the workload classes verified for this release. It is not a claim of universal stability for every possible workload, platform, integration, or use case.**
 
-Orbis Engine `1.0.0-beta.1` establishes the initial V1 engine foundation for the broader Orbis Project.
+## ✦ Release Summary
 
-This release focuses primarily on establishing a reliable core model, deterministic graph behavior, structured serialization, data fidelity, and a controlled public API.
+Orbis Engine `1.0.0` is the first stable release of the engine foundation.
 
----
+The release establishes a verified core for structured information and graph workloads, including graph mutation, relationships, traversal, typed values, serialization, storage, validation, deterministic execution, allocation reuse, scaling, corruption handling, recovery, and long-duration endurance.
 
-## ✦ Added
-
-### Core Graph Model
-
-- Introduced `OrbGraph` as the central graph container.
-- Added entity management through `OrbEntity`.
-- Added relationship management through `OrbRelationship`.
-- Added structured properties through `OrbProperty`.
-- Added unique `Guid`-based identity for graph objects.
-- Added graph validation and invariant enforcement.
-- Added read-only views over graph entity and relationship collections.
-
-### Typed Value System
-
-- Introduced `OrbValue`.
-- Introduced `OrbValueType`.
-- Added explicit support for:
-  - `Null`
-  - `Boolean`
-  - `Integer`
-  - `Decimal`
-  - `Double`
-  - `String`
-  - `Guid`
-  - `DateTime`
-  - `List`
-  - `Object`
-- Added validation of canonical Orb value representations.
-- Established the canonical `long` representation for integer values.
-- Established the canonical `decimal` representation for decimal values.
+The release is designated **Grade A — Silver Standard** because the documented engine capabilities were exercised through both the complete unit-test suite and a dedicated stress-test arsenal, with no release-gate failure in the verified scope.
 
 ---
 
-## ✦ Graph Relationships
+## ✦ Core Graph Model
 
-- Added relationship insertion and removal.
-- Added validation ensuring relationship endpoints reference existing entities.
-- Added protection against invalid relationship insertion.
-- Added relationship lookup operations.
-- Added outgoing and incoming relationship queries.
-- Added neighbor discovery.
-- Added reachability checks.
-- Added graph traversal operations.
+- `OrbGraph` serves as the authoritative graph container.
+- `OrbEntity`, `OrbRelationship`, and `OrbProperty` provide the core structured graph model.
+- Graph objects use stable `Guid` identities.
+- Entity and relationship collections expose controlled read access.
+- Relationship insertion and removal maintain graph integrity.
+- Removing an entity removes its incident relationships.
+- Relationship endpoint validation prevents references to nonexistent entities.
+- Graph validation checks the consistency of the graph's canonical and derived state.
+- Internal adjacency indexing accelerates relationship-oriented operations while canonical entity and relationship stores remain authoritative.
 
-### Entity Removal
+The principal graph invariant is:
 
-Removing an entity now maintains graph integrity by removing relationships connected to the deleted entity.
+> **A failed graph mutation must not silently corrupt graph state.**
 
-For example:
+---
+
+## ✦ Typed Value System
+
+`OrbValue` and `OrbValueType` provide the engine's structured value system.
+
+The supported `OrbValueType` categories are:
 
 ```text
-A ─────→ B
-│
-└──────→ C
+Null
+Boolean
+Integer
+Decimal
+String
+Guid
+DateTime
+List
+Object
 ```
 
-Removing `A` results in:
+The release establishes:
 
-```text
-B
-
-C
-```
-
-with the associated relationships removed.
+- `Int64` / `long` as the canonical integer representation.
+- `Decimal` as the engine's decimal value category.
+- CLR floating-point inputs such as `float` and `double` are handled through the engine's decimal-oriented representation rather than through a separate `OrbValueType.Double` member.
+- Recursive `List` and `Object` values.
+- Validation of canonical value representations.
+- Nested primitive and structured-value fidelity through serialization round trips.
 
 ---
 
-## ✦ Graph Mutation Safety
+## ✦ Graph Relationships and Traversal
 
-The engine was hardened against failed graph mutations.
+Added and hardened:
 
-Failed relationship insertion does not leave behind partially mutated graph state.
+- Relationship lookup.
+- Outgoing relationship queries.
+- Incoming relationship queries.
+- All-relationship queries.
+- Neighbor discovery.
+- Reachability checks.
+- Graph traversal.
+- Self-relationship handling.
+- Parallel-relationship handling.
+- Relationship endpoint validation.
+- Entity-removal relationship cleanup.
 
-This establishes an important V1 invariant:
-
-> **A failed graph mutation must not silently corrupt the graph.**
-
-Adversarial tests were added to verify this behavior.
-
----
-
-## ✦ Entity Serialization
-
-Introduced `EntitySerializer` for serializing and deserializing individual entities.
-
-The serializer supports:
-
-```text
-OrbEntity
-    ↓
-EntitySerializer
-    ↓
-.entity representation
-```
-
-and:
-
-```text
-.entity representation
-    ↓
-EntitySerializer
-    ↓
-OrbEntity
-```
-
-Serialization includes:
-
-- Entity identity
-- Entity name
-- Entity type
-- Properties
-- Typed values
-- Nested structured values
-- Format versioning
+The implementation was exercised against sparse graphs, long chains, high-degree hubs, parallel relationships, self-links, and repeated add/remove churn.
 
 ---
 
-## ✦ Lore Serialization
+## ✦ Adjacency Storage and Reuse
 
-Introduced `LoreSerializer` for serializing and deserializing complete graphs.
+The adjacency implementation was hardened for repeated relationship creation and deletion.
 
-The `.lore` representation contains:
-
-```text
-Lore
-├── Entities
-└── Relationships
-```
-
-The serializer preserves:
-
-- Entity identity
-- Entity data
-- Properties
-- Relationships
-- Relationship identity
-- Relationship metadata
-- Typed values
-- Nested structured values
-- Format versioning
+The release includes dedicated pool-reuse verification at 1,000, 10,000, and 100,000 relationship scales. The measured re-add phase at the tested high scale allocated zero additional bytes after the initial adjacency-storage wave was removed, while final graph validation remained successful.
 
 ---
 
-## ✦ Document Boundaries
+## ✦ Serialization and Persistence
 
-Established explicit serialization document models for `.entity` and `.lore`.
+`EntitySerializer` and `LoreSerializer` provide entity and complete-graph serialization for `.entity` and `.lore` documents.
 
-Serialization document types are treated as implementation details rather than part of the intended public engine API.
+The stable release preserves and verifies:
 
-The public API therefore focuses on Orbis concepts such as:
+- Entity identity.
+- Entity data.
+- Relationship identity.
+- Relationship metadata.
+- Properties.
+- Typed values.
+- Nested lists and objects.
+- Format-version information.
+- Deterministic serialized output.
+- Canonical round-trip reconstruction.
+- Filesystem persistence.
+- Rejection of malformed and unsupported documents.
+- Rejection of invalid GUIDs, invalid endpoints, and invalid property representations.
+
+Large-scale serialization verification reached **1,000,000 entities and 1,000,049 relationships** with a lore document of approximately **374.97 MB**.
+
+---
+
+## ✦ Storage and Recovery
+
+`EntityStorage` and `LoreStorage` provide persistence operations for entity and graph documents while remaining separated from the graph and serializer layers.
+
+The stable release verifies rejection of:
+
+- Missing files.
+- Empty documents.
+- Truncated documents.
+- Interrupted writes.
+- Structurally corrupted documents.
+- Invalid relationship endpoints.
+
+Known-good persisted state was also verified for recovery after tested corruption scenarios.
+
+---
+
+## ✦ Public API Surface
+
+The intended public API is centered on:
 
 ```text
 OrbGraph
@@ -180,305 +154,240 @@ OrbRelationship
 OrbProperty
 OrbValue
 OrbValueType
-```
-
-rather than exposing serialization plumbing to consumers.
-
----
-
-## ✦ Nested Value Serialization
-
-Added recursive handling of nested `List` and `Object` values.
-
-Nested values can contain other structured values, including:
-
-```text
-Object
- ├── String
- ├── Integer
- ├── Guid
- ├── DateTime
- └── List
-      ├── Integer
-      ├── Object
-      └── Boolean
-```
-
-The recursive codec ensures nested values are interpreted according to their encoded type information.
-
----
-
-## ✦ Nested Type Fidelity
-
-Added preservation of nested CLR types during serialization round trips.
-
-Specifically hardened:
-
-- `Guid`
-- `DateTime`
-- Integer primitive types
-- Floating-point values
-- Decimal values
-- Nested lists
-- Nested objects
-
-This prevents nested values from silently degrading into incompatible CLR representations after deserialization.
-
-For example:
-
-```text
-DateTime
-   ↓
-Serialize
-   ↓
-JSON
-   ↓
-Deserialize
-   ↓
-DateTime
-```
-
-rather than:
-
-```text
-DateTime
-   ↓
-Serialize
-   ↓
-JSON
-   ↓
-Deserialize
-   ↓
-String
-```
-
----
-
-## ✦ Nested Primitive CLR Type Fidelity
-
-The beta establishes preservation of nested primitive CLR subtypes where they are represented by the Orb value system.
-
-This addresses cases such as:
-
-```text
-int
-short
-long
-uint
-float
-double
-decimal
-```
-
-being placed inside nested lists or objects.
-
-The goal is to prevent a round trip from unexpectedly transforming the original primitive representation into an unrelated CLR type.
-
----
-
-## ✦ Serialization Failure Handling
-
-Serialization failures caused by unsupported or invalid nested values are normalized through the serializer's public exception contract.
-
-Invalid nested values such as:
-
-```text
-double.NaN
-double.PositiveInfinity
-double.NegativeInfinity
-```
-
-are rejected.
-
-Unsupported nested CLR objects are also rejected.
-
-The public serializer surface exposes `InvalidOperationException` for these serialization failures rather than leaking framework-specific exceptions from the underlying JSON implementation.
-
----
-
-## ✦ Storage
-
-Added storage functionality for entity and lore documents.
-
-The storage layer provides operations for:
-
-```text
+EntitySerializer
+LoreSerializer
 EntityStorage
-├── Save
-└── Load
-
 LoreStorage
-├── Save
-└── Load
 ```
 
-Storage remains separated from the graph and serialization layers.
+Internal serialization codecs, conversion infrastructure, document models, and other implementation details are not intended to form part of the public consumer API.
 
 ---
 
-## ✦ Public API Surface
+# ✦ Verification and Release Qualification
 
-Introduced explicit public API surface testing.
+`1.0.0` was subjected to a complete deterministic unit-test suite and a dedicated stress-test arsenal.
 
-The V1 public API is intentionally limited to the engine concepts required by consumers.
-
-Implementation details such as:
+## Unit Test Verification
 
 ```text
-OrbValueCodec
-serialization document models
-internal conversion infrastructure
-```
-
-are not intended to form part of the public API.
-
-An API surface regression test suite was added to prevent accidental exposure of implementation types.
-
----
-
-## ✦ Release Metadata
-
-The project has been prepared as a .NET package with:
-
-- Package ID: `Orb.Engine`
-- Version: `1.0.0-beta.1`
-- Target framework: `.NET 10`
-- Package author: `Subhradeep Sarkar`
-- License: `GPL-3.0-only`
-- Repository metadata
-- Package README metadata
-- XML documentation generation
-- Symbol package generation
-
----
-
-# ✦ V1 Audit
-
-Before the beta release, the engine underwent a dedicated V1 audit covering its fundamental behavioral contracts.
-
-```text
-V1 AUDIT
-
-1. Integer Contract              🟢
-2. List/Object Contract          🟢
-3. Property Identity              🟢
-4. Entity Serialization           🟢
-5. Lore Serialization             🟢
-6. Document Boundary              🟢
-7. Graph Mutation Invariants      🟢
-8. Traversal Semantics            🟢
-9. Round-trip Fidelity            🟢
-10. Public API Surface            🟢
-11. Package/Release Readiness     🟡
-```
-
-The engine's functional and API audit was backed by an expanding automated test suite.
-
-### Beta Test Status
-
-```text
-251 tests
+251 total
 251 passed
 0 failed
 0 skipped
 ```
 
-The test suite includes normal, edge-case, adversarial, serialization, traversal, fidelity, and API-surface tests.
+The 251 unit tests act as the stable-core regression contract and cover:
+
+- Graph mutation invariants.
+- Entity insertion and removal.
+- Relationship insertion and removal.
+- Referential integrity.
+- Entity-removal relationship cleanup.
+- Duplicate and invalid operations.
+- Self-relationships and parallel relationships.
+- Traversal and reachability.
+- Typed-value contracts.
+- Nested lists and objects.
+- Integer and decimal representation contracts.
+- Floating-point CLR inputs.
+- `Guid` and `DateTime` fidelity.
+- Entity serialization.
+- Lore serialization.
+- Serialization round-trip fidelity.
+- Malformed and invalid documents.
+- Storage behavior.
+- Serializer failure behavior.
+- Public API surface constraints.
+- Adversarial graph behavior.
 
 ---
 
-# ✦ Beta Stability
+## Stress-Test Arsenal
 
-`1.0.0-beta.1` should be considered an **early public beta**.
+The complete release stress program consisted of **12 campaigns** and **49 release-gate verification checks**.
 
-The underlying architecture has been deliberately tested, but the project has not yet reached a stable API commitment.
+All campaigns were executed using the `full` profile with a configured workload of **1,000,000 operations** and an audit interval of **10,000**. Individual campaigns interpret that configured workload according to their test design; some execute one-million-operation workloads directly, while others distribute the workload across multiple graph sizes, independent seed families, or specialized benchmark stages.
 
-During the beta period:
+| Campaign | Purpose | Release verification |
+|---|---|---|
+| **Mutation Chaos** | Exercise randomized graph mutation under sustained turbulence and detect invariant violations, failed-mutation corruption, relationship inconsistencies, and query failures. | **PASS.** 1,000,000-operation configuration; workload reached approximately 100,000 entities and tens of thousands of relationships while maintaining graph integrity. |
+| **Deterministic Replay** | Verify deterministic journal generation, replay equivalence, independent graph agreement, and reference-model consistency. | **PASS.** Two independent 1,000,000-operation journals with repeated audits. |
+| **Mutation Performance** | Measure isolated mutation latency and allocation behavior without contaminating timed regions with setup, reference-model execution, or full validation. | **PASS.** 1,000,000-operation configuration; entity and relationship mutation, edge cleanup, churn, allocation, and mixed mutation workloads all completed successfully. |
+| **Pool Reuse** | Verify that released adjacency storage is reused after deletion instead of causing continuous allocation growth. | **PASS.** Tested at 1,000, 10,000, and 100,000 relationship scales; the measured re-add wave showed zero additional allocation at the tested high scale. |
+| **High-Degree Topology** | Exercise pathological high-degree adjacency behavior, including self-links, parallel relationships, queries, traversal, large-scale removal, and final validation. | **PASS.** 100,000-edge hub with approximately 50,000 outgoing, 50,000 incoming, and 99,900 distinct neighbors. |
+| **Performance Benchmark** | Establish empirical performance baselines across representative graph operations and graph sizes. | **PASS.** Full 1,000,000-operation configuration. Fastest recorded operation: approximately 21.2M ops/s for entity containment at 10,000 entities. Peak working set reached approximately 3.34 GB during the full benchmark workload. |
+| **Relationship Scaling** | Measure relationship-query behavior across sparse graph sizes and expose unintended dependence on total graph size. | **PASS.** Tested 1,000, 10,000, 50,000, and 100,000 entities. |
+| **Memory Benchmark** | Measure managed-memory and working-set behavior across entity, relationship/index, sparse-property, and churn workloads. | **PASS.** Tested through 100,000 entities; entity footprint stabilized near 271 B/entity and relationship/index footprint decreased toward approximately 418 B/relationship. |
+| **Differential Fuzzing** | Compare Orb Engine against an independent reference model under deterministic randomized mutations and topology queries. | **PASS.** Five independent 1,000,000-operation seed families, totaling **5,000,000 differential-fuzz operations**. |
+| **Serialization Torture** | Stress serialization, deserialization, deterministic output, filesystem persistence, large graphs, and malformed-input handling. | **PASS.** Reached **1,000,000 entities / 1,000,049 relationships** and approximately **374.97 MB** serialized graph size. |
+| **Crash / Recovery Torture** | Verify rejection of damaged persistence artifacts and restoration of known-good state under sustained corruption/recovery workloads. | **PASS.** **1,000,000 recovery operations**, including **549,088 injected fault conditions** and **49,923 disk-backed recovery cycles**. |
+| **Soak / Endurance** | Detect cumulative state drift, memory retention, allocator degradation, persistence instability, validation failures, and throughput collapse. | **PASS.** **1,000,000 cycles** consisting of **700,476 mutation cycles** and **299,524 query-heavy cycles**, with **1,400,952 relationship additions**, **1,400,952 relationship removals**, **700,476 entity additions**, **700,476 entity removals**, **10,000 in-memory persistence round trips**, **1,000 disk persistence round trips**, and **100 full audits**. Canonical state and final validation remained correct; retained managed-memory delta was **+255.77 KB** and final throughput was approximately **56,923 cycles/s**. |
 
-- Public APIs may change.
-- Method signatures may change.
-- Serialization formats may change.
-- Validation rules may become stricter.
-- Internal architecture may change.
-- Additional graph capabilities may be introduced.
-- Breaking changes may occur between beta releases.
+### Stress Verification Count by Campaign
 
-Applications integrating Orb.Engine should therefore pin their package version.
+```text
+Mutation Chaos                  4 checks
+Deterministic Replay            4 checks
+Mutation Performance             7 checks
+Pool Reuse                       1 check
+High-Degree Topology             1 check
+Performance Benchmark           10 checks
+Relationship Scaling             8 checks
+Memory Benchmark                10 checks
+Differential Fuzzing             1 check
+Serialization Torture            1 check
+Crash / Recovery Torture         1 check
+Soak / Endurance                 1 check
+────────────────────────────────────
+TOTAL                            49 checks
+```
 
----
-
-# ✦ Known Limitations
-
-The following areas remain intentionally open for future development:
-
-- Long-term API stabilization.
-- Expanded developer documentation.
-- Additional storage backends and capabilities.
-- Performance benchmarking and optimization.
-- Expanded graph algorithms.
-- Broader ecosystem tooling.
-- Application-level integrations.
-- Orbpad integration.
-- Future Orbis document and ecosystem concepts.
-
-These limitations do not necessarily indicate defects in `1.0.0-beta.1`; they represent areas outside the current beta foundation.
-
----
-
-# ✦ What's Next
-
-Future releases are expected to focus on:
-
-1. Continued API stabilization.
-2. Expanded documentation.
-3. Performance profiling.
-4. Additional graph capabilities.
-5. Improved tooling.
-6. Ecosystem integration.
-7. Feedback from real-world consumers.
-8. Preparation for a stable V1 release.
-
-The exact roadmap may evolve as the engine is used by applications and developers.
+The 49 checks are **Test Arsenal verification checks**, not 49 additional unit tests. They complement the separate **251-test unit suite**.
 
 ---
 
-# ✦ Versioning
+## Aggregate Release-Gate Result
 
-Orbis Engine follows semantic-style versioning with pre-release identifiers.
+The complete stable-release verification program concluded with:
 
-Examples:
+```text
+Unit tests:                 251 / 251 passed
+Stress campaigns:            12 / 12 passed
+Stress checks:              49 / 49 passed
+Failures:                    0
+Skipped release gates:       0
+Profile:                     full
+Seed:                        12345
+Configured operations:       1,000,000
+Audit interval:              10,000
+```
+
+**Overall release verification status: PASS**
+
+The strongest evidence is the cross-test agreement: the same core graph structures survived randomized mutation, deterministic replay, independent reference-model comparison, high-degree topology, allocator churn, large-scale serialization, corruption and recovery, memory-pressure testing, and one-million-cycle endurance testing.
+
+---
+
+## ✦ Release Grade
+
+### Grade A — Silver Standard
+
+**Definition:** A stable release that has passed every mandatory release-gate test for its declared engine capabilities and tested workload classes, with no unresolved correctness failure observed in those release-gate paths.
+
+Grade A releases are recommended for the specific purposes, capabilities, and workload classes covered by their documented verification scope.
+
+### Grade S — Gold Standard
+
+**Definition:** A stable release that satisfies every Grade A requirement and has additionally passed verification for every documented supported capability, every declared supported workload class, every officially supported runtime environment, and the compatibility guarantees defined by the release contract.
+
+Grade S is the project's highest stable release designation and represents the Gold Standard for general-purpose use within the complete documented and officially supported scope.
+
+---
+
+## ✦ 1.0.0 Grade A Assessment
+
+**Recommendation: `1.0.0` qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
+
+The assessment is based on the combination of the **251/251 unit-test suite**, **12/12 stress campaigns**, and **49/49 stress verification checks**.
+
+The release verification demonstrates stable behavior across the tested responsibilities of:
+
+- Graph mutation and relationship integrity.
+- Traversal and reachability.
+- Deterministic execution.
+- Differential correctness against an independent reference model.
+- High-degree graph topology.
+- Allocation reuse and mutation churn.
+- Memory behavior at tested scale.
+- Serialization and deserialization.
+- Filesystem persistence.
+- Corruption rejection and known-good recovery.
+- Large graph serialization.
+- Long-duration mutation, query, persistence, and validation endurance.
+
+The designation remains bounded by the tested scope. It does not establish unrestricted thread safety, universal filesystem atomicity, compatibility with every operating system/runtime, hardware-independent performance guarantees, or behavior for workloads outside the documented release verification program.
+
+---
+
+## ✦ Historical Beta Release
+
+# [1.0.0-beta.1]
+
+**Release status:** Beta  
+**Release date:** September 1, 2026  
+**Target framework:** .NET 10  
+**License:** GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)
+
+> **Historical milestone:** This was the first public beta release of Orbis Engine.
+
+`1.0.0-beta.1` established the initial engine foundation, including the core graph model, typed values, relationship behavior, serialization boundaries, nested-value fidelity, storage, validation, and the initial public API surface.
+
+The beta-era release was explicitly pre-release. Its API, serialization behavior, validation rules, and internal architecture were subject to change. The `1.0.0` stable release supersedes the beta readiness status.
+
+---
+
+## ✦ Versioning
+
+Stable releases use semantic-style `MAJOR.MINOR.PATCH` versions:
+
+```text
+1.0.0
+1.0.1
+1.1.0
+2.0.0
+```
+
+Pre-release versions use explicit identifiers:
 
 ```text
 1.0.0-beta.1
-1.0.0-beta.2
 1.0.0-rc.1
-1.0.0
 ```
 
-Pre-release versions may contain breaking changes even when their major/minor components remain unchanged.
+Pre-release versions do not receive stable release grades `A` or `S`.
+
+A release grade belongs to the specific stable release being evaluated. Later stable releases must be evaluated independently because their verified scope may differ.
 
 ---
 
-# ✦ Copyright
+## ✦ License
+
+Orbis Engine is released under the **GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)**.
+
+See [`LICENSE`](LICENSE) for the complete license text. The repository's `LICENSE` file is the authoritative legal text.
+
+---
+
+## ✦ What's Next
+
+Future releases may extend the engine through:
+
+- Additional graph algorithms.
+- Expanded storage capabilities.
+- Additional serialization tooling.
+- Further performance optimization.
+- Broader interoperability.
+- Stable-contract-compatible API improvements where applicable.
+- Additional Orbis ecosystem integrations.
+- Expanded verification and broader runtime/environment coverage.
+
+Each subsequent stable release is evaluated independently against its own implementation, compatibility commitments, and verification scope.
+
+---
+
+## ✦ Copyright
 
 Copyright © 2026 **Subhradeep Sarkar**
 
-Orbis Engine is distributed under the terms of the GNU General Public License v3.0.
-
-See `LICENSE` for the complete license text.
+Orbis Engine is distributed under the terms of the **GNU Affero General Public License v3.0 or later**.
 
 ---
 
 <div align="center">
-
 <strong>Orbis Engine</strong>
-
 <br/>
-
 Structured information. Connected by design.
-
 <br/><br/>
-
 © 2026 <strong>Subhradeep Sarkar</strong>
-
 </div>

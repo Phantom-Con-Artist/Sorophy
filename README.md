@@ -1,19 +1,27 @@
-<div align="center">
+<div *align*="center">
 
 <p>
+
 <img src="docs/orbenginelogo.png" alt="The Orb Engine" width="90"/>
+
 &nbsp;&nbsp;&nbsp;
+
 <img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
+
 </p>
 
 <h1>The Orb Engine</h1>
 
 <p>
+
 <strong>A structured data and graph engine for building interconnected information.</strong>
+
 </p>
 
 <p>
+
 Entities · Relationships · Typed Values · Graphs · Serialization · Storage
+
 </p>
 
 <br/>
@@ -27,39 +35,58 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 <br/><br/>
 
 <p>
+
 <a href="https://github.com/Phantom-Con-Artist/Orb">
+
 <img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
+
 </a>
+
 &nbsp;
+
 <a href="https://github.com/Phantom-Con-Artist/Orb/releases">
-<img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge" alt="Version"/>
+
+<img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version"/>
+
 </a>
+
 &nbsp;
+
 <a href="https://dotnet.microsoft.com/">
+
 <img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
+
 </a>
+
 &nbsp;
+
 <a href="LICENSE">
-<img src="https://img.shields.io/badge/License-AGPL--3.0-2E7D32?style=for-the-badge" alt="License"/>
+
+<img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/>
+
 </a>
+
 </p>
 
 <p>
-<strong>🚧 1.0.0-beta.2</strong><br/>
-The API and file formats may change before stable release.
+
+<strong>✅ 1.0.0 · Stable · Grade A — Silver Standard</strong><br/>
+
+Stable enough for the documented capabilities and workload classes covered by the release verification program.
+
 </p>
 
 </div>
 
 ---
 
-<div align="center">
+<div *align*="center">
 
 ### Build information into structure.
 
 </div>
 
-Orbis Engine is the foundational engine behind **Orbis**, designed to represent structured information as interconnected entities, properties, and relationships.
+Orb.Engine is the foundational engine behind **Orbis**, designed to represent structured information as interconnected entities, properties, and relationships.
 
 Rather than treating information as a collection of disconnected documents, Orbis provides a graph-oriented model where objects can exist independently, connect to one another, carry strongly defined values, and be persisted without losing their structure.
 
@@ -96,8 +123,11 @@ The engine is designed to sit underneath higher-level applications such as edito
 - [Public API](#public-api)
 
 - [Validation & Reliability](#validation--reliability)
+- [Test Arsenal & 1.0.0 Verification](#test-arsenal--100-verification)
 
-- [Beta Status](#beta-status)
+- [Stable Release Grade](#stable-release-grade)
+
+- [Release Stability Grades](#release-stability-grades)
 
 - [What Orb.Engine Is Not](#what-orbengine-is-not)
 
@@ -163,39 +193,39 @@ Entities can carry structured properties and connect to one another through rela
 
 ┌───────────────┐
 
-│    Person     │
+│    Person     │
 
-│  Subhradeep   │
-
-└───────┬───────┘
-
-        │
-
-     created
-
-        │
-
-        ▼
-
-┌───────────────┐
-
-│    Project    │
-
-│    Orbis      │
+│  Subhradeep   │
 
 └───────┬───────┘
 
-        │
+        │
 
-     contains
+     created
 
-        │
+        │
 
-        ▼
+        ▼
 
 ┌───────────────┐
 
-│  Orb.Engine   │
+│    Project    │
+
+│    Orbis      │
+
+└───────┬───────┘
+
+        │
+
+     contains
+
+        │
+
+        ▼
+
+┌───────────────┐
+
+│  Orb.Engine   │
 
 └───────────────┘
 
@@ -209,37 +239,37 @@ Traditional documents are excellent for human-readable content, but they often p
 
 ```text
 
-                     ORBIS
+                     ORBIS
 
-                       │
+                       │
 
-               ┌────────┴────────┐
+               ┌────────┴────────┐
 
-               │                 │
+               │                 │
 
-         Structured Data      Applications
+         Structured Data      Applications
 
-               │                 │
+               │                 │
 
-               │        ┌────────┼────────┐
+               │        ┌────────┼────────┐
 
-               │        │        │        │
+               │        │        │        │
 
-               ▼        ▼        ▼        ▼
+               ▼        ▼        ▼        ▼
 
-           Entities   Orbpad   Editors   Other Tools
+           Entities   Orbpad   Editors   Other Tools
 
-               │
+               │
 
-               ▼
+               ▼
 
-         Relationships
+         Relationships
 
-               │
+               │
 
-               ▼
+               ▼
 
-              Graph
+              Graph
 
 ```
 
@@ -269,29 +299,29 @@ The ecosystem is built around structured document concepts. The engine currently
 
 ```text
 
-.entity                          .lore
+.entity                          .lore
 
-   │                                │
+   │                                │
 
-   ├── Identity                     ├── Entities
+   ├── Identity                     ├── Entities
 
-   ├── Type                         │    ├── Entity A
+   ├── Type                         │    ├── Entity A
 
-   └── Properties                   │    ├── Entity B
+   └── Properties                   │    ├── Entity B
 
-                                    │    └── Entity C
+                                    │    └── Entity C
 
-   a single, independently           │
+   a single, independently           │
 
-   identifiable object              └── Relationships
+   identifiable object              └── Relationships
 
-                                         ├── A → B
+                                         ├── A → B
 
-                                         ├── B → C
+                                         ├── B → C
 
-                                         └── A → C
+                                         └── A → C
 
-                                    a connected body of things
+                                    a connected body of things
 
 ```
 
@@ -303,25 +333,25 @@ A central architectural goal of Orbis is to avoid coupling the information model
 
 ```text
 
-                 Application
+                 Application
 
-                     │
+                     │
 
-                     ▼
+                     ▼
 
-              ┌──────────────┐
+              ┌──────────────┐
 
-              │  Orb.Engine  │
+              │  Orb.Engine  │
 
-              └──────┬───────┘
+              └──────┬───────┘
 
-                     │
+                     │
 
-          ┌──────────┼──────────┐
+          ┌──────────┼──────────┐
 
-          ▼          ▼          ▼
+          ▼          ▼          ▼
 
-       Entities   Graphs     Documents
+       Entities   Graphs     Documents
 
 ```
 
@@ -337,19 +367,19 @@ Orbpad is envisioned as the first application built on the Orbis foundation. Rat
 
 Orbis Engine
 
-     │
+     │
 
-     │ structured information
+     │ structured information
 
-     ▼
+     ▼
 
 Orbpad
 
-     │
+     │
 
-     │ user experience
+     │ user experience
 
-     ▼
+     ▼
 
 Human
 
@@ -365,35 +395,35 @@ Orbis is designed around the belief that structured information should not be pe
 
 ```text
 
-                 ┌───────────────┐
+                 ┌───────────────┐
 
-                 │   Application │
+                 │   Application │
 
-                 └───────┬───────┘
+                 └───────┬───────┘
 
-                         │
+                         │
 
-                         ▼
+                         ▼
 
-                 ┌───────────────┐
+                 ┌───────────────┐
 
-                 │ Orbis Engine  │
+                 │ Orbis Engine  │
 
-                 └───────┬───────┘
+                 └───────┬───────┘
 
-                         │
+                         │
 
-                    Structured
+                    Structured
 
-                   Information
+                   Information
 
-                         │
+                         │
 
-              ┌───────────┼───────────┐
+              ┌───────────┼───────────┐
 
-              ▼           ▼           ▼
+              ▼           ▼           ▼
 
-           Orbpad      Tool A       Tool B
+           Orbpad      Tool A       Tool B
 
 ```
 
@@ -407,7 +437,7 @@ Orb.Engine is the first major foundation for this vision, providing the primitiv
 
 OrbValue → OrbProperty → OrbEntity → OrbRelationship → OrbGraph
 
-   → Serialization → Storage → Applications
+   → Serialization → Storage → Applications
 
 ```
 
@@ -447,21 +477,21 @@ OrbGraph
 
 ├── Entities
 
-│   ├── Entity A
+│   ├── Entity A
 
-│   ├── Entity B
+│   ├── Entity B
 
-│   └── Entity C
+│   └── Entity C
 
 │
 
 └── Relationships
 
-    ├── A → B
+    ├── A → B
 
-    ├── B → C
+    ├── B → C
 
-    └── A → C
+    └── A → C
 
 ```
 
@@ -483,9 +513,9 @@ An entity represents a single identifiable object within the Orbis model. An ent
 
 var character = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Arannis");
+    "Arannis");
 
 character.Type = "Character";
 
@@ -501,11 +531,11 @@ A relationship connects two entities.
 
 Source
 
-   │
+   │
 
-   │ relationship
+   │ relationship
 
-   ▼
+   ▼
 
 Target
 
@@ -517,9 +547,9 @@ For example:
 
 King
 
- │
+ │
 
- └── rules → Kingdom
+ └── rules → Kingdom
 
 ```
 
@@ -545,13 +575,13 @@ var age = new OrbProperty
 
 {
 
-    Name = "Age",
+    Name = "Age",
 
-    Value = new OrbValue(
+    Value = new OrbValue(
 
-        OrbValueType.Integer,
+        OrbValueType.Integer,
 
-        42L)
+        42L)
 
 };
 
@@ -563,15 +593,17 @@ var age = new OrbProperty
 
 `OrbValue` provides the engine's canonical typed-value model.
 
-Supported value categories include:
+Supported `OrbValueType` categories include:
 
 ```text
 
-Null · Boolean · Integer · Decimal · Double
+Null · Boolean · Integer · Decimal
 
 String · Guid · DateTime · List · Object
 
 ```
+
+The codec also accepts CLR `float` and `double` inputs. These floating-point inputs are represented through the engine's `Decimal` value category rather than through a separate `OrbValueType.Double` category.
 
 The purpose of this system is to prevent the graph from degenerating into an untyped collection of arbitrary CLR objects. For example:
 
@@ -601,19 +633,19 @@ Orbis supports structured values inside lists and objects.
 
 var value = new OrbValue(
 
-    OrbValueType.Object,
+    OrbValueType.Object,
 
-    new Dictionary<string, object?>
+    new Dictionary<string, object?>
 
-    {
+    {
 
-        ["name"] = "Arannis",
+        ["name"] = "Arannis",
 
-        ["age"] = 42,
+        ["age"] = 42,
 
-        ["active"] = true
+        ["active"] = true
 
-    });
+    });
 
 ```
 
@@ -625,7 +657,7 @@ Nested values are processed recursively by the serialization system. This includ
 
 * Integer primitive types
 
-* Floating-point values
+* Floating-point CLR inputs (`float` and `double`)
 
 * Decimal values
 
@@ -673,13 +705,13 @@ Relationships cannot be inserted against nonexistent entities. This prevents the
 
 Relationship
 
-     │
+     │
 
-     ├── Source → DOES NOT EXIST
+     ├── Source → DOES NOT EXIST
 
-     │
+     │
 
-     └── Target → Entity B
+     └── Target → Entity B
 
 ```
 
@@ -725,15 +757,15 @@ A
 
 ├── B
 
-│   ├── D
+│   ├── D
 
-│   └── E
+│   └── E
 
 │
 
 └── C
 
-    └── F
+    └── F
 
 ```
 
@@ -765,7 +797,7 @@ A → B → C → D
 
 A ───────────────→ D
 
-       reachable
+       reachable
 
 ```
 
@@ -793,7 +825,7 @@ string json = EntitySerializer.Serialize(entity);
 
 OrbEntity entity =
 
-    EntitySerializer.Deserialize(json);
+    EntitySerializer.Deserialize(json);
 
 ```
 
@@ -813,7 +845,7 @@ string json = LoreSerializer.Serialize(graph);
 
 OrbGraph graph =
 
-    LoreSerializer.Deserialize(json);
+    LoreSerializer.Deserialize(json);
 
 ```
 
@@ -867,55 +899,55 @@ The storage layer is intentionally kept separate from the graph and serializatio
 
 ┌──────────────────────────────────────────┐
 
-│              Applications                 │
+│              Applications                 │
 
-│                                           │
+│                                           │
 
-│  Orbpad · Worldbuilding · Other Tools     │
+│  Orbpad · Worldbuilding · Other Tools     │
 
 └─────────────────────┬──────────────────────┘
 
-                       │
+                       │
 
-                       ▼
+                       ▼
 
 ┌──────────────────────────────────────────┐
 
-│              Orbis Engine                  │
+│              Orbis Engine                  │
 
-│                                           │
+│                                           │
 
-│  Graph · Entities · Relationships          │
+│  Graph · Entities · Relationships          │
 
-│  Properties · Typed Values                 │
+│  Properties · Typed Values                 │
 
 └─────────────────────┬──────────────────────┘
 
-                       │
+                       │
 
-          ┌────────────┴────────────┐
+          ┌────────────┴────────────┐
 
-          ▼                         ▼
+          ▼                         ▼
 
-┌───────────────────┐    ┌───────────────────┐
+┌───────────────────┐    ┌───────────────────┐
 
-│    Serialization   │    │      Storage       │
+│    Serialization   │    │      Storage       │
 
-│                    │    │                   │
+│                    │    │                   │
 
-│  EntitySerializer  │    │  EntityStorage    │
+│  EntitySerializer  │    │  EntityStorage    │
 
-│  LoreSerializer    │    │  LoreStorage      │
+│  LoreSerializer    │    │  LoreStorage      │
 
-└──────────┬─────────┘    └──────────┬────────┘
+└──────────┬─────────┘    └──────────┬────────┘
 
-           │                         │
+           │                         │
 
-           └────────────┬────────────┘
+           └────────────┬────────────┘
 
-                        ▼
+                        ▼
 
-                 .entity / .lore
+                 .entity / .lore
 
 ```
 
@@ -931,19 +963,19 @@ The intended public API of Orb.Engine consists primarily of:
 
 ```text
 
-OrbGraph          OrbValue
+OrbGraph          OrbValue
 
-OrbEntity         OrbValueType
+OrbEntity         OrbValueType
 
 OrbRelationship
 
-OrbProperty       EntitySerializer
+OrbProperty       EntitySerializer
 
-                  LoreSerializer
+                  LoreSerializer
 
-                  EntityStorage
+                  EntityStorage
 
-                  LoreStorage
+                  LoreStorage
 
 ```
 
@@ -953,41 +985,12 @@ Implementation details such as the recursive value codec and serialization docum
 
 # ✦ Validation & Reliability
 
-Orb.Engine has been developed with adversarial testing rather than relying exclusively on happy-path examples. The test suite currently covers:
+Orb.Engine has been developed around an adversarial testing philosophy rather than relying only on happy-path examples. The test system is divided into two complementary layers:
 
-* Integer contracts
+1. **Deterministic unit tests** establish the behavioral contract of individual engine features and invariants.
+2. **Stress and torture campaigns** exercise the same engine under sustained mutation, scale, corruption, persistence, allocation pressure, and randomized workloads.
 
-* List and object contracts
-
-* Property identity
-
-* Entity serialization
-
-* Lore serialization
-
-* Document boundaries
-
-* Graph mutation invariants
-
-* Relationship validation
-
-* Entity removal cascades
-
-* Graph traversal
-
-* Reachability
-
-* Round-trip fidelity
-
-* Nested `Guid` preservation
-
-* Nested `DateTime` preservation
-
-* Nested primitive CLR type preservation
-
-* Serializer failure behavior
-
-* Public API surface
+The current unit suite reports:
 
 <div align="center">
 
@@ -997,33 +1000,205 @@ Orb.Engine has been developed with adversarial testing rather than relying exclu
 
 </div>
 
-The test suite is treated as part of the engine's V1 contract rather than merely as development tooling.
+The 251 unit tests cover the following aspects.
+
+### Graph Core & Invariants
+
+The graph tests cover entity insertion/removal, relationship insertion/removal, duplicate and invalid operations, referential integrity, relationship validity, entity-removal cascades, self-relationships, parallel relationships, removal idempotence, and protection against leaving stale adjacency state behind.
+
+### Typed Values & Property Contracts
+
+`OrbValue` is tested as a real typed-value system rather than an object bag. The suite exercises integer, boolean, decimal, floating-point CLR inputs (`float` and `double`), string, `Guid`, `DateTime`, null, list, and object values, including nested values and CLR-type preservation. Floating-point CLR inputs are represented through the engine's decimal value category; `OrbValueType` itself does not define a separate `Double` category. Integer contracts are deliberately strict: an `OrbValueType.Integer` value must contain an `Int64` (`long`) value.
+
+### Serialization & Round-Trip Fidelity
+
+Entity and lore serialization are tested through object → JSON → object round trips. Tests cover nested lists and objects, `Guid`, `DateTime`, primitive CLR types, property preservation, document boundaries, malformed input, and serializer failure behavior. The goal is semantic fidelity, not merely syntactically valid JSON.
+
+### Storage
+
+Entity and lore storage tests exercise save/load behavior, document boundaries, missing files, invalid documents, and persistence reconstruction. Storage remains separated from the graph and serializer layers so the data model is not coupled to a particular persistence mechanism.
+
+### Traversal & Reachability
+
+Traversal tests cover deterministic traversal semantics, outgoing and incoming relationships, neighbor discovery, reachability, connected structures, and the behavior of graph traversal after mutation.
+
+### Public API Boundary
+
+The public API surface is tested so internal implementation details do not accidentally become part of the intended contract. The documented public surface centers on `OrbGraph`, `OrbEntity`, `OrbRelationship`, `OrbProperty`, `OrbValue`, `OrbValueType`, the serializers, and the storage APIs.
+
+### Adversarial & Failure Behavior
+
+The suite deliberately attacks the ugly cases: missing entities, invalid relationships, failed mutations, duplicate operations, stale references, malformed documents, unexpected values, and state changes around relationship deletion. A graph engine that only survives `A → B` is not a graph engine I would trust.
 
 ---
 
-# ✦ Beta Status
+# ✦ Test Arsenal & 1.0.0 Verification
+
+Version 1.0.0 was subjected to a broader stress program after the unit suite. These campaigns were designed to answer different questions; no single benchmark is sufficient to establish confidence in a foundational engine.
+
+The verification program covered **twelve named stress campaigns**, ranging from mutation chaos and deterministic replay to large-topology, persistence, differential-fuzzing, crash/recovery, and soak/endurance testing.
+
+## Stress Campaign Summary
+
+| Campaign | Primary purpose | Evidence / result |
+|---|---|---|
+| **Mutation Chaos** | Randomized high-volume graph mutation; detect invariant violations under turbulence. | **1,000,000 operations — PASS**. Reached roughly 100K entities / tens of thousands of relationships during the run. |
+| **Deterministic Replay** | Prove identical operation journals produce identical state and deterministic behavior. | **Two independent 1,000,000-operation journals — PASS** with repeated audits. |
+| **Mutation Performance** | Measure isolated mutation latency and allocations without polluting timings with setup or validation. | **100K-operation run — PASS**. Entity add ~4.89M ops/s; relationship add ~760K ops/s; relationship remove ~1.34M ops/s; churn ~1.88M ops/s; mixed churn ~3.29M ops/s. |
+| **Performance Benchmark** | Establish baseline throughput for representative engine operations and provide regression reference points. | **PASS**; used as a general performance baseline rather than a correctness gate. |
+| **Relationship Scaling** | Determine how relationship queries behave from small to large sparse graphs and expose accidental total-edge dependence. | **1K → 100K entities — PASS**. At 100K: ~3.32M outgoing queries/s, ~3.10M incoming queries/s, ~1.21M all-relationship queries/s, ~867K neighbor queries/s. |
+| **Memory Benchmark** | Measure managed memory and working-set behavior as entities, relationships, and sparse properties scale. | **PASS through 100K entities**. Entity footprint stabilized near 271 B/entity; relationship/index footprint fell toward ~418 B/relationship at 100K. |
+| **Pool Reuse** | Verify reusable adjacency/pool capacity actually prevents repeated allocation growth. | **PASS**. Second allocation wave reached effectively **0 B** in the reuse measurement, a 100% reduction relative to the first wave. |
+| **High-Degree Topology** | Attack a pathological hub with very high incident degree; validate traversal, mutation, deletion, and validator behavior. | **PASS** with a 100K-edge hub, ~50K outgoing and ~50K incoming relationships, and ~99.9K distinct neighbors. |
+| **Differential Fuzzing** | Compare Orb.Engine against an independent reference model under deterministic randomized mutation workloads. | **5 seeds × 1,000,000 operations = 5,000,000 fuzz operations — PASS**. |
+| **Serialization Torture** | Stress the serializer with very large graphs and verify deep round-trip integrity. | **PASS at 1,000,000 entities / 1,000,049 relationships** with a ~374.97 MB lore document. |
+| **Crash / Recovery Torture** | Verify damaged/truncated documents are rejected and known-good state remains recoverable. | **1,000,000 operations — PASS**; 549,088 injected fault conditions and 49,923 disk-backed recovery cycles. |
+| **Soak / Endurance** | Detect cumulative state drift, leaks, allocator degradation, and performance collapse across repeated mutation/query/persistence cycles. | **1,000,000 cycles — PASS** at ~56,923 cycles/s; 10,000 in-memory persistence round trips, 1,000 disk round trips, 100 audits; retained managed delta only +255.77 KB. |
+
+## What Each Stress Layer Proves
+
+### Mutation Chaos — “Can the graph survive violence?”
+
+Mutation Chaos exists to expose invariant bugs that ordinary examples never touch. Random additions, removals, relationship churn, and changing graph shapes are useful for finding stale indexes, incorrect counts, invalid references, and mutation-order bugs. The million-operation run passed.
+
+### Deterministic Replay — “Can I reproduce the same universe twice?”
+
+The same generated journal is replayed against independent graphs. This is valuable because deterministic state transitions make future bugs reproducible rather than mystical. A failure at operation 713,492 should be replayable from the same seed and journal instead of disappearing when the developer looks at it.
+
+### Mutation Performance — “Is the core fast without benchmark contamination?”
+
+This campaign isolates actual mutation calls from graph setup, reference-model work, and full validation. It measures entity mutation, relationship mutation, entity removal with edges, slab reuse churn, and mixed mutation while also reporting allocation per operation.
+
+### Relationship Scaling — “Does query cost scale with the question, or with the whole universe?”
+
+Sparse graphs are deliberately used here because they make pathological full-graph scanning easier to spot. Query throughput remains in the high hundreds of thousands to millions of operations per second at 100K nodes for the tested operations, while validation was separately exercised on large graphs.
+
+### Memory Benchmark — “Does the data structure stay sane as it grows?”
+
+The memory campaign measures entities, relationships plus indexes, sparse properties, and post-deletion retention. The important result is the consistency of the footprint at larger sizes rather than one magic memory number.
+
+### Pool Reuse — “Does churn keep allocating forever?”
+
+Allocator reuse is specifically tested because graph workloads commonly add/remove relationships repeatedly. The second allocation wave dropping to effectively zero is strong evidence that reusable capacity is doing real work rather than existing only as an architectural idea.
+
+### High-Degree Topology — “What happens when one node becomes a monster?”
+
+A sparse graph can make everything look beautiful. A high-degree hub is where adjacency handling, traversal, deletion, and validation can become pathological. The 100K-edge hub survived construction, inspection, and removal successfully.
+
+### Differential Fuzzing — “Does the implementation agree with an independent model?”
+
+This is one of the strongest correctness-oriented stress tests because it does not merely assert internal expectations. It compares Orb.Engine behavior against a separate reference model over deterministic randomized workloads. Five million randomized operations passed across five seeds.
+
+### Serialization Torture — “Can the file representation carry a civilization?”
+
+The serializer was taken beyond toy graphs into a one-million-entity dataset with more than one million relationships. Large-file write, read, deserialize, and re-serialize paths completed successfully, making this a meaningful persistence-scale test rather than a formatting check.
+
+### Crash / Recovery — “What happens when persistence goes bad?”
+
+The campaign deliberately generates empty, truncated, corrupted, and semantically invalid documents, then verifies that Orb.Engine rejects them instead of silently creating a questionable graph. It also exercises last-known-good recovery and repeated corruption/recovery. The million-operation endurance layer then repeats those scenarios at scale.
+
+### Soak / Endurance — “Does the engine slowly become haunted?”
+
+Soak testing is designed to find cumulative failures that do not appear in a single large burst: state drift, memory retention, pool degradation, slow performance collapse, and gradual corruption. The million-cycle run returned to the same canonical serialized state and finished with a final valid graph.
+
+## Aggregate Assessment
+
+The combined evidence is strong for a stable foundational engine release. The testing does not rely on a single score: correctness, determinism, graph invariants, scale, memory behavior, allocation reuse, serialization, persistence failure handling, randomized differential testing, and long-duration state stability were all exercised independently.
+
+The most significant signal is **cross-test agreement**. The same internal structures survived very different forms of pressure: randomized mutation, deterministic replay, high-degree topology, allocator churn, massive serialization, corruption/recovery, and one-million-cycle endurance. That reduces the likelihood that the green results are an artifact of one narrow benchmark shape.
+
+### 1.0.0 Stable Grade A Recommendation
+
+**Recommendation: Version 1.0.0 qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
+
+The recommendation is based on the combination of the 251-test unit suite and the independent stress campaigns described below. Grade A does not mean that every possible workload, platform, failure mode, or future compatibility requirement has been proven. It means the current release has met the defined stable-core verification requirements for the capabilities and workload classes that were actually tested, and no unresolved correctness failure was observed in those release-gate paths.
+
+In practical terms, 1.0.0 Grade A means:
+
+- Core graph invariants and mutation behavior passed the full unit and adversarial test suite.
+- Deterministic replay and differential testing found no divergence in the tested million-operation workloads.
+- Large sparse graphs and high-degree relationship topologies passed their dedicated stress campaigns.
+- Memory footprint, allocation reuse, and mutation performance were measured under scale and churn without a detected runaway-retention failure.
+- Serialization and persistence survived million-entity, corruption, recovery, and repeated round-trip workloads.
+- One-million-cycle soak testing completed without canonical-state drift, final validation failure, or retained-memory growth beyond the defined tolerance.
+
+The Grade A boundary is explicit: the release is recommended for applications and workloads covered by these verification areas. It is not a blanket claim that every conceivable use of Orb.Engine has been tested.
+
+---
+
+# ✦ Stable Release Grade
 
 <div align="center">
 
-## 🚧 `1.0.0-beta.2`
+## ✅ `1.0.0` · Stable · **Grade A — Silver Standard**
 
 </div>
 
-Orbis Engine is currently in **beta**. The engine has completed its initial V1 architectural and behavioral audit, but the API and serialized formats should not yet be considered permanently frozen.
+Version 1.0.0 is a **stable Grade A release**. The engine has completed the current correctness, mutation, scale, memory, serialization, persistence, recovery, fuzzing, and endurance verification program.
 
-During the beta period:
+The public API and serialized document formats are treated as the defined 1.0.0 release surface. Changes after 1.0.0 should be evaluated under the Orbis release-grade system and the compatibility policy declared for the affected release.
 
-* APIs may change.
+### 1.0.0 Verification Snapshot
 
-* Serialization formats may change.
+- **251 / 251 unit tests passing**
+- **0 failed · 0 skipped**
+- **5,000,000 differential-fuzz operations passing**
+- **1,000,000 crash/recovery operations passing**
+- **1,000,000 soak/endurance cycles passing**
+- **1,000,000-entity serialization torture passing**
+- **100,000-edge high-degree topology passing**
+- **100K-scale memory, relationship-scaling, pool-reuse, and mutation-performance campaigns passing**
 
-* Internal architecture may change.
+These results justify the **Grade A** release classification because they establish stable behavior across the engine's tested foundational responsibilities.
 
-* Additional invariants may be introduced.
+---
 
-* Breaking changes may occur between beta releases.
+# ✦ Release Stability Grades
 
-Applications integrating Orb.Engine should pin their dependency version rather than assuming compatibility across future beta releases.
+The Orbis release-grade system applies **only to stable releases**. It is deliberately limited to two grades. A grade describes the level of verification completed for a specific release; it does not replace the version number and it does not claim that software can never fail.
+
+## 🥈 Grade A — Silver Standard
+
+**Definition:** A stable release that has passed every mandatory release-gate test for its declared engine capabilities and tested workload classes, with no unresolved correctness failure observed in those release-gate paths.
+
+A Grade A release must satisfy all of the following:
+
+- The complete mandatory unit-test suite passes with **zero failures and zero skipped release-gate tests**.
+- All stress campaigns designated as release gates for the declared scope pass.
+- Core graph mutation, relationship integrity, serialization, persistence, recovery, memory, and performance behavior have been exercised at the release's documented test scales.
+- No known unresolved defect remains that prevents a documented capability from functioning correctly within its tested scope.
+- The release record identifies the workload classes and test limits that were actually verified.
+
+**Use recommendation:** Developers may use Grade A releases for the specific purposes, capabilities, and workload classes explicitly covered by the release verification record. A Grade A designation does not approve deployment scenarios outside that verified scope.
+
+## 🥇 Grade S — Gold Standard
+
+**Definition:** A stable release that satisfies every Grade A requirement and has additionally passed verification for **every documented supported capability, every declared supported workload class, and every officially supported runtime environment** included in the release contract.
+
+A Grade S release must satisfy all of the following:
+
+- Every Grade A requirement passes.
+- Every documented public capability has a corresponding passing verification path.
+- Required scale, memory, mutation, serialization, persistence, corruption/recovery, and long-duration endurance tests pass at the release's defined limits.
+- The same release-gate suite passes on every officially supported platform/runtime configuration.
+- Compatibility and migration tests for the release's declared API and file-format guarantees pass.
+- No known unresolved critical or high-severity correctness defect exists in any documented supported capability.
+
+**Use recommendation:** Developers may treat Grade S as the **Gold Standard for general-purpose development within the complete documented and officially supported scope of the engine**.
+
+### Grade Relationship
+
+```text
+Grade A — Silver Standard
+    Stable within the tested and documented scope.
+
+Grade S — Gold Standard
+    Grade A + complete supported-scope verification across
+    capabilities, workload classes, environments, and compatibility
+    guarantees defined by the release contract.
+```
+
+A Grade can move **upward** between stable releases when additional verification is completed. A release does not receive Grade S merely because it is older, widely used, or has accumulated a large test count; the grade is awarded from the verification evidence for that specific release.
 
 ---
 
@@ -1057,29 +1232,29 @@ Orbis is being developed as an ecosystem rather than a single monolithic applica
 
 ```text
 
-                    ORBIS
+                    ORBIS
 
-                      │
+                      │
 
-          ┌───────────┴───────────┐
+          ┌───────────┴───────────┐
 
-          │                       │
+          │                       │
 
-          ▼                       ▼
+          ▼                       ▼
 
-     Orb.Engine                Applications
+     Orb.Engine                Applications
 
-          │                       │
+          │                       │
 
-          │              ┌────────┼────────┐
+          │              ┌────────┼────────┐
 
-          │              │        │        │
+          │              │        │        │
 
-          ▼              ▼        ▼        ▼
+          ▼              ▼        ▼        ▼
 
-     Graph/Data        Orbpad   Tools   Future Apps
+     Graph/Data        Orbpad   Tools   Future Apps
 
-     Foundation
+     Foundation
 
 ```
 
@@ -1093,7 +1268,7 @@ Once published, Orb.Engine can be consumed as a .NET package.
 
 ```bash
 
-dotnet add package Orb.Engine --version 1.0.0-beta.1
+dotnet add package Orb.Engine --version 1.0.0
 
 ```
 
@@ -1103,13 +1278,13 @@ Or from a project file:
 
 <ItemGroup>
 
-  <PackageReference Include="Orb.Engine" Version="1.0.0-beta.1" />
+  <PackageReference Include="Orb.Engine" Version="1.0.0" />
 
 </ItemGroup>
 
 ```
 
-> **Note:** During the beta period, package availability and distribution channels may change.
+> **Release status:** `1.0.0` is a stable Grade A release. Future stable releases are evaluated under the Orbis release-grade system.
 
 ---
 
@@ -1127,17 +1302,17 @@ var graph = new OrbGraph();
 
 var author = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Subhradeep Sarkar");
+    "Subhradeep Sarkar");
 
 author.Type = "Person";
 
 var project = new OrbEntity(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    "Orbis");
+    "Orbis");
 
 project.Type = "Project";
 
@@ -1147,13 +1322,13 @@ graph.AddEntity(project);
 
 var relationship = new OrbRelationship(
 
-    Guid.NewGuid(),
+    Guid.NewGuid(),
 
-    author.Id,
+    author.Id,
 
-    project.Id,
+    project.Id,
 
-    "created");
+    "created");
 
 graph.AddRelationship(relationship);
 
@@ -1165,17 +1340,17 @@ The resulting conceptual graph is:
 
 Subhradeep Sarkar
 
-        │
+        │
 
-        │ created
+        │ created
 
-        ▼
+        ▼
 
-      Orbis
+      Orbis
 
 ```
 
-The exact API may evolve during beta development.
+The exact API is defined by the `1.0.0` stable release surface; future changes should follow the applicable release policy.
 
 ---
 
@@ -1189,63 +1364,63 @@ Orb/
 
 ├── Orb.Engine/
 
-│   │
+│   │
 
-│   ├── Graph/
+│   ├── Graph/
 
-│   │   ├── OrbGraph
+│   │   ├── OrbGraph
 
-│   │   ├── OrbEntity
+│   │   ├── OrbEntity
 
-│   │   ├── OrbRelationship
+│   │   ├── OrbRelationship
 
-│   │   └── OrbProperty
+│   │   └── OrbProperty
 
-│   │
+│   │
 
-│   ├── Types/
+│   ├── Types/
 
-│   │   ├── OrbValue
+│   │   ├── OrbValue
 
-│   │   └── OrbValueType
+│   │   └── OrbValueType
 
-│   │
+│   │
 
-│   ├── Serialization/
+│   ├── Serialization/
 
-│   │   ├── EntitySerializer
+│   │   ├── EntitySerializer
 
-│   │   ├── LoreSerializer
+│   │   ├── LoreSerializer
 
-│   │   └── internal serialization infrastructure
+│   │   └── internal serialization infrastructure
 
-│   │
+│   │
 
-│   ├── Storage/
+│   ├── Storage/
 
-│   │   ├── EntityStorage
+│   │   ├── EntityStorage
 
-│   │   └── LoreStorage
+│   │   └── LoreStorage
 
-│   │
+│   │
 
-│   └── Orb.Engine.csproj
+│   └── Orb.Engine.csproj
 
 │
 
 ├── Orb.Engine.Tests/
 
-│   ├── Graph/
+│   ├── Graph/
 
-│   ├── Serialization/
+│   ├── Serialization/
 
-│   └── PublicApiSurfaceTests
+│   └── PublicApiSurfaceTests
 
 │
 
 ├── docs/
 
-│   └── orbis.logo
+│   └── orbis.logo
 
 │
 
@@ -1281,11 +1456,19 @@ dotnet build
 
 ```
 
-Run the complete test suite:
+Run the complete unit test suite:
 
 ```bash
 
 dotnet test
+
+```
+
+Run the stress-test arsenal:
+
+```bash
+
+dotnet run --project Orb.Engine.StressTests -- list
 
 ```
 
@@ -1349,7 +1532,7 @@ without quietly corrupting state.
 
 # ✦ Roadmap
 
-The current beta establishes the foundation for the next stages of Orbis.
+The `1.0.0` Grade A release establishes the stable foundation for the next stages of Orbis.
 
 * API stabilization
 
@@ -1369,7 +1552,7 @@ The current beta establishes the foundation for the next stages of Orbis.
 
 * Additional Orbis ecosystem components
 
-* Stable V1 release
+* Grade S qualification through broader compatibility and supported-environment verification
 
 The roadmap may change as real-world usage exposes new requirements.
 
@@ -1401,9 +1584,11 @@ For bug reports, include:
 
 # ✦ License
 
-Orbis Engine is released under the **GNU Affero General Public License v3.0**.
+Orb.Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
 
-See [`LICENSE`](LICENSE) for the complete license text. The intention of using the AGPL is to ensure that the engine and derivative versions remain available under the same fundamental freedoms provided by the license.
+See [`LICENSE`](LICENSE) for the authoritative license text. This README does not grant a separate or alternative software license.
+
+Repository branding, logos, badges, and other visual assets may be subject to separate terms where explicitly stated; their presence does not change the software license of Orb.Engine.
 
 ---
 
@@ -1411,7 +1596,7 @@ See [`LICENSE`](LICENSE) for the complete license text. The intention of using t
 
 Orbis ultimately follows one principle:
 
-<div align="center">
+<div *align*="center">
 
 ### **Don't build another place to store information.**
 
@@ -1419,7 +1604,7 @@ Orbis ultimately follows one principle:
 
 </div>
 
-The project is still young, and the architecture will continue to evolve. `1.0.0-beta.1` represents the first public beta of the engine foundation — not the completion of the larger Orbis vision.
+The project will continue to evolve, but `1.0.0` marks the first stable Grade A foundation of the engine. It establishes a verified stable core without claiming that the larger Orbis ecosystem is complete.
 
 The ecosystem comes later. The foundation comes first.
 
@@ -1427,7 +1612,7 @@ The ecosystem comes later. The foundation comes first.
 
 # ✦ Author
 
-<div align="center">
+<div *align*="center">
 
 <h2>Subhradeep Sarkar</h2>
 
@@ -1435,23 +1620,23 @@ The ecosystem comes later. The foundation comes first.
 
 <p>
 
-  <a href="mailto:personalsarkar345@gmail.com">
+  <a href="mailto:personalsarkar345@gmail.com">
 
-    <img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
+    <img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
 
-  </a>
+  </a>
 
-  <a href="https://www.linkedin.com/in/subhradeepcs">
+  <a href="https://www.linkedin.com/in/subhradeepcs">
 
-    <img src="https://img.shields.io/badge/LinkedIn-Subhradeep%20Sarkar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+    <img src="https://img.shields.io/badge/LinkedIn-Subhradeep%20Sarkar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
 
-  </a>
+  </a>
 
-  <a href="https://subhradeepsarkarportfolio.pages.dev/">
+  <a href="https://subhradeepsarkarportfolio.pages.dev/">
 
-    <img src="https://img.shields.io/badge/Portfolio-Subhradeep%20Sarkar-7C3AED?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"/>
+    <img src="https://img.shields.io/badge/Portfolio-Subhradeep%20Sarkar-7C3AED?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"/>
 
-  </a>
+  </a>
 
 </p>
 
@@ -1467,7 +1652,7 @@ The ecosystem comes later. The foundation comes first.
 
 ---
 
-<div align="center">
+<div *align*="center">
 
 <br/>
 
@@ -1479,6 +1664,6 @@ Structured information. Connected by design.
 
 <br/><br/>
 
-© 2026 <strong>Subhradeep Sarkar</strong>. All rights reserved except where otherwise specified by the GNU Affero General Public License v3.0.
+© 2026 <strong>Subhradeep Sarkar</strong>. Orb.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for the authoritative license text.
 
 </div>

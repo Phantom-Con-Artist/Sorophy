@@ -1,77 +1,54 @@
 <div align="center">
 
-<p>
-<img src="docs/orbenginelogo.png" alt="The Orb Engine" width="90"/>
-&nbsp;&nbsp;&nbsp;
-<img src="docs/orbisprojectlogo.png" alt="Orb Project" width="90"/>
-</p>
+<p>A project under</p>
+
+<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
+
+<p>introduces</p>
+
+<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
 
 <h1>The Orb Engine</h1>
 
 <p>
+
 <strong>A structured data and graph engine for building interconnected information.</strong>
+
 </p>
 
 <p>
+
 Entities · Relationships · Typed Values · Graphs · Serialization · Storage
+
 </p>
 
 <br/>
 
-<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
+<p align="center"><a href="https://github.com/Phantom-Con-Artist/Orb"><img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/releases"><img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version"/></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/></a></p>
 
-<br/><br/>
+<p align="center"><a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/></a>&nbsp;<a href="https://learn.microsoft.com/en-us/dotnet/csharp/"><img src="https://img.shields.io/badge/C%23-Language-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-E05735?style=for-the-badge" alt="Changelog"/></a></p>
 
-<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
-
-<br/><br/>
+<p align="center"><a href="https://discord.com/invite/Em2ur4J8PF"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/></a>&nbsp;<a href="mailto:personalsarkar345@gmail.com"><img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a></p>
 
 <p>
-<a href="https://github.com/Phantom-Con-Artist/Orb">
-<img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/>
-</a>
-&nbsp;
-<a href="https://github.com/Phantom-Con-Artist/Orb/releases">
-<img src="https://img.shields.io/badge/Version-1.0.0--beta.1-7C3AED?style=for-the-badge" alt="Version"/>
-</a>
-&nbsp;
-<a href="https://dotnet.microsoft.com/">
-<img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 10"/>
-</a>
-&nbsp;
-<a href="LICENSE">
-<img src="https://img.shields.io/badge/License-AGPL--3.0-2E7D32?style=for-the-badge" alt="License"/>
-</a>
+
+<strong>✅ 1.0.0 · Stable · Grade A — Silver Standard</strong><br/>
+
+Stable enough for the documented capabilities and workload classes covered by the release verification program.
+
 </p>
-
-<p>
-<strong>🚧 1.0.0-beta.2</strong><br/>
-The API and file formats may change before stable release.
-</p>
-
-</div>
-
-  <p>
-
-    <strong>🚧 1.0.0-beta.1</strong>
-
-    <br/>
-
-    The API and file formats may change before stable release.
-
-  </p>
 
 </div>
 
 ---
 
-<div align="center">
+<div *align*="center">
 
 ### Build information into structure.
 
 </div>
 
-Orbis Engine is the foundational engine behind **Orbis**, designed to represent structured information as interconnected entities, properties, and relationships.
+Orb.Engine is the foundational engine behind **Orbis**, designed to represent structured information as interconnected entities, properties, and relationships.
 
 Rather than treating information as a collection of disconnected documents, Orbis provides a graph-oriented model where objects can exist independently, connect to one another, carry strongly defined values, and be persisted without losing their structure.
 
@@ -108,8 +85,11 @@ The engine is designed to sit underneath higher-level applications such as edito
 - [Public API](#public-api)
 
 - [Validation & Reliability](#validation--reliability)
+- [Test Arsenal & 1.0.0 Verification](#test-arsenal--100-verification)
 
-- [Beta Status](#beta-status)
+- [Stable Release Grade](#stable-release-grade)
+
+- [Release Stability Grades](#release-stability-grades)
 
 - [What Orb.Engine Is Not](#what-orbengine-is-not)
 
@@ -128,6 +108,8 @@ The engine is designed to sit underneath higher-level applications such as edito
 - [Roadmap](#roadmap)
 
 - [Contributing](#contributing)
+
+- [Community](#community)
 
 - [License](#license)
 
@@ -575,15 +557,17 @@ var age = new OrbProperty
 
 `OrbValue` provides the engine's canonical typed-value model.
 
-Supported value categories include:
+Supported `OrbValueType` categories include:
 
 ```text
 
-Null · Boolean · Integer · Decimal · Double
+Null · Boolean · Integer · Decimal
 
 String · Guid · DateTime · List · Object
 
 ```
+
+The codec also accepts CLR `float` and `double` inputs. These floating-point inputs are represented through the engine's `Decimal` value category rather than through a separate `OrbValueType.Double` category.
 
 The purpose of this system is to prevent the graph from degenerating into an untyped collection of arbitrary CLR objects. For example:
 
@@ -637,7 +621,7 @@ Nested values are processed recursively by the serialization system. This includ
 
 * Integer primitive types
 
-* Floating-point values
+* Floating-point CLR inputs (`float` and `double`)
 
 * Decimal values
 
@@ -965,41 +949,12 @@ Implementation details such as the recursive value codec and serialization docum
 
 # ✦ Validation & Reliability
 
-Orb.Engine has been developed with adversarial testing rather than relying exclusively on happy-path examples. The test suite currently covers:
+Orb.Engine has been developed around an adversarial testing philosophy rather than relying only on happy-path examples. The test system is divided into two complementary layers:
 
-* Integer contracts
+1. **Deterministic unit tests** establish the behavioral contract of individual engine features and invariants.
+2. **Stress and torture campaigns** exercise the same engine under sustained mutation, scale, corruption, persistence, allocation pressure, and randomized workloads.
 
-* List and object contracts
-
-* Property identity
-
-* Entity serialization
-
-* Lore serialization
-
-* Document boundaries
-
-* Graph mutation invariants
-
-* Relationship validation
-
-* Entity removal cascades
-
-* Graph traversal
-
-* Reachability
-
-* Round-trip fidelity
-
-* Nested `Guid` preservation
-
-* Nested `DateTime` preservation
-
-* Nested primitive CLR type preservation
-
-* Serializer failure behavior
-
-* Public API surface
+The current unit suite reports:
 
 <div align="center">
 
@@ -1007,35 +962,303 @@ Orb.Engine has been developed with adversarial testing rather than relying exclu
 
 **0 failed · 0 skipped**
 
+<img src="https://img.shields.io/badge/tests-251%20passing-2E7D32?style=for-the-badge&logo=checkmarx&logoColor=white" alt="251 tests passing"/>
+&nbsp;
+<img src="https://img.shields.io/badge/failed-0-2E7D32?style=for-the-badge" alt="0 failed"/>
+&nbsp;
+<img src="https://img.shields.io/badge/skipped-0-2E7D32?style=for-the-badge" alt="0 skipped"/>
+
 </div>
 
-The test suite is treated as part of the engine's V1 contract rather than merely as development tooling.
+The 251 unit tests cover the following aspects.
+
+### Graph Core & Invariants
+
+The graph tests cover entity insertion/removal, relationship insertion/removal, duplicate and invalid operations, referential integrity, relationship validity, entity-removal cascades, self-relationships, parallel relationships, removal idempotence, and protection against leaving stale adjacency state behind.
+
+### Typed Values & Property Contracts
+
+`OrbValue` is tested as a real typed-value system rather than an object bag. The suite exercises integer, boolean, decimal, floating-point CLR inputs (`float` and `double`), string, `Guid`, `DateTime`, null, list, and object values, including nested values and CLR-type preservation. Floating-point CLR inputs are represented through the engine's decimal value category; `OrbValueType` itself does not define a separate `Double` category. Integer contracts are deliberately strict: an `OrbValueType.Integer` value must contain an `Int64` (`long`) value.
+
+### Serialization & Round-Trip Fidelity
+
+Entity and lore serialization are tested through object → JSON → object round trips. Tests cover nested lists and objects, `Guid`, `DateTime`, primitive CLR types, property preservation, document boundaries, malformed input, and serializer failure behavior. The goal is semantic fidelity, not merely syntactically valid JSON.
+
+### Storage Tests
+
+Entity and lore storage tests exercise save/load behavior, document boundaries, missing files, invalid documents, and persistence reconstruction. Storage remains separated from the graph and serializer layers so the data model is not coupled to a particular persistence mechanism.
+
+### Traversal & Reachability
+
+Traversal tests cover deterministic traversal semantics, outgoing and incoming relationships, neighbor discovery, reachability, connected structures, and the behavior of graph traversal after mutation.
+
+### Public API Boundary
+
+The public API surface is tested so internal implementation details do not accidentally become part of the intended contract. The documented public surface centers on `OrbGraph`, `OrbEntity`, `OrbRelationship`, `OrbProperty`, `OrbValue`, `OrbValueType`, the serializers, and the storage APIs.
+
+### Adversarial & Failure Behavior
+
+The suite deliberately attacks the ugly cases: missing entities, invalid relationships, failed mutations, duplicate operations, stale references, malformed documents, unexpected values, and state changes around relationship deletion. A graph engine that only survives `A → B` is not a graph engine I would trust.
 
 ---
 
-# ✦ Beta Status
+# ✦ Test Arsenal & 1.0.0 Verification
+
+Orb Engine `1.0.0` was subjected to the full **Orb Engine Test Arsenal** using the following release-gate configuration:
+
+- **Version:** `1.0.0`
+- **Release grade:** **Grade A — Silver Standard**
+- **Profile:** `full`
+- **Seed:** `12345`
+- **Configured operations:** `1,000,000`
+- **Audit interval:** `10,000`
+- **Target framework:** `.NET 10`
+
+The release verification program was designed to test correctness, graph invariants, mutation integrity, deterministic behavior, serialization fidelity, persistence and recovery, memory behavior, allocation reuse, scalability, performance, fuzz resilience, and long-duration endurance.
+
+The `1,000,000` operation setting is the configured workload supplied to each campaign. Individual campaigns interpret that workload according to their test design. Some execute one-million-operation workloads directly, some execute multiple independent workloads, and others distribute the configured workload across graph sizes or specialized benchmark stages.
+
+## Benchmark Environment
+
+| Component | Detail |
+|---|---|
+| **CPU** | AMD Ryzen 5 3450U |
+| **GPU** | None / Not used |
+| **RAM** | 16 GB |
+| **OS** | Windows 10, version 22H2 (OS Build 19045.3803) |
+| **Architecture** | x64 |
+| **.NET SDK** | 10.0.400 |
+| **Target framework** | net10.0 |
+| **Build configuration** | Release |
+| **Orb Engine version** | 1.0.0 |
+| **Release grade** | Grade A — Silver Standard |
+| **Profile** | full |
+| **Seed** | 12345 |
+| **Operations** | 1,000,000 |
+| **Audit interval** | 10,000 |
+
+All throughput, memory, and timing figures reported in this section were measured on the environment above. Absolute numbers will vary on different hardware; the release-gate pass/fail results are configuration-driven (profile, seed, operation count, audit interval) and are reproducible independent of the host machine.
+
+## Verification Summary
+
+| Campaign | Verification Purpose | Result |
+|---|---|---|
+| **Mutation Chaos** | Exercises randomized high-volume graph mutations to detect invariant violations, failed-mutation corruption, relationship inconsistencies, invalid state transitions, and query failures under sustained mutation pressure. | **PASS — 1,000,000-operation configuration.** The workload reached approximately **100,000 entities** and tens of thousands of relationships while maintaining graph integrity and query correctness. |
+| **Deterministic Replay** | Verifies that deterministic operation journals produce reproducible execution and equivalent graph state when independently replayed. | **PASS — two independent 1,000,000-operation journals.** Journal determinism, reference-model agreement, replay equivalence, repeated audits, and graph invariants all passed. |
+| **Mutation Performance** | Measures isolated entity and relationship mutation throughput and allocation behavior without including graph preparation, reference-model execution, or full validation in the timed mutation paths. | **PASS — 1,000,000-operation configuration.** The campaign completed successfully under the full release workload and established mutation-performance evidence for the stable release. |
+| **Pool Reuse** | Verifies that released adjacency storage can be reused during repeated relationship allocation/removal cycles instead of causing continuous allocation growth. | **PASS — 1,000,000-operation configuration.** Reuse behavior was observed, including an effectively **0 B second-wave allocation measurement** in the dedicated reuse test. |
+| **High-Degree Topology** | Exercises a pathological high-degree hub with large incident degree, parallel relationships, self-links, query operations, mass removal, and final graph validation. | **PASS — 1,000,000-operation configuration.** Verified a **100,000-edge hub** with approximately **50,000 outgoing**, **50,000 incoming**, and approximately **99,900 distinct neighbors**. |
+| **Performance Benchmark** | Establishes representative throughput baselines across multiple graph sizes and identifies scaling characteristics for common engine operations. | **PASS — 1,000,000-operation configuration.** Representative graph operations were benchmarked through the configured scale points. The fastest recorded operation in the full run was **Entity / Contains (10,000)** at approximately **21.2 million operations/s**. |
+| **Relationship Scaling** | Measures relationship-query behavior from small to large sparse graphs and identifies scaling characteristics that could indicate unintended dependence on total graph size. | **PASS — 1,000,000-operation configuration.** Tested graph sizes from **1,000 through 100,000 entities**. At 100,000 entities, representative throughput reached approximately **3.32M outgoing queries/s**, **3.10M incoming queries/s**, **1.21M all-relationship queries/s**, and **868K neighbor queries/s**. |
+| **Memory Benchmark** | Measures managed-memory usage and working-set behavior across entity, relationship, property, and relationship-churn workloads. | **PASS — 1,000,000-operation configuration.** Memory behavior was measured through **100,000 entities**. Entity footprint stabilized near **271 B/entity**, while relationship/index footprint decreased toward approximately **418 B/relationship** at 100,000 entities. |
+| **Differential Fuzzing** | Compares Orb Engine behavior with an independent reference model under deterministic randomized graph mutation workloads. | **PASS — 5,000,000 differential-fuzz operations.** Five independent seed families completed **1,000,000 operations each**, with the engine remaining equivalent to the reference model. |
+| **Serialization Torture** | Exercises serialization and deserialization using large graphs, filesystem I/O, deterministic output checks, round-trip reconstruction, and malformed-input cases. | **PASS — 1,000,000-operation configuration.** Large-scale serialization testing reached **1,000,000 entities** and **1,000,049 relationships**, producing a lore document of approximately **374.97 MB**. |
+| **Crash / Recovery Torture** | Verifies rejection of missing, empty, truncated, interrupted, corrupted, and structurally invalid documents and verifies restoration from known-good state. | **PASS — 1,000,000 recovery operations.** The workload included **549,088 injected fault conditions** and **49,923 disk-backed recovery cycles**. |
+| **Soak / Endurance** | Detects cumulative state drift, memory retention, allocator degradation, persistence instability, validation failures, and throughput collapse under repeated engine lifecycle activity. | **PASS — 1,000,000 cycles.** Executed **700,476 mutation cycles** and **299,524 query-heavy cycles**, with **1,400,952 relationship additions**, **1,400,952 relationship removals**, **700,476 entity additions**, **700,476 entity removals**, **10,000 in-memory persistence round trips**, **1,000 disk persistence round trips**, and **100 full audits**. The canonical serialized state remained unchanged, final state remained **16 entities / 19 relationships**, and final validation passed. Retained managed-memory delta was **+255.77 KB**, with **5.49 MB peak managed heap** and **41.93 MB peak working set**. Final throughput was approximately **56,923 cycles/s**. |
+
+## Release-Gate Result
+
+The complete release verification program consisted of **12 campaigns**.
 
 <div align="center">
 
-## 🚧 `1.0.0-beta.1`
+<img src="https://img.shields.io/badge/Campaigns-12%2F12-2E7D32?style=for-the-badge" alt="12/12 campaigns"/>&nbsp;<img src="https://img.shields.io/badge/Checks-49%2F49-2E7D32?style=for-the-badge" alt="49/49 checks"/>&nbsp;<img src="https://img.shields.io/badge/Failures-0-2E7D32?style=for-the-badge" alt="0 failures"/>&nbsp;<img src="https://img.shields.io/badge/Profile-full-512BD4?style=for-the-badge" alt="Profile: full"/>&nbsp;<img src="https://img.shields.io/badge/Grade-A%20--%20Silver%20Standard-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A - Silver Standard"/>
 
 </div>
 
-Orbis Engine is currently in **beta**. The engine has completed its initial V1 architectural and behavioral audit, but the API and serialized formats should not yet be considered permanently frozen.
+The first ten campaigns — Mutation Chaos, Deterministic Replay, Mutation Performance, Pool Reuse, High-Degree Topology, Performance Benchmark, Relationship Scaling, Memory Benchmark, Serialization Torture, and Crash / Recovery Torture — completed as a single shared release-gate run:
 
-During the beta period:
+```text
+Campaigns: 10/10
+Checks:    47/47
+Status:    PASS
+```
 
-* APIs may change.
+The remaining two campaigns, **Differential Fuzzing** (5,000,000 fuzz operations across five independent seed families) and **Soak / Endurance** (1,000,000 cycles), are independent long-form workloads and are tracked and reported separately from the shared release-gate run above. Combined across all twelve campaigns, the full release verification program reports:
 
-* Serialization formats may change.
+```text
+Campaigns: 12/12
+Checks:    49/49
+Status:    PASS
+Failures:  0
+```
 
-* Internal architecture may change.
+**12 campaigns · 49 checks · 0 failures · full profile · 1,000,000 configured operations · Grade A — Silver Standard.**
 
-* Additional invariants may be introduced.
+The distinction around "configured operations" is intentional and worth preserving: it keeps this documentation auditable rather than implying that every campaign literally performed one million iterations of the same operation. Each campaign's actual workload — direct, distributed across graph sizes, or benchmark-staged — is documented per-campaign in the Verification Summary table above.
 
-* Breaking changes may occur between beta releases.
+## What Each Stress Layer Proves
 
-Applications integrating Orb.Engine should pin their dependency version rather than assuming compatibility across future beta releases.
+### Mutation Chaos — “Can the graph survive violence?”
+
+Mutation Chaos exists to expose invariant bugs that ordinary examples never touch. Random additions, removals, relationship churn, and changing graph shapes are useful for finding stale indexes, incorrect counts, invalid references, and mutation-order bugs. The million-operation run passed.
+
+### Deterministic Replay — “Can I reproduce the same universe twice?”
+
+The same generated journal is replayed against independent graphs. This is valuable because deterministic state transitions make future bugs reproducible rather than mystical. A failure at operation 713,492 should be replayable from the same seed and journal instead of disappearing when the developer looks at it.
+
+### Mutation Performance — “Is the core fast without benchmark contamination?”
+
+This campaign isolates actual mutation calls from graph setup, reference-model work, and full validation. It measures entity mutation, relationship mutation, entity removal with edges, slab reuse churn, and mixed mutation while also reporting allocation per operation.
+
+### Relationship Scaling — “Does query cost scale with the question, or with the whole universe?”
+
+Sparse graphs are deliberately used here because they make pathological full-graph scanning easier to spot. Query throughput remains in the high hundreds of thousands to millions of operations per second at 100K nodes for the tested operations, while validation was separately exercised on large graphs.
+
+### Memory Benchmark — “Does the data structure stay sane as it grows?”
+
+The memory campaign measures entities, relationships plus indexes, sparse properties, and post-deletion retention. The important result is the consistency of the footprint at larger sizes rather than one magic memory number.
+
+### Pool Reuse — “Does churn keep allocating forever?”
+
+Allocator reuse is specifically tested because graph workloads commonly add/remove relationships repeatedly. The second allocation wave dropping to effectively zero is strong evidence that reusable capacity is doing real work rather than existing only as an architectural idea.
+
+### High-Degree Topology — “What happens when one node becomes a monster?”
+
+A sparse graph can make everything look beautiful. A high-degree hub is where adjacency handling, traversal, deletion, and validation can become pathological. The 100K-edge hub survived construction, inspection, and removal successfully.
+
+### Differential Fuzzing — “Does the implementation agree with an independent model?”
+
+This is one of the strongest correctness-oriented stress tests because it does not merely assert internal expectations. It compares Orb.Engine behavior against a separate reference model over deterministic randomized workloads. Five million randomized operations passed across five seeds.
+
+### Serialization Torture — “Can the file representation carry a civilization?”
+
+The serializer was taken beyond toy graphs into a one-million-entity dataset with more than one million relationships. Large-file write, read, deserialize, and re-serialize paths completed successfully, making this a meaningful persistence-scale test rather than a formatting check.
+
+### Crash / Recovery — “What happens when persistence goes bad?”
+
+The campaign deliberately generates empty, truncated, corrupted, and semantically invalid documents, then verifies that Orb.Engine rejects them instead of silently creating a questionable graph. It also exercises last-known-good recovery and repeated corruption/recovery. The million-operation endurance layer then repeats those scenarios at scale.
+
+### Soak / Endurance — “Does the engine slowly become haunted?”
+
+Soak testing is designed to find cumulative failures that do not appear in a single large burst: state drift, memory retention, pool degradation, slow performance collapse, and gradual corruption. The million-cycle run returned to the same canonical serialized state and finished with a final valid graph.
+
+## Aggregate Assessment
+
+The combined evidence is strong for a stable foundational engine release. The testing does not rely on a single score: correctness, determinism, graph invariants, scale, memory behavior, allocation reuse, serialization, persistence failure handling, randomized differential testing, and long-duration state stability were all exercised independently.
+
+The most significant signal is **cross-test agreement**. The same internal structures survived very different forms of pressure: randomized mutation, deterministic replay, high-degree topology, allocator churn, massive serialization, corruption/recovery, and one-million-cycle endurance. That reduces the likelihood that the green results are an artifact of one narrow benchmark shape.
+
+### 1.0.0 Stable Grade A Recommendation
+
+<p>
+
+<img src="https://img.shields.io/badge/Release-1.0.0-7C3AED?style=for-the-badge" alt="Release 1.0.0"/>&nbsp;<img src="https://img.shields.io/badge/Grade-A%20--%20Silver%20Standard-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A - Silver Standard"/>&nbsp;<img src="https://img.shields.io/badge/Campaigns-12%2F12-2E7D32?style=for-the-badge" alt="12/12 campaigns"/>&nbsp;<img src="https://img.shields.io/badge/Checks-49%2F49-2E7D32?style=for-the-badge" alt="49/49 checks"/>&nbsp;<img src="https://img.shields.io/badge/Status-Stable-2E7D32?style=for-the-badge" alt="Status: Stable"/>
+
+</p>
+
+**Recommendation: Version 1.0.0 qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
+
+The recommendation is based on the combination of the 251-test unit suite and the independent stress campaigns described above: 12 campaigns, 49 checks, 0 failures, run under the `full` profile with seed `12345` and 1,000,000 configured operations. Grade A does not mean that every possible workload, platform, failure mode, or future compatibility requirement has been proven. It means the current release has met the defined stable-core verification requirements for the capabilities and workload classes that were actually tested, and no unresolved correctness failure was observed in those release-gate paths.
+
+In practical terms, 1.0.0 Grade A means:
+
+- Core graph invariants and mutation behavior passed the full unit and adversarial test suite.
+- Deterministic replay and differential testing found no divergence in the tested million-operation workloads.
+- Large sparse graphs and high-degree relationship topologies passed their dedicated stress campaigns.
+- Memory footprint, allocation reuse, and mutation performance were measured under scale and churn without a detected runaway-retention failure.
+- Serialization and persistence survived million-entity, corruption, recovery, and repeated round-trip workloads.
+- One-million-cycle soak testing completed without canonical-state drift, final validation failure, or retained-memory growth beyond the defined tolerance.
+
+The Grade A boundary is explicit: the release is recommended for applications and workloads covered by these verification areas. It is not a blanket claim that every conceivable use of Orb.Engine has been tested.
+
+---
+
+# ✦ Stable Release Grade
+
+<div align="center">
+
+## ✅ `1.0.0` · Stable · **Grade A — Silver Standard**
+
+<img src="https://img.shields.io/badge/Grade-A-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Standard-Silver-C0C0C0?style=for-the-badge" alt="Silver Standard"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Unit%20Tests-251%2F251-2E7D32?style=for-the-badge" alt="251/251 unit tests"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Fuzz%20Ops-5M%20passing-512BD4?style=for-the-badge" alt="5,000,000 fuzz ops passing"/>
+
+</div>
+
+Version 1.0.0 is a **stable Grade A release**. The engine has completed the current correctness, mutation, scale, memory, serialization, persistence, recovery, fuzzing, and endurance verification program.
+
+The public API and serialized document formats are treated as the defined 1.0.0 release surface. Changes after 1.0.0 should be evaluated under the Orbis release-grade system and the compatibility policy declared for the affected release.
+
+### 1.0.0 Verification Snapshot
+
+- **251 / 251 unit tests passing**
+- **0 failed · 0 skipped**
+- **5,000,000 differential-fuzz operations passing**
+- **1,000,000 crash/recovery operations passing**
+- **1,000,000 soak/endurance cycles passing**
+- **1,000,000-entity serialization torture passing**
+- **100,000-edge high-degree topology passing**
+- **100K-scale memory, relationship-scaling, pool-reuse, and mutation-performance campaigns passing**
+
+These results justify the **Grade A** release classification because they establish stable behavior across the engine's tested foundational responsibilities.
+
+---
+
+# ✦ Release Stability Grades
+
+The Orbis release-grade system applies **only to stable releases**. It is deliberately limited to two grades. A grade describes the level of verification completed for a specific release; it does not replace the version number and it does not claim that software can never fail.
+
+## 🥈 Grade A — Silver Standard
+
+<p>
+<img src="https://img.shields.io/badge/Grade-A-C0C0C0?style=for-the-badge&logo=shield&logoColor=white" alt="Grade A"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Coverage-Tested%20Scope-2E7D32?style=for-the-badge" alt="Coverage: Tested Scope"/>
+</p>
+
+**Definition:** A stable release that has passed every mandatory release-gate test for its declared engine capabilities and tested workload classes, with no unresolved correctness failure observed in those release-gate paths.
+
+A Grade A release must satisfy all of the following:
+
+- The complete mandatory unit-test suite passes with **zero failures and zero skipped release-gate tests**.
+- All stress campaigns designated as release gates for the declared scope pass.
+- Core graph mutation, relationship integrity, serialization, persistence, recovery, memory, and performance behavior have been exercised at the release's documented test scales.
+- No known unresolved defect remains that prevents a documented capability from functioning correctly within its tested scope.
+- The release record identifies the workload classes and test limits that were actually verified.
+
+**Use recommendation:** Developers may use Grade A releases for the specific purposes, capabilities, and workload classes explicitly covered by the release verification record. A Grade A designation does not approve deployment scenarios outside that verified scope.
+
+## 🥇 Grade S — Gold Standard
+
+<p>
+<img src="https://img.shields.io/badge/Grade-S-FFD700?style=for-the-badge&logo=shield&logoColor=white" alt="Grade S"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Coverage-Full%20Supported%20Scope-B8860B?style=for-the-badge" alt="Coverage: Full Supported Scope"/>
+&nbsp;
+<img src="https://img.shields.io/badge/Status-Not%20Yet%20Awarded-lightgrey?style=for-the-badge" alt="Status: Not Yet Awarded"/>
+</p>
+
+**Definition:** A stable release that satisfies every Grade A requirement and has additionally passed verification for **every documented supported capability, every declared supported workload class, and every officially supported runtime environment** included in the release contract.
+
+A Grade S release must satisfy all of the following:
+
+- Every Grade A requirement passes.
+- Every documented public capability has a corresponding passing verification path.
+- Required scale, memory, mutation, serialization, persistence, corruption/recovery, and long-duration endurance tests pass at the release's defined limits.
+- The same release-gate suite passes on every officially supported platform/runtime configuration.
+- Compatibility and migration tests for the release's declared API and file-format guarantees pass.
+- No known unresolved critical or high-severity correctness defect exists in any documented supported capability.
+
+**Use recommendation:** Developers may treat Grade S as the **Gold Standard for general-purpose development within the complete documented and officially supported scope of the engine**.
+
+### Grade Relationship
+
+```text
+Grade A — Silver Standard
+    Stable within the tested and documented scope.
+
+Grade S — Gold Standard
+    Grade A + complete supported-scope verification across
+    capabilities, workload classes, environments, and compatibility
+    guarantees defined by the release contract.
+```
+
+A Grade can move **upward** between stable releases when additional verification is completed. A release does not receive Grade S merely because it is older, widely used, or has accumulated a large test count; the grade is awarded from the verification evidence for that specific release.
 
 ---
 
@@ -1105,7 +1328,7 @@ Once published, Orb.Engine can be consumed as a .NET package.
 
 ```bash
 
-dotnet add package Orb.Engine --version 1.0.0-beta.1
+dotnet add package Orb.Engine --version 1.0.0
 
 ```
 
@@ -1115,13 +1338,13 @@ Or from a project file:
 
 <ItemGroup>
 
-  <PackageReference Include="Orb.Engine" Version="1.0.0-beta.1" />
+  <PackageReference Include="Orb.Engine" Version="1.0.0" />
 
 </ItemGroup>
 
 ```
 
-> **Note:** During the beta period, package availability and distribution channels may change.
+> **Release status:** `1.0.0` is a stable Grade A release. Future stable releases are evaluated under the Orbis release-grade system.
 
 ---
 
@@ -1187,7 +1410,7 @@ Subhradeep Sarkar
 
 ```
 
-The exact API may evolve during beta development.
+The exact API is defined by the `1.0.0` stable release surface; future changes should follow the applicable release policy.
 
 ---
 
@@ -1293,11 +1516,19 @@ dotnet build
 
 ```
 
-Run the complete test suite:
+Run the complete unit test suite:
 
 ```bash
 
 dotnet test
+
+```
+
+Run the stress-test arsenal:
+
+```bash
+
+dotnet run --project Orb.Engine.StressTests -- list
 
 ```
 
@@ -1361,7 +1592,7 @@ without quietly corrupting state.
 
 # ✦ Roadmap
 
-The current beta establishes the foundation for the next stages of Orbis.
+The `1.0.0` Grade A release establishes the stable foundation for the next stages of Orbis.
 
 * API stabilization
 
@@ -1381,7 +1612,7 @@ The current beta establishes the foundation for the next stages of Orbis.
 
 * Additional Orbis ecosystem components
 
-* Stable V1 release
+* Grade S qualification through broader compatibility and supported-environment verification
 
 The roadmap may change as real-world usage exposes new requirements.
 
@@ -1411,11 +1642,29 @@ For bug reports, include:
 
 ---
 
+# ✦ Community
+
+<div align="center">
+
+<a href="https://discord.com/invite/Em2ur4J8PF">
+
+<img src="https://img.shields.io/badge/Join%20us%20on-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join us on Discord"/>
+
+</a>
+
+</div>
+
+Questions, design discussion, and community support happen on Discord. It's the fastest way to reach the maintainer and other developers building on Orb.Engine outside of formal GitHub issues.
+
+---
+
 # ✦ License
 
-Orbis Engine is released under the **GNU Affero General Public License v3.0**.
+Orb.Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
 
-See [`LICENSE`](LICENSE) for the complete license text. The intention of using the AGPL is to ensure that the engine and derivative versions remain available under the same fundamental freedoms provided by the license.
+See [`LICENSE`](LICENSE) for the authoritative license text. This README does not grant a separate or alternative software license.
+
+Repository branding, logos, badges, and other visual assets may be subject to separate terms where explicitly stated; their presence does not change the software license of Orb.Engine.
 
 ---
 
@@ -1423,7 +1672,7 @@ See [`LICENSE`](LICENSE) for the complete license text. The intention of using t
 
 Orbis ultimately follows one principle:
 
-<div align="center">
+<div *align*="center">
 
 ### **Don't build another place to store information.**
 
@@ -1431,7 +1680,7 @@ Orbis ultimately follows one principle:
 
 </div>
 
-The project is still young, and the architecture will continue to evolve. `1.0.0-beta.1` represents the first public beta of the engine foundation — not the completion of the larger Orbis vision.
+The project will continue to evolve, but `1.0.0` marks the first stable Grade A foundation of the engine. It establishes a verified stable core without claiming that the larger Orbis ecosystem is complete.
 
 The ecosystem comes later. The foundation comes first.
 
@@ -1439,7 +1688,7 @@ The ecosystem comes later. The foundation comes first.
 
 # ✦ Author
 
-<div align="center">
+<div *align*="center">
 
 <h2>Subhradeep Sarkar</h2>
 
@@ -1465,6 +1714,12 @@ The ecosystem comes later. The foundation comes first.
 
   </a>
 
+  <a href="https://discord.com/invite/Em2ur4J8PF">
+
+    <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/>
+
+  </a>
+
 </p>
 
 </div>
@@ -1477,9 +1732,11 @@ The ecosystem comes later. The foundation comes first.
 
 **Portfolio:** https://subhradeepsarkarportfolio.pages.dev/
 
+**Discord:** https://discord.com/invite/Em2ur4J8PF
+
 ---
 
-<div align="center">
+<div *align*="center">
 
 <br/>
 
@@ -1491,6 +1748,6 @@ Structured information. Connected by design.
 
 <br/><br/>
 
-© 2026 <strong>Subhradeep Sarkar</strong>. All rights reserved except where otherwise specified by the GNU Affero General Public License v3.0.
+© 2026 <strong>Subhradeep Sarkar</strong>. Orb.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for the authoritative license text.
 
 </div>

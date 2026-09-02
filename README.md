@@ -53,11 +53,9 @@ The API and file formats may change before stable release.
 
   <p>
 
-    <strong>🚧 1.0.0-beta.1</strong>
+  <strong>🚧 1.0.0-beta.1</strong><br/>
 
-    <br/>
-
-    The API and file formats may change before stable release.
+  The API and file formats may change before stable release.
 
   </p>
 

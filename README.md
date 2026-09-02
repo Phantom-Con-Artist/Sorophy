@@ -51,16 +51,6 @@ The API and file formats may change before stable release.
 
 </div>
 
-  <p>
-
-  <strong>🚧 1.0.0-beta.1</strong><br/>
-
-  The API and file formats may change before stable release.
-
-  </p>
-
-</div>
-
 ---
 
 <div align="center">

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <!-- Build -->
@@ -26,6 +26,7 @@
     <!-- Documentation -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
 
     <!-- Repository -->
     <RepositoryUrl>https://github.com/Phantom-Con-Artist/Orb</RepositoryUrl>

@@ -17,7 +17,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Graph.History;
 using Sorophy.Engine.Time;
@@ -536,6 +538,134 @@ private static SorophyRelationshipFact CreateFact(
 
         Assert.Empty(
             errors);
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectNullHistoryInHistoryStore()
+    {
+        var graph =
+            new SorophyGraph();
+
+        var relationshipId =
+            Guid.NewGuid();
+
+        var historiesField =
+            typeof(SorophyGraph).GetField(
+                "_relationshipHistories",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var histories =
+            (Dictionary<Guid, SorophyRelationshipHistory>)
+                historiesField!.GetValue(graph)!;
+
+        histories[relationshipId] =
+            null!;
+
+        var errors =
+            graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    $"Relationship history store contains a null history for relationship '{relationshipId}'.",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectMismatchedRelationshipIdInHistoryStore()
+    {
+        var graph =
+            new SorophyGraph();
+
+        var keyId =
+            Guid.NewGuid();
+
+        var historyId =
+            Guid.NewGuid();
+
+        var historiesField =
+            typeof(SorophyGraph).GetField(
+                "_relationshipHistories",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var histories =
+            (Dictionary<Guid, SorophyRelationshipHistory>)
+                historiesField!.GetValue(graph)!;
+
+        histories[keyId] =
+            new SorophyRelationshipHistory(historyId);
+
+        var errors =
+            graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    $"Relationship history dictionary key '{keyId}' does not match history relationship ID '{historyId}'.",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectEmptyRelationshipIdInHistoryStore()
+    {
+        var graph =
+            new SorophyGraph();
+
+        var historyId =
+            Guid.NewGuid();
+
+        var historiesField =
+            typeof(SorophyGraph).GetField(
+                "_relationshipHistories",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var histories =
+            (Dictionary<Guid, SorophyRelationshipHistory>)
+                historiesField!.GetValue(graph)!;
+
+        histories[Guid.Empty] =
+            new SorophyRelationshipHistory(historyId);
+
+        var errors =
+            graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "Relationship history store contains an empty relationship ID.",
+                    StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Validate_ShouldDetectEmptyRetiredRelationshipId()
+    {
+        var graph =
+            new SorophyGraph();
+
+        var retiredField =
+            typeof(SorophyGraph).GetField(
+                "_retiredRelationshipIds",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var retired =
+            (HashSet<Guid>)
+                retiredField!.GetValue(graph)!;
+
+        retired.Add(
+            Guid.Empty);
+
+        var errors =
+            graph.Validate();
+
+        Assert.Contains(
+            errors,
+            error =>
+                error.Contains(
+                    "Relationship retirement store contains an empty relationship ID.",
+                    StringComparison.Ordinal));
     }
 
     /*

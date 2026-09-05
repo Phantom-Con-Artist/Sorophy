@@ -252,6 +252,9 @@ public sealed partial class SorophyGraph
         ValidateRelationships(
             errors);
 
+        ValidateRelationshipHistoryStore(
+            errors);
+
         ValidateTagIndex(
             errors);
 

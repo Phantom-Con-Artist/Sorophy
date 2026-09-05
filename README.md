@@ -1423,5 +1423,12 @@ Structured information. Connected by design. Aware of change.
 
 © 2026 <strong>Subhradeep Sarkar</strong>. Sorophy.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for details.
 
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/Phantom-Con-Artist/The-Saga-Documentation/main/assets/badges/the-saga-founder-badge.png"
+    alt="The Saga — Founder & Lead Maintainer"
+    width="300">
+</p>
+
 </div>
 ```

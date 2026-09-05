@@ -1,27 +1,27 @@
-# Contributing to Orb Engine
+# Contributing to Sorophy™
 
-Thank you for contributing to **Orb Engine**, the structured data and graph engine at the core of the Orbis Project.
+Thank you for contributing to **Sorophy™**, the structured information and graph core at the heart of The Saga.
 
-Orb Engine is maintained with a strong emphasis on explicit invariants, predictable behavior, serialization fidelity, a controlled public API, and adversarial testing. Contributions should preserve those properties rather than merely adding functionality.
+Sorophy™ is maintained with a strong emphasis on explicit invariants, predictable behavior, serialization fidelity, a controlled public API, and adversarial testing. Contributions should preserve those properties rather than merely adding functionality.
 
 ## 1. Scope
 
-This repository contains the Orb Engine and its automated verification projects.
+This repository contains Sorophy™ and its automated verification projects.
 
 The engine currently centers on:
 
-- `OrbGraph`
-- `OrbEntity`
-- `OrbRelationship`
-- `OrbProperty`
-- `OrbValue`
-- `OrbValueType`
+- `SorophyGraph`
+- `SorophyEntity`
+- `SorophyRelationship`
+- `SorophyProperty`
+- `SorophyValue`
+- `SorophyValueType`
 - Entity and lore serialization
 - Entity and lore storage
 - Graph traversal and reachability
 - Graph validation and mutation integrity
 
-The repository also contains unit tests and the Orb Engine StressTests arsenal.
+The repository also contains unit tests and the Sorophy™ stress-test arsenal.
 
 ## 2. Before You Start
 
@@ -48,8 +48,8 @@ The current engine targets **.NET 10**.
 Clone the repository:
 
 ```bash
-git clone https://github.com/Phantom-Con-Artist/Orb.git
-cd Orb
+git clone https://github.com/Phantom-Con-Artist/Sorophy.git
+cd Sorophy
 ```
 
 Build:
@@ -79,7 +79,7 @@ dotnet pack -c Release
 List the stress-test campaigns:
 
 ```bash
-dotnet run --project Orb.Engine.StressTests -- list
+dotnet run --project Sorophy.Engine.StressTests -- list
 ```
 
 ## 4. Required Verification Before a Pull Request
@@ -98,14 +98,14 @@ When the change affects graph behavior, serialization, storage, mutation, alloca
 For engine-core changes, the following command is useful for confirming the current campaign inventory:
 
 ```bash
-dotnet run --project Orb.Engine.StressTests -- list
+dotnet run --project Sorophy.Engine.StressTests -- list
 ```
 
 Do not report a campaign as passing unless the command actually completed successfully.
 
 ## 5. Testing Expectations
 
-Orb Engine uses both conventional unit tests and adversarial stress tests.
+Sorophy™ uses both conventional unit tests and adversarial stress tests.
 
 The unit-test suite currently verifies areas including:
 
@@ -134,7 +134,7 @@ Current campaign purposes include:
 | Performance Benchmark | General graph operation performance across scale points |
 | Relationship Scaling | Query behavior as graph size increases |
 | Memory Benchmark | Memory footprint and retention across entity/relationship scales |
-| Differential Fuzzing | OrbGraph behavior against an independent reference model |
+| Differential Fuzzing | SorophyGraph behavior against an independent reference model |
 | Serialization Torture | Large round trips and malformed-input rejection |
 | Crash / Recovery Torture | Corruption detection and last-known-good recovery |
 | Soak / Endurance | Repeated mutation/query/persistence cycles and cumulative degradation |
@@ -220,7 +220,7 @@ Avoid changes that improve a micro-benchmark while weakening correctness, readab
 
 ## 10. Memory and Pooling Changes
 
-Orb Engine uses internal graph indexes and adjacency storage intended to reduce repeated allocation.
+Sorophy™ uses internal graph indexes and adjacency storage intended to reduce repeated allocation.
 
 Changes to these structures should be tested for:
 
@@ -328,7 +328,7 @@ Disagreement is welcome. Personal attacks are not.
 
 A useful bug report should include:
 
-- Orb Engine version
+- Sorophy™ version
 - Commit or package version when known
 - .NET version
 - Operating system
@@ -351,7 +351,7 @@ Include enough information to reproduce the issue, but do not disclose credentia
 
 ## 18. License
 
-Orb Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
+Sorophy™ is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
 
 See [`LICENSE`](LICENSE) for the authoritative license text.
 
@@ -367,7 +367,7 @@ A successful contribution should improve the engine without weakening the invari
 
 ---
 
-**Orb Engine**  
+**Sorophy™**  
 Structured information. Connected by design.
 
 Copyright © 2026 Subhradeep Sarkar

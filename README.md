@@ -1,18 +1,18 @@
 <div align="center">
 
-<p>A REFERENCE IMPLEMENTATION OF</p>
+<p>A PROJECT UNDER</p>
 
-<img src="docs/orbisprojectcover.png" alt="Orb Project" width="900"/>
+<img src="docs/the-saga-cover.png" alt="The Saga — An Open Source Initiative" width="900"/>
 
 <p>introduces</p>
 
-<img src="docs/orbenginecover.png" alt="The Orb Engine" width="900"/>
+<img src="docs/sorophy-cover.png" alt="Sorophy™ — A Temporal Graph Evolution Core" width="900"/>
 
-<h1>The Orb Engine</h1>
+<h1>Sorophy™ 1.0.0</h1>
 
 <p>
 
-<strong>A structured data and graph engine for building interconnected information.</strong>
+<strong>A structured information and graph core for building interconnected information.</strong>
 
 </p>
 
@@ -24,9 +24,9 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 
 <br/>
 
-<p align="center"><a href="https://github.com/Phantom-Con-Artist/Orb"><img src="https://img.shields.io/badge/GitHub-Orb-181717?style=for-the-badge&logo=github" alt="GitHub"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/releases"><img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version"/></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/></a></p>
+<p align="center"><a href="https://github.com/Phantom-Con-Artist/Sorophy"><img src="https://img.shields.io/badge/GitHub-Sorophy-181717?style=for-the-badge&logo=github" alt="GitHub"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Sorophy/releases"><img src="https://img.shields.io/badge/Version-1.0.0--Stable--Grade--A-7C3AED?style=for-the-badge" alt="Version 1.0.0 Stable Grade A"/></a>&nbsp;<a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/></a></p>
 
-<p align="center"><a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/></a>&nbsp;<a href="https://learn.microsoft.com/en-us/dotnet/csharp/"><img src="https://img.shields.io/badge/C%23-Language-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#"/></a>&nbsp;<a href="https://github.com/Phantom-Con-Artist/Orb/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-E05735?style=for-the-badge" alt="Changelog"/></a></p>
+<p align="center"><a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/></a>&nbsp;<a href="https://learn.microsoft.com/en-us/dotnet/csharp/"><img src="https://img.shields.io/badge/C%23-Language-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#"/></a>&nbsp;<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-E05735?style=for-the-badge" alt="Changelog"/></a></p>
 
 <p align="center"><a href="https://discord.com/invite/Em2ur4J8PF"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/></a>&nbsp;<a href="mailto:personalsarkar345@gmail.com"><img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a></p>
 
@@ -34,35 +34,33 @@ Entities · Relationships · Typed Values · Graphs · Serialization · Storage
 
 <strong>✅ 1.0.0 · Stable · Grade A — Silver Standard</strong><br/>
 
-Stable enough for the documented capabilities and workload classes covered by the release verification program.
+Stable for the documented capabilities and workload classes covered by the release verification program.
 
 </p>
 
 </div>
 
----
-
-<div *align*="center">
+---<div *align*="center">
 
 ### Build information into structure.
 
 </div>
 
-Orb.Engine is the foundational engine behind **Orbis**, designed to represent structured information as interconnected entities, properties, and relationships.
+Sorophy.Engine is the reference implementation of **The Saga Architecture**, designed to represent structured information as interconnected entities, properties, and relationships.
 
-Rather than treating information as a collection of disconnected documents, Orbis provides a graph-oriented model where objects can exist independently, connect to one another, carry strongly defined values, and be persisted without losing their structure.
+Rather than treating information as a collection of disconnected documents, Sorophy provides a graph-oriented model where objects can exist independently, connect to one another, carry strongly defined values, and be persisted without losing their structure.
 
-The engine is designed to sit underneath higher-level applications such as editors, knowledge-management tools, worldbuilding systems, structured-data applications, and other domain-specific software.
+The engine is designed to sit underneath higher-level applications such as editors, knowledge-management tools, worldbuilding systems, structured-data applications, and other domain-specific software within the Myriad Ecosystem.
 
 ---
 
 ## Table of Contents
 
-- [The Orbis Vision](#the-orbis-vision)
+- [The Saga Vision](#the-saga-vision)
 
 - [Core Concepts](#core-concepts)
 
-- [The OrbValue System](#the-orbvalue-system)
+- [The SorophyValue System](#the-sorophyvalue-system)
 
 - [Nested Values](#nested-values)
 
@@ -91,7 +89,7 @@ The engine is designed to sit underneath higher-level applications such as edito
 
 - [Release Stability Grades](#release-stability-grades)
 
-- [What Orb.Engine Is Not](#what-orbengine-is-not)
+- [What Sorophy.Engine Is Not](#what-sorophyengine-is-not)
 
 - [Intended Ecosystem](#intended-ecosystem)
 
@@ -119,11 +117,11 @@ The engine is designed to sit underneath higher-level applications such as edito
 
 ---
 
-# ✦ The Orbis Vision
+# ✦ The Saga Vision
 
-Orbis is not intended to be just a graph library.
+The Saga is not intended to be just a graph library.
 
-**Orbis is an attempt to build a general-purpose structured information ecosystem.**
+**The Saga is an attempt to build a general-purpose structured information ecosystem.**
 
 The fundamental idea is simple:
 
@@ -133,11 +131,11 @@ Modern software gives us countless ways to create information, but much of that 
 
 A character may exist in one document. A location may exist in another. The relationship between them may exist only as a sentence buried inside a third document. One application may understand a given representation while another understands something completely different.
 
-Orbis approaches the problem from another direction. Instead of beginning with documents, Orbis begins with **structure**.
+The Saga approaches the problem from another direction. Instead of beginning with documents, The Saga begins with **structure**.
 
 ### The Core Idea
 
-At the foundation of Orbis is the concept of an **entity** — something that exists within an information system. It could be:
+At the foundation of The Saga is the concept of an **entity** — something that exists within an information system. It could be:
 
 ```text
 
@@ -175,7 +173,7 @@ Entities can carry structured properties and connect to one another through rela
 
 │    Project    │
 
-│    Orbis      │
+│    The Saga      │
 
 └───────┬───────┘
 
@@ -189,7 +187,7 @@ Entities can carry structured properties and connect to one another through rela
 
 ┌───────────────┐
 
-│  Orb.Engine   │
+│  Sorophy.Engine   │
 
 └───────────────┘
 
@@ -199,11 +197,11 @@ The important part is not merely that these objects exist — it's that **their 
 
 ### From Documents to Structured Information
 
-Traditional documents are excellent for human-readable content, but they often provide little semantic structure beyond what the author establishes through formatting and language. Orbis attempts to separate the **information model** from the application used to view it:
+Traditional documents are excellent for human-readable content, but they often provide little semantic structure beyond what the author establishes through formatting and language. The Saga attempts to separate the **information model** from the application used to view it:
 
 ```text
 
-                     ORBIS
+                     THE SAGA
 
                        │
 
@@ -241,7 +239,7 @@ The engine becomes the foundation. Applications become interfaces and specialize
 
 ### A General-Purpose Foundation
 
-Although Orbis can be used for worldbuilding and knowledge management, the underlying model is intentionally broader. The same engine can represent:
+Although The Saga can be used for worldbuilding and knowledge management, the underlying model is intentionally broader. The same engine can represent:
 
 ```text
 
@@ -255,9 +253,9 @@ Personal knowledge · Structured notes
 
 ```
 
-The domain changes. The underlying need does not: **represent things, describe them, connect them, and preserve those connections.** That is the problem Orbis is designed to address.
+The domain changes. The underlying need does not: **represent things, describe them, connect them, and preserve those connections.** That is the problem The Saga is designed to address.
 
-### The Orbis Document Model
+### The Saga Document Model
 
 The ecosystem is built around structured document concepts. The engine currently focuses on two fundamental representations:
 
@@ -293,7 +291,7 @@ An entity is a thing. A lore document is a connected body of things.
 
 ### Applications Should Not Own the Data Model
 
-A central architectural goal of Orbis is to avoid coupling the information model to a particular application. A worldbuilding tool, for example, shouldn't need to invent its own character model, location model, relationship model, serialization format, graph implementation, and storage mechanism — when those concepts can be provided by the underlying ecosystem instead:
+A central architectural goal of The Saga is to avoid coupling the information model to a particular application. A worldbuilding tool, for example, shouldn't need to invent its own character model, location model, relationship model, serialization format, graph implementation, and storage mechanism — when those concepts can be provided by the underlying ecosystem instead:
 
 ```text
 
@@ -305,7 +303,7 @@ A central architectural goal of Orbis is to avoid coupling the information model
 
               ┌──────────────┐
 
-              │  Orb.Engine  │
+              │  Sorophy.Engine  │
 
               └──────┬───────┘
 
@@ -323,13 +321,13 @@ The application determines **how users interact with information.**
 
 The engine determines **how that information exists and behaves.**
 
-### Orbpad and the Orbis Ecosystem
+### Orbpad and the Myriad Ecosystem
 
-Orbpad is envisioned as the first application built on the Orbis foundation. Rather than embedding the entire data engine directly into an application, Orbpad consumes the engine as a dedicated underlying system:
+Orbpad is envisioned as the first application built on The Saga foundation. Rather than embedding the entire data engine directly into an application, Orbpad consumes the engine as a dedicated underlying system:
 
 ```text
 
-Orbis Engine
+Sorophy™
 
      │
 
@@ -353,7 +351,7 @@ This separation also allows future applications to use the same underlying data 
 
 ### Interoperability as a Principle
 
-Orbis is designed around the belief that structured information should not be permanently trapped inside the application that created it. The engine therefore treats serialization, explicit types, stable identifiers, graph relationships, document boundaries, and storage as fundamental concerns — not implementation afterthoughts. A future application should ideally be able to consume an Orbis document without needing to understand the application that originally created it.
+The Saga is designed around the belief that structured information should not be permanently trapped inside the application that created it. The engine therefore treats serialization, explicit types, stable identifiers, graph relationships, document boundaries, and storage as fundamental concerns — not implementation afterthoughts. A future application should ideally be able to consume a The Saga document without needing to understand the application that originally created it.
 
 ### The Long-Term Goal
 
@@ -371,7 +369,7 @@ Orbis is designed around the belief that structured information should not be pe
 
                  ┌───────────────┐
 
-                 │ Orbis Engine  │
+                 │ Sorophy™  │
 
                  └───────┬───────┘
 
@@ -391,15 +389,15 @@ Orbis is designed around the belief that structured information should not be pe
 
 ```
 
-The application is replaceable. The information is not. That is the direction Orbis is being designed toward.
+The application is replaceable. The information is not. That is the direction The Saga is being designed toward.
 
-### Why Orb.Engine Exists
+### Why Sorophy.Engine Exists
 
-Orb.Engine is the first major foundation for this vision, providing the primitive building blocks the larger ecosystem is built on:
+Sorophy.Engine is the first major foundation for this vision, providing the primitive building blocks the larger ecosystem is built on:
 
 ```text
 
-OrbValue → OrbProperty → OrbEntity → OrbRelationship → OrbGraph
+SorophyValue → SorophyProperty → SorophyEntity → SorophyRelationship → SorophyGraph
 
    → Serialization → Storage → Applications
 
@@ -411,9 +409,9 @@ The engine is deliberately smaller than the ecosystem it's intended to support. 
 
 # ✦ Core Concepts
 
-Orbis Engine currently revolves around a small number of deliberately defined primitives.
+Sorophy™ currently revolves around a small number of deliberately defined primitives.
 
-## `OrbGraph`
+## `SorophyGraph`
 
 The graph is the primary container for interconnected information. It maintains:
 
@@ -435,7 +433,7 @@ Conceptually:
 
 ```text
 
-OrbGraph
+SorophyGraph
 
 │
 
@@ -461,9 +459,9 @@ OrbGraph
 
 The graph exposes read-only views of its underlying collections while retaining control over graph mutation internally.
 
-## `OrbEntity`
+## `SorophyEntity`
 
-An entity represents a single identifiable object within the Orbis model. An entity has:
+An entity represents a single identifiable object within The Saga model. An entity has:
 
 * A unique `Guid` identifier
 
@@ -475,7 +473,7 @@ An entity represents a single identifiable object within the Orbis model. An ent
 
 ```csharp
 
-var character = new OrbEntity(
+var character = new SorophyEntity(
 
     Guid.NewGuid(),
 
@@ -487,7 +485,7 @@ character.Type = "Character";
 
 Entities are intentionally independent from the graph itself. This allows them to be created, serialized, stored, and manipulated before being inserted into a graph.
 
-## `OrbRelationship`
+## `SorophyRelationship`
 
 A relationship connects two entities.
 
@@ -519,7 +517,7 @@ King
 
 Relationships are first-class graph objects rather than strings embedded inside entity data. The graph enforces relationship validity, including the requirement that referenced source and target entities exist.
 
-## `OrbProperty`
+## `SorophyProperty`
 
 Properties attach structured information to entities and relationships. A property consists of:
 
@@ -531,19 +529,19 @@ Value
 
 ```
 
-The value is represented through `OrbValue`, allowing the engine to maintain an explicit value type rather than treating everything as an untyped string.
+The value is represented through `SorophyValue`, allowing the engine to maintain an explicit value type rather than treating everything as an untyped string.
 
 ```csharp
 
-var age = new OrbProperty
+var age = new SorophyProperty
 
 {
 
     Name = "Age",
 
-    Value = new OrbValue(
+    Value = new SorophyValue(
 
-        OrbValueType.Integer,
+        SorophyValueType.Integer,
 
         42L)
 
@@ -553,11 +551,11 @@ var age = new OrbProperty
 
 ---
 
-# ✦ The OrbValue System
+# ✦ The SorophyValue System
 
-`OrbValue` provides the engine's canonical typed-value model.
+`SorophyValue` provides the engine's canonical typed-value model.
 
-Supported `OrbValueType` categories include:
+Supported `SorophyValueType` categories include:
 
 ```text
 
@@ -567,13 +565,13 @@ String · Guid · DateTime · List · Object
 
 ```
 
-The codec also accepts CLR `float` and `double` inputs. These floating-point inputs are represented through the engine's `Decimal` value category rather than through a separate `OrbValueType.Double` category.
+The codec also accepts CLR `float` and `double` inputs. These floating-point inputs are represented through the engine's `Decimal` value category rather than through a separate `SorophyValueType.Double` category.
 
 The purpose of this system is to prevent the graph from degenerating into an untyped collection of arbitrary CLR objects. For example:
 
 ```csharp
 
-new OrbValue(OrbValueType.Integer, 42L);
+new SorophyValue(SorophyValueType.Integer, 42L);
 
 ```
 
@@ -581,7 +579,7 @@ is fundamentally different from:
 
 ```csharp
 
-new OrbValue(OrbValueType.String, "42");
+new SorophyValue(SorophyValueType.String, "42");
 
 ```
 
@@ -591,13 +589,13 @@ The engine therefore knows that the first value is an integer and the second is 
 
 # ✦ Nested Values
 
-Orbis supports structured values inside lists and objects.
+The Saga supports structured values inside lists and objects.
 
 ```csharp
 
-var value = new OrbValue(
+var value = new SorophyValue(
 
-    OrbValueType.Object,
+    SorophyValueType.Object,
 
     new Dictionary<string, object?>
 
@@ -635,7 +633,7 @@ The engine's round-trip tests specifically exercise these cases.
 
 # ✦ Graph Operations
 
-`OrbGraph` provides operations for manipulating and querying graph structure.
+`SorophyGraph` provides operations for manipulating and querying graph structure.
 
 **Entity operations**
 
@@ -711,7 +709,7 @@ with both relationships removed, maintaining the graph's referential integrity.
 
 # ✦ Traversal
 
-Orbis Engine provides graph traversal functionality for exploring connected entities.
+Sorophy™ provides graph traversal functionality for exploring connected entities.
 
 ```text
 
@@ -771,7 +769,7 @@ This allows applications to reason about graph connectivity without manually imp
 
 # ✦ Serialization
 
-Orbis Engine provides dedicated serializers for its two primary document concepts.
+Sorophy™ provides dedicated serializers for its two primary document concepts.
 
 ## `.entity`
 
@@ -779,7 +777,7 @@ An `.entity` document represents an individual entity.
 
 ```text
 
-OrbEntity → EntitySerializer → .entity representation
+SorophyEntity → EntitySerializer → .entity representation
 
 ```
 
@@ -787,7 +785,7 @@ OrbEntity → EntitySerializer → .entity representation
 
 string json = EntitySerializer.Serialize(entity);
 
-OrbEntity entity =
+SorophyEntity entity =
 
     EntitySerializer.Deserialize(json);
 
@@ -799,7 +797,7 @@ A `.lore` document represents an entire graph.
 
 ```text
 
-OrbGraph → LoreSerializer → .lore representation
+SorophyGraph → LoreSerializer → .lore representation
 
 ```
 
@@ -807,7 +805,7 @@ OrbGraph → LoreSerializer → .lore representation
 
 string json = LoreSerializer.Serialize(graph);
 
-OrbGraph graph =
+SorophyGraph graph =
 
     LoreSerializer.Deserialize(json);
 
@@ -827,9 +825,9 @@ Object → Serialize → JSON → Deserialize → Object
 
 ```
 
-with the goal of preserving the semantic structure of the original data — including nested `Guid`, `DateTime`, primitive CLR types, lists, objects, and `OrbValue` types.
+with the goal of preserving the semantic structure of the original data — including nested `Guid`, `DateTime`, primitive CLR types, lists, objects, and `SorophyValue` types.
 
-A serializer that quietly turns a `DateTime` into an arbitrary string during a round trip may technically produce valid JSON, but it has destroyed information about the original value. Orbis treats that as a fidelity problem.
+A serializer that quietly turns a `DateTime` into an arbitrary string during a round trip may technically produce valid JSON, but it has destroyed information about the original value. The Saga treats that as a fidelity problem.
 
 ---
 
@@ -877,7 +875,7 @@ The storage layer is intentionally kept separate from the graph and serializatio
 
 ┌──────────────────────────────────────────┐
 
-│              Orbis Engine                  │
+│              Sorophy™                  │
 
 │                                           │
 
@@ -923,17 +921,17 @@ The engine owns the data model. Applications own the experience.
 
 # ✦ Public API
 
-The intended public API of Orb.Engine consists primarily of:
+The intended public API of Sorophy.Engine consists primarily of:
 
 ```text
 
-OrbGraph          OrbValue
+SorophyGraph          SorophyValue
 
-OrbEntity         OrbValueType
+SorophyEntity         SorophyValueType
 
-OrbRelationship
+SorophyRelationship
 
-OrbProperty       EntitySerializer
+SorophyProperty       EntitySerializer
 
                   LoreSerializer
 
@@ -949,7 +947,7 @@ Implementation details such as the recursive value codec and serialization docum
 
 # ✦ Validation & Reliability
 
-Orb.Engine has been developed around an adversarial testing philosophy rather than relying only on happy-path examples. The test system is divided into two complementary layers:
+Sorophy.Engine has been developed around an adversarial testing philosophy rather than relying only on happy-path examples. The test system is divided into two complementary layers:
 
 1. **Deterministic unit tests** establish the behavioral contract of individual engine features and invariants.
 2. **Stress and torture campaigns** exercise the same engine under sustained mutation, scale, corruption, persistence, allocation pressure, and randomized workloads.
@@ -978,7 +976,7 @@ The graph tests cover entity insertion/removal, relationship insertion/removal, 
 
 ### Typed Values & Property Contracts
 
-`OrbValue` is tested as a real typed-value system rather than an object bag. The suite exercises integer, boolean, decimal, floating-point CLR inputs (`float` and `double`), string, `Guid`, `DateTime`, null, list, and object values, including nested values and CLR-type preservation. Floating-point CLR inputs are represented through the engine's decimal value category; `OrbValueType` itself does not define a separate `Double` category. Integer contracts are deliberately strict: an `OrbValueType.Integer` value must contain an `Int64` (`long`) value.
+`SorophyValue` is tested as a real typed-value system rather than an object bag. The suite exercises integer, boolean, decimal, floating-point CLR inputs (`float` and `double`), string, `Guid`, `DateTime`, null, list, and object values, including nested values and CLR-type preservation. Floating-point CLR inputs are represented through the engine's decimal value category; `SorophyValueType` itself does not define a separate `Double` category. Integer contracts are deliberately strict: an `SorophyValueType.Integer` value must contain an `Int64` (`long`) value.
 
 ### Serialization & Round-Trip Fidelity
 
@@ -994,7 +992,7 @@ Traversal tests cover deterministic traversal semantics, outgoing and incoming r
 
 ### Public API Boundary
 
-The public API surface is tested so internal implementation details do not accidentally become part of the intended contract. The documented public surface centers on `OrbGraph`, `OrbEntity`, `OrbRelationship`, `OrbProperty`, `OrbValue`, `OrbValueType`, the serializers, and the storage APIs.
+The public API surface is tested so internal implementation details do not accidentally become part of the intended contract. The documented public surface centers on `SorophyGraph`, `SorophyEntity`, `SorophyRelationship`, `SorophyProperty`, `SorophyValue`, `SorophyValueType`, the serializers, and the storage APIs.
 
 ### Adversarial & Failure Behavior
 
@@ -1004,7 +1002,7 @@ The suite deliberately attacks the ugly cases: missing entities, invalid relatio
 
 # ✦ Test Arsenal & 1.0.0 Verification
 
-Orb Engine `1.0.0` was subjected to the full **Orb Engine Test Arsenal** using the following release-gate configuration:
+Sorophy™ `1.0.0` was subjected to the full **Sorophy™ Test Arsenal** using the following release-gate configuration:
 
 - **Version:** `1.0.0`
 - **Release grade:** **Grade A — Silver Standard**
@@ -1030,7 +1028,7 @@ The `1,000,000` operation setting is the configured workload supplied to each ca
 | **.NET SDK** | 10.0.400 |
 | **Target framework** | net10.0 |
 | **Build configuration** | Release |
-| **Orb Engine version** | 1.0.0 |
+| **Sorophy™ version** | 1.0.0 |
 | **Release grade** | Grade A — Silver Standard |
 | **Profile** | full |
 | **Seed** | 12345 |
@@ -1051,7 +1049,7 @@ All throughput, memory, and timing figures reported in this section were measure
 | **Performance Benchmark** | Establishes representative throughput baselines across multiple graph sizes and identifies scaling characteristics for common engine operations. | **PASS — 1,000,000-operation configuration.** Representative graph operations were benchmarked through the configured scale points. The fastest recorded operation in the full run was **Entity / Contains (10,000)** at approximately **21.2 million operations/s**. |
 | **Relationship Scaling** | Measures relationship-query behavior from small to large sparse graphs and identifies scaling characteristics that could indicate unintended dependence on total graph size. | **PASS — 1,000,000-operation configuration.** Tested graph sizes from **1,000 through 100,000 entities**. At 100,000 entities, representative throughput reached approximately **3.32M outgoing queries/s**, **3.10M incoming queries/s**, **1.21M all-relationship queries/s**, and **868K neighbor queries/s**. |
 | **Memory Benchmark** | Measures managed-memory usage and working-set behavior across entity, relationship, property, and relationship-churn workloads. | **PASS — 1,000,000-operation configuration.** Memory behavior was measured through **100,000 entities**. Entity footprint stabilized near **271 B/entity**, while relationship/index footprint decreased toward approximately **418 B/relationship** at 100,000 entities. |
-| **Differential Fuzzing** | Compares Orb Engine behavior with an independent reference model under deterministic randomized graph mutation workloads. | **PASS — 5,000,000 differential-fuzz operations.** Five independent seed families completed **1,000,000 operations each**, with the engine remaining equivalent to the reference model. |
+| **Differential Fuzzing** | Compares Sorophy™ behavior with an independent reference model under deterministic randomized graph mutation workloads. | **PASS — 5,000,000 differential-fuzz operations.** Five independent seed families completed **1,000,000 operations each**, with the engine remaining equivalent to the reference model. |
 | **Serialization Torture** | Exercises serialization and deserialization using large graphs, filesystem I/O, deterministic output checks, round-trip reconstruction, and malformed-input cases. | **PASS — 1,000,000-operation configuration.** Large-scale serialization testing reached **1,000,000 entities** and **1,000,049 relationships**, producing a lore document of approximately **374.97 MB**. |
 | **Crash / Recovery Torture** | Verifies rejection of missing, empty, truncated, interrupted, corrupted, and structurally invalid documents and verifies restoration from known-good state. | **PASS — 1,000,000 recovery operations.** The workload included **549,088 injected fault conditions** and **49,923 disk-backed recovery cycles**. |
 | **Soak / Endurance** | Detects cumulative state drift, memory retention, allocator degradation, persistence instability, validation failures, and throughput collapse under repeated engine lifecycle activity. | **PASS — 1,000,000 cycles.** Executed **700,476 mutation cycles** and **299,524 query-heavy cycles**, with **1,400,952 relationship additions**, **1,400,952 relationship removals**, **700,476 entity additions**, **700,476 entity removals**, **10,000 in-memory persistence round trips**, **1,000 disk persistence round trips**, and **100 full audits**. The canonical serialized state remained unchanged, final state remained **16 entities / 19 relationships**, and final validation passed. Retained managed-memory delta was **+255.77 KB**, with **5.49 MB peak managed heap** and **41.93 MB peak working set**. Final throughput was approximately **56,923 cycles/s**. |
@@ -1119,7 +1117,7 @@ A sparse graph can make everything look beautiful. A high-degree hub is where ad
 
 ### Differential Fuzzing — “Does the implementation agree with an independent model?”
 
-This is one of the strongest correctness-oriented stress tests because it does not merely assert internal expectations. It compares Orb.Engine behavior against a separate reference model over deterministic randomized workloads. Five million randomized operations passed across five seeds.
+This is one of the strongest correctness-oriented stress tests because it does not merely assert internal expectations. It compares Sorophy.Engine behavior against a separate reference model over deterministic randomized workloads. Five million randomized operations passed across five seeds.
 
 ### Serialization Torture — “Can the file representation carry a civilization?”
 
@@ -1127,7 +1125,7 @@ The serializer was taken beyond toy graphs into a one-million-entity dataset wit
 
 ### Crash / Recovery — “What happens when persistence goes bad?”
 
-The campaign deliberately generates empty, truncated, corrupted, and semantically invalid documents, then verifies that Orb.Engine rejects them instead of silently creating a questionable graph. It also exercises last-known-good recovery and repeated corruption/recovery. The million-operation endurance layer then repeats those scenarios at scale.
+The campaign deliberately generates empty, truncated, corrupted, and semantically invalid documents, then verifies that Sorophy.Engine rejects them instead of silently creating a questionable graph. It also exercises last-known-good recovery and repeated corruption/recovery. The million-operation endurance layer then repeats those scenarios at scale.
 
 ### Soak / Endurance — “Does the engine slowly become haunted?”
 
@@ -1147,7 +1145,7 @@ The most significant signal is **cross-test agreement**. The same internal struc
 
 </p>
 
-**Recommendation: Version 1.0.0 qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
+**Recommendation: Version 1.0.0 qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of The Saga within the tested and documented scope.**
 
 The recommendation is based on the combination of the 251-test unit suite and the independent stress campaigns described above: 12 campaigns, 49 checks, 0 failures, run under the `full` profile with seed `12345` and 1,000,000 configured operations. Grade A does not mean that every possible workload, platform, failure mode, or future compatibility requirement has been proven. It means the current release has met the defined stable-core verification requirements for the capabilities and workload classes that were actually tested, and no unresolved correctness failure was observed in those release-gate paths.
 
@@ -1160,7 +1158,7 @@ In practical terms, 1.0.0 Grade A means:
 - Serialization and persistence survived million-entity, corruption, recovery, and repeated round-trip workloads.
 - One-million-cycle soak testing completed without canonical-state drift, final validation failure, or retained-memory growth beyond the defined tolerance.
 
-The Grade A boundary is explicit: the release is recommended for applications and workloads covered by these verification areas. It is not a blanket claim that every conceivable use of Orb.Engine has been tested.
+The Grade A boundary is explicit: the release is recommended for applications and workloads covered by these verification areas. It is not a blanket claim that every conceivable use of Sorophy.Engine has been tested.
 
 ---
 
@@ -1182,7 +1180,7 @@ The Grade A boundary is explicit: the release is recommended for applications an
 
 Version 1.0.0 is a **stable Grade A release**. The engine has completed the current correctness, mutation, scale, memory, serialization, persistence, recovery, fuzzing, and endurance verification program.
 
-The public API and serialized document formats are treated as the defined 1.0.0 release surface. Changes after 1.0.0 should be evaluated under the Orbis release-grade system and the compatibility policy declared for the affected release.
+The public API and serialized document formats are treated as the defined 1.0.0 release surface. Changes after 1.0.0 should be evaluated under The Saga release-grade system and the compatibility policy declared for the affected release.
 
 ### 1.0.0 Verification Snapshot
 
@@ -1201,7 +1199,7 @@ These results justify the **Grade A** release classification because they establ
 
 # ✦ Release Stability Grades
 
-The Orbis release-grade system applies **only to stable releases**. It is deliberately limited to two grades. A grade describes the level of verification completed for a specific release; it does not replace the version number and it does not claim that software can never fail.
+The Saga release-grade system applies **only to stable releases**. It is deliberately limited to two grades. A grade describes the level of verification completed for a specific release; it does not replace the version number and it does not claim that software can never fail.
 
 ## 🥈 Grade A — Silver Standard
 
@@ -1262,9 +1260,9 @@ A Grade can move **upward** between stable releases when additional verification
 
 ---
 
-# ✦ What Orb.Engine Is Not
+# ✦ What Sorophy.Engine Is Not
 
-Orb.Engine is intentionally **not**:
+Sorophy.Engine is intentionally **not**:
 
 * A graphical editor
 
@@ -1288,11 +1286,18 @@ It is a **core structured-information and graph engine**. Higher-level applicati
 
 # ✦ Intended Ecosystem
 
-Orbis is being developed as an ecosystem rather than a single monolithic application.
+<div align="center">
+
+<img src="docs/myriad-ecosystem-cover.png" alt="Myriad Ecosystem — An Ecosystem for Structured Knowledge" width="800"/>
+
+</div>
+
+
+The Saga is being developed as an ecosystem rather than a single monolithic application.
 
 ```text
 
-                    ORBIS
+                    THE SAGA
 
                       │
 
@@ -1302,7 +1307,7 @@ Orbis is being developed as an ecosystem rather than a single monolithic applica
 
           ▼                       ▼
 
-     Orb.Engine                Applications
+     Sorophy.Engine                Applications
 
           │                       │
 
@@ -1324,11 +1329,11 @@ The engine provides the underlying structured information model. Applications pr
 
 # ✦ Installation
 
-Once published, Orb.Engine can be consumed as a .NET package.
+Once published, Sorophy.Engine can be consumed as a .NET package.
 
 ```bash
 
-dotnet add package Orb.Engine --version 1.0.0
+dotnet add package Sorophy.Engine --version 1.0.0
 
 ```
 
@@ -1338,13 +1343,13 @@ Or from a project file:
 
 <ItemGroup>
 
-  <PackageReference Include="Orb.Engine" Version="1.0.0" />
+  <PackageReference Include="Sorophy.Engine" Version="1.0.0" />
 
 </ItemGroup>
 
 ```
 
-> **Release status:** `1.0.0` is a stable Grade A release. Future stable releases are evaluated under the Orbis release-grade system.
+> **Release status:** `1.0.0` is a stable Grade A release. Future stable releases are evaluated under The Saga release-grade system.
 
 ---
 
@@ -1354,13 +1359,13 @@ A minimal graph can be created with entities and a relationship:
 
 ```csharp
 
-using Orb.Engine.Graph;
+using Sorophy.Engine.Graph;
 
-using Orb.Engine.Types;
+using Sorophy.Engine.Types;
 
-var graph = new OrbGraph();
+var graph = new SorophyGraph();
 
-var author = new OrbEntity(
+var author = new SorophyEntity(
 
     Guid.NewGuid(),
 
@@ -1368,11 +1373,11 @@ var author = new OrbEntity(
 
 author.Type = "Person";
 
-var project = new OrbEntity(
+var project = new SorophyEntity(
 
     Guid.NewGuid(),
 
-    "Orbis");
+    "The Saga");
 
 project.Type = "Project";
 
@@ -1380,7 +1385,7 @@ graph.AddEntity(author);
 
 graph.AddEntity(project);
 
-var relationship = new OrbRelationship(
+var relationship = new SorophyRelationship(
 
     Guid.NewGuid(),
 
@@ -1406,7 +1411,7 @@ Subhradeep Sarkar
 
         ▼
 
-      Orbis
+      The Saga
 
 ```
 
@@ -1418,31 +1423,31 @@ The exact API is defined by the `1.0.0` stable release surface; future changes s
 
 ```text
 
-Orb/
+Sorophy/
 
 │
 
-├── Orb.Engine/
+├── Sorophy.Engine/
 
 │   │
 
 │   ├── Graph/
 
-│   │   ├── OrbGraph
+│   │   ├── SorophyGraph
 
-│   │   ├── OrbEntity
+│   │   ├── SorophyEntity
 
-│   │   ├── OrbRelationship
+│   │   ├── SorophyRelationship
 
-│   │   └── OrbProperty
+│   │   └── SorophyProperty
 
 │   │
 
 │   ├── Types/
 
-│   │   ├── OrbValue
+│   │   ├── SorophyValue
 
-│   │   └── OrbValueType
+│   │   └── SorophyValueType
 
 │   │
 
@@ -1464,11 +1469,11 @@ Orb/
 
 │   │
 
-│   └── Orb.Engine.csproj
+│   └── Sorophy.Engine.csproj
 
 │
 
-├── Orb.Engine.Tests/
+├── Sorophy.Engine.Tests/
 
 │   ├── Graph/
 
@@ -1480,7 +1485,7 @@ Orb/
 
 ├── docs/
 
-│   └── orbis.logo
+│   └── sorophy-logo.png
 
 │
 
@@ -1502,9 +1507,9 @@ Clone the repository:
 
 ```bash
 
-git clone https://github.com/Phantom-Con-Artist/Orb.git
+git clone https://github.com/Phantom-Con-Artist/Sorophy.git
 
-cd Orb
+cd Sorophy
 
 ```
 
@@ -1528,7 +1533,7 @@ Run the stress-test arsenal:
 
 ```bash
 
-dotnet run --project Orb.Engine.StressTests -- list
+dotnet run --project Sorophy.Engine.StressTests -- list
 
 ```
 
@@ -1592,7 +1597,7 @@ without quietly corrupting state.
 
 # ✦ Roadmap
 
-The `1.0.0` Grade A release establishes the stable foundation for the next stages of Orbis.
+The `1.0.0` Grade A release establishes the stable foundation for the next stages of The Saga.
 
 * API stabilization
 
@@ -1610,7 +1615,7 @@ The `1.0.0` Grade A release establishes the stable foundation for the next stage
 
 * Orbpad integration
 
-* Additional Orbis ecosystem components
+* Additional The Saga ecosystem components
 
 * Grade S qualification through broader compatibility and supported-environment verification
 
@@ -1626,7 +1631,7 @@ Before contributing major architectural changes, please consider opening an issu
 
 For bug reports, include:
 
-* Orbis Engine version
+* Sorophy™ version
 
 * .NET version
 
@@ -1654,33 +1659,33 @@ For bug reports, include:
 
 </div>
 
-Questions, design discussion, and community support happen on Discord. It's the fastest way to reach the maintainer and other developers building on Orb.Engine outside of formal GitHub issues.
+Questions, design discussion, and community support happen on Discord. It's the fastest way to reach the maintainer and other developers building on Sorophy.Engine outside of formal GitHub issues.
 
 ---
 
 # ✦ License
 
-Orb.Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
+Sorophy.Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
 
 See [`LICENSE`](LICENSE) for the authoritative license text. This README does not grant a separate or alternative software license.
 
-Repository branding, logos, badges, and other visual assets may be subject to separate terms where explicitly stated; their presence does not change the software license of Orb.Engine.
+Repository branding, logos, badges, and other visual assets may be subject to separate terms where explicitly stated; their presence does not change the software license of Sorophy.Engine.
 
 ---
 
 # ✦ The Philosophy
 
-Orbis ultimately follows one principle:
+Sorophy and The Saga ultimately follow one principle:
 
 <div *align*="center">
 
 ### **Don't build another place to store information.**
 
-### **Build a system that understands what the information is.**
+### **Build a system that understands how information is structured.**
 
 </div>
 
-The project will continue to evolve, but `1.0.0` marks the first stable Grade A foundation of the engine. It establishes a verified stable core without claiming that the larger Orbis ecosystem is complete.
+The project will continue to evolve, but `1.0.0` marks the first stable Grade A foundation of the engine. It establishes a verified stable core without claiming that the larger The Saga ecosystem is complete.
 
 The ecosystem comes later. The foundation comes first.
 
@@ -1692,7 +1697,7 @@ The ecosystem comes later. The foundation comes first.
 
 <h2>Subhradeep Sarkar</h2>
 
-<p>Creator and maintainer of Orbis Engine</p>
+<p>Creator and lead maintainer of The Saga</p>
 
 <p>
 
@@ -1740,14 +1745,14 @@ The ecosystem comes later. The foundation comes first.
 
 <br/>
 
-<strong>Orbis Engine</strong>
+<strong>Sorophy™</strong>
 
 <br/>
 
-Structured information. Connected by design.
+A project under The Saga.
 
 <br/><br/>
 
-© 2026 <strong>Subhradeep Sarkar</strong>. Orb.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for the authoritative license text.
+© 2026 <strong>Subhradeep Sarkar</strong>. Sorophy.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for the authoritative license text.
 
 </div>

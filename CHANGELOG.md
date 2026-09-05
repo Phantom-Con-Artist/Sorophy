@@ -1,8 +1,10 @@
 # Changelog
 
-All notable changes to **Orbis Engine** are documented in this file.
+All notable changes to **Sorophy™** are documented in this file.
 
-Orbis Engine uses semantic-style versioning. Pre-release identifiers such as `-beta.N` and `-rc.N` identify development milestones and do not receive stable release grades. Stable releases may receive either **Grade A — Silver Standard** or **Grade S — Gold Standard** according to the verification requirements defined for that release.
+Sorophy™ uses semantic-style versioning.
+
+Pre-release identifiers such as `-beta.N` and `-rc.N` identify development milestones and do not receive stable release grades. Stable releases may receive either **Grade A — Silver Standard** or **Grade S — Gold Standard** according to the verification requirements defined for that release.
 
 ---
 
@@ -12,14 +14,14 @@ Orbis Engine uses semantic-style versioning. Pre-release identifiers such as `-b
 **Release grade:** **Grade A — Silver Standard**  
 **Release date:** September 2, 2026  
 **Target framework:** .NET 10  
-**Package ID:** `Orb.Engine`  
+**Package ID:** `Sorophy.Engine`  
 **License:** GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)
 
-> **Grade A means that Orb Engine is stable enough for the particular purposes represented by its documented capabilities and the workload classes verified for this release. It is not a claim of universal stability for every possible workload, platform, integration, or use case.**
+> **Grade A means that Sorophy™ is stable enough for the particular purposes represented by its documented capabilities and the workload classes verified for this release. It is not a claim of universal stability for every possible workload, platform, integration, or use case.**
 
 ## ✦ Release Summary
 
-Orbis Engine `1.0.0` is the first stable release of the engine foundation.
+Sorophy™ `1.0.0` is the first stable release of the engine foundation.
 
 The release establishes a verified core for structured information and graph workloads, including graph mutation, relationships, traversal, typed values, serialization, storage, validation, deterministic execution, allocation reuse, scaling, corruption handling, recovery, and long-duration endurance.
 
@@ -29,8 +31,8 @@ The release is designated **Grade A — Silver Standard** because the documented
 
 ## ✦ Core Graph Model
 
-- `OrbGraph` serves as the authoritative graph container.
-- `OrbEntity`, `OrbRelationship`, and `OrbProperty` provide the core structured graph model.
+- `SorophyGraph` serves as the authoritative graph container.
+- `SorophyEntity`, `SorophyRelationship`, and `SorophyProperty` provide the core structured graph model.
 - Graph objects use stable `Guid` identities.
 - Entity and relationship collections expose controlled read access.
 - Relationship insertion and removal maintain graph integrity.
@@ -47,9 +49,9 @@ The principal graph invariant is:
 
 ## ✦ Typed Value System
 
-`OrbValue` and `OrbValueType` provide the engine's structured value system.
+`SorophyValue` and `SorophyValueType` provide the engine's structured value system.
 
-The supported `OrbValueType` categories are:
+The supported `SorophyValueType` categories are:
 
 ```text
 Null
@@ -67,7 +69,7 @@ The release establishes:
 
 - `Int64` / `long` as the canonical integer representation.
 - `Decimal` as the engine's decimal value category.
-- CLR floating-point inputs such as `float` and `double` are handled through the engine's decimal-oriented representation rather than through a separate `OrbValueType.Double` member.
+- CLR floating-point inputs such as `float` and `double` are handled through the engine's decimal-oriented representation rather than through a separate `SorophyValueType.Double` member.
 - Recursive `List` and `Object` values.
 - Validation of canonical value representations.
 - Nested primitive and structured-value fidelity through serialization round trips.
@@ -148,12 +150,12 @@ Known-good persisted state was also verified for recovery after tested corruptio
 The intended public API is centered on:
 
 ```text
-OrbGraph
-OrbEntity
-OrbRelationship
-OrbProperty
-OrbValue
-OrbValueType
+SorophyGraph
+SorophyEntity
+SorophyRelationship
+SorophyProperty
+SorophyValue
+SorophyValueType
 EntitySerializer
 LoreSerializer
 EntityStorage
@@ -219,7 +221,7 @@ All campaigns were executed using the `full` profile with a configured workload 
 | **Performance Benchmark** | Establish empirical performance baselines across representative graph operations and graph sizes. | **PASS.** Full 1,000,000-operation configuration. Fastest recorded operation: approximately 21.2M ops/s for entity containment at 10,000 entities. Peak working set reached approximately 3.34 GB during the full benchmark workload. |
 | **Relationship Scaling** | Measure relationship-query behavior across sparse graph sizes and expose unintended dependence on total graph size. | **PASS.** Tested 1,000, 10,000, 50,000, and 100,000 entities. |
 | **Memory Benchmark** | Measure managed-memory and working-set behavior across entity, relationship/index, sparse-property, and churn workloads. | **PASS.** Tested through 100,000 entities; entity footprint stabilized near 271 B/entity and relationship/index footprint decreased toward approximately 418 B/relationship. |
-| **Differential Fuzzing** | Compare Orb Engine against an independent reference model under deterministic randomized mutations and topology queries. | **PASS.** Five independent 1,000,000-operation seed families, totaling **5,000,000 differential-fuzz operations**. |
+| **Differential Fuzzing** | Compare Sorophy™ against an independent reference model under deterministic randomized mutations and topology queries. | **PASS.** Five independent 1,000,000-operation seed families, totaling **5,000,000 differential-fuzz operations**. |
 | **Serialization Torture** | Stress serialization, deserialization, deterministic output, filesystem persistence, large graphs, and malformed-input handling. | **PASS.** Reached **1,000,000 entities / 1,000,049 relationships** and approximately **374.97 MB** serialized graph size. |
 | **Crash / Recovery Torture** | Verify rejection of damaged persistence artifacts and restoration of known-good state under sustained corruption/recovery workloads. | **PASS.** **1,000,000 recovery operations**, including **549,088 injected fault conditions** and **49,923 disk-backed recovery cycles**. |
 | **Soak / Endurance** | Detect cumulative state drift, memory retention, allocator degradation, persistence instability, validation failures, and throughput collapse. | **PASS.** **1,000,000 cycles** consisting of **700,476 mutation cycles** and **299,524 query-heavy cycles**, with **1,400,952 relationship additions**, **1,400,952 relationship removals**, **700,476 entity additions**, **700,476 entity removals**, **10,000 in-memory persistence round trips**, **1,000 disk persistence round trips**, and **100 full audits**. Canonical state and final validation remained correct; retained managed-memory delta was **+255.77 KB** and final throughput was approximately **56,923 cycles/s**. |
@@ -287,7 +289,7 @@ Grade S is the project's highest stable release designation and represents the G
 
 ## ✦ 1.0.0 Grade A Assessment
 
-**Recommendation: `1.0.0` qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of the Orbis ecosystem within the tested and documented scope.**
+**Recommendation: `1.0.0` qualifies as a Grade A — Silver Standard stable release and is suitable as the foundational core of The Saga within the tested and documented scope.**
 
 The assessment is based on the combination of the **251/251 unit-test suite**, **12/12 stress campaigns**, and **49/49 stress verification checks**.
 
@@ -319,7 +321,7 @@ The designation remains bounded by the tested scope. It does not establish unres
 **Target framework:** .NET 10  
 **License:** GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)
 
-> **Historical milestone:** This was the first public beta release of Orbis Engine.
+> **Historical milestone:** This was the first public beta release of Sorophy™.
 
 `1.0.0-beta.1` established the initial engine foundation, including the core graph model, typed values, relationship behavior, serialization boundaries, nested-value fidelity, storage, validation, and the initial public API surface.
 
@@ -353,7 +355,7 @@ A release grade belongs to the specific stable release being evaluated. Later st
 
 ## ✦ License
 
-Orbis Engine is released under the **GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)**.
+Sorophy™ is released under the **GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`)**.
 
 See [`LICENSE`](LICENSE) for the complete license text. The repository's `LICENSE` file is the authoritative legal text.
 
@@ -369,7 +371,7 @@ Future releases may extend the engine through:
 - Further performance optimization.
 - Broader interoperability.
 - Stable-contract-compatible API improvements where applicable.
-- Additional Orbis ecosystem integrations.
+- Additional Myriad Ecosystem integrations.
 - Expanded verification and broader runtime/environment coverage.
 
 Each subsequent stable release is evaluated independently against its own implementation, compatibility commitments, and verification scope.
@@ -380,12 +382,12 @@ Each subsequent stable release is evaluated independently against its own implem
 
 Copyright © 2026 **Subhradeep Sarkar**
 
-Orbis Engine is distributed under the terms of the **GNU Affero General Public License v3.0 or later**.
+Sorophy™ is distributed under the terms of the **GNU Affero General Public License v3.0 or later**.
 
 ---
 
 <div align="center">
-<strong>Orbis Engine</strong>
+<strong>Sorophy™</strong>
 <br/>
 Structured information. Connected by design.
 <br/><br/>

@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This Code of Conduct defines the standards for participation in the **Orb Engine** and **Orbis Project** community.
+This Code of Conduct defines the standards for participation in the **Sorophy™** and **The Saga** community.
 
 The goal is a technical environment where contributors can:
 
@@ -31,7 +31,7 @@ Participants are expected to:
 
 ## 3. Technical Disagreement
 
-Orb Engine is intentionally strict about correctness, invariants, API design, serialization behavior, and testing.
+Sorophy™ is intentionally strict about correctness, invariants, API design, serialization behavior, and testing.
 
 It is acceptable to say:
 
@@ -139,8 +139,8 @@ The project may update this Code of Conduct when the community or project struct
 
 ---
 
-**Orb Engine / Orbis Project**
+**Sorophy™ / The Saga**
 
 Copyright © 2026 Subhradeep Sarkar
 
-Orb Engine is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
+Sorophy™ is released under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.

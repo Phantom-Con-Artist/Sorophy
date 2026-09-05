@@ -875,4 +875,33 @@ private static SorophyRelationshipFact CreateFact(
         Assert.Empty(
             graph.RelationshipHistories);
     }
+
+    [Fact]
+    public void IsRelationshipIdRetired_And_RetiredRelationshipIds_ExposePublicState()
+    {
+        var graph = new SorophyGraph();
+        var entityA = new SorophyEntity { Id = Guid.NewGuid(), Name = "A", Type = "Node" };
+        var entityB = new SorophyEntity { Id = Guid.NewGuid(), Name = "B", Type = "Node" };
+        graph.AddEntity(entityA);
+        graph.AddEntity(entityB);
+
+        var relId = Guid.NewGuid();
+        var rel = new SorophyRelationship
+        {
+            Id = relId,
+            SourceId = entityA.Id,
+            TargetId = entityB.Id,
+            Type = "Connected"
+        };
+        graph.AddRelationship(rel);
+
+        Assert.False(graph.IsRelationshipIdRetired(relId));
+        Assert.DoesNotContain(relId, graph.RetiredRelationshipIds);
+
+        graph.RemoveRelationship(relId);
+
+        Assert.True(graph.IsRelationshipIdRetired(relId));
+        Assert.Contains(relId, graph.RetiredRelationshipIds);
+        Assert.Single(graph.RetiredRelationshipIds);
+    }
 }

@@ -121,10 +121,19 @@ public sealed class SorophyRelationshipEvolutionExecutorTests
             graph.IsRelationshipIdRetired(
                 relationshipId));
 
-        Assert.False(
+        Assert.True(
             graph.TryGetRelationshipHistory(
                 relationshipId,
-                out _));
+                out var history));
+
+        Assert.NotNull(history);
+        Assert.Single(history!.Facts);
+        Assert.Equal(effectiveTime, history.Facts[0].At);
+        Assert.Equal(relationshipId, history.Facts[0].RelationshipId);
+        Assert.Equal("Alliance", history.Facts[0].Type);
+        Assert.Equal(2, history.Facts[0].Properties.Count);
+        Assert.Equal(effectiveTime, history.Facts[0].ValidFrom);
+        Assert.Null(history.Facts[0].ValidTill);
     }
 
     [Fact]
@@ -1042,16 +1051,25 @@ public sealed class SorophyRelationshipEvolutionExecutorTests
         Assert.NotNull(
             history);
 
-        Assert.Single(
-            history!.Facts);
+        Assert.Equal(
+            2,
+            history!.Facts.Count);
 
         Assert.Equal(
             "Alliance",
             history.Facts[0].Type);
 
         Assert.Equal(
-            changeTime,
+            creationTime,
             history.Facts[0].At);
+
+        Assert.Equal(
+            "Alliance",
+            history.Facts[1].Type);
+
+        Assert.Equal(
+            changeTime,
+            history.Facts[1].At);
     }
 
     // =============================================================

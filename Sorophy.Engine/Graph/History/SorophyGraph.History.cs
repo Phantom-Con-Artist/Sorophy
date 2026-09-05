@@ -177,7 +177,7 @@ public sealed partial class SorophyGraph
     /// Determines whether a relationship identity has been permanently
     /// retired.
     /// </summary>
-    internal bool IsRelationshipIdRetired(
+    public bool IsRelationshipIdRetired(
         Guid relationshipId)
     {
         return _retiredRelationshipIds.Contains(
@@ -187,7 +187,7 @@ public sealed partial class SorophyGraph
     /// <summary>
     /// Gets the set of retired relationship identities.
     /// </summary>
-    internal IReadOnlyCollection<Guid> RetiredRelationshipIds =>
+    public IReadOnlyCollection<Guid> RetiredRelationshipIds =>
         _retiredRelationshipIds;
 
     /// <summary>

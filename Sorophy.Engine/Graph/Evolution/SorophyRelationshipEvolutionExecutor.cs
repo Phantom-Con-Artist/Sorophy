@@ -41,8 +41,9 @@ namespace Sorophy.Engine.Graph.Evolution;
 /// </para>
 ///
 /// <para>
-/// Relationship creation is different: because no prior relationship state
-/// exists, there is no historical fact to capture before creation.
+/// Relationship creation records an initial historical fact immediately
+/// upon successful creation, preserving the relationship's initial state
+/// and creation time through <see cref="SorophyRelationshipFact.At"/>.
 /// </para>
 ///
 /// <para>
@@ -156,6 +157,15 @@ public sealed class SorophyRelationshipEvolutionExecutor
 
         graph.AddRelationship(
             relationship);
+
+        var fact =
+            CreateHistoricalFact(
+                relationship,
+                operation.EffectiveTime,
+                operation.ValidTill);
+
+        graph.RecordRelationshipFact(
+            fact);
     }
 
     /// <summary>

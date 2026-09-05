@@ -1,0 +1,75 @@
+﻿{
+  "StartedAt": "2026-09-02T07:09:07.8482184-07:00",
+  "FinishedAt": "2026-09-02T07:09:26.2591003-07:00",
+  "Options": {
+    "Command": "all",
+    "Seed": 12345,
+    "Operations": 100000,
+    "AuditInterval": 5000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Chaos",
+      "Command": "mutation",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:04.1311888",
+      "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:10.3461300",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.2256591",
+      "Message": "Fastest: Entities / Contains (100,000) at 27,770,064 ops/s. Slowest: Graph / Validate (100,000) at 5 ops/s. Peak working set: 158.6 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Relationship Scaling",
+      "Command": "relationship-scaling",
+      "Status": 0,
+      "PassedChecks": 8,
+      "TotalChecks": 8,
+      "Duration": "00:00:01.3210583",
+      "Message": "Measured 4 graph sizes. Outgoing query throughput changed 1.78x from 1,000 to 100,000 entities. Peak working set: 158.7 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Memory Benchmark",
+      "Command": "memory",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.3538506",
+      "Message": "Largest measured managed-memory footprint: Relationship churn (100,000) at 60.38 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 5,
+  "TotalCampaigns": 5,
+  "PassedChecks": 36,
+  "TotalChecks": 36
+}

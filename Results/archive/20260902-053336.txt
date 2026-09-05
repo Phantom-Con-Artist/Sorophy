@@ -1,0 +1,23 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 5:33:36 AM -07:00
+Finished:    9/2/2026 5:33:37 AM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      0.254s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay                0.536s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+
+SUMMARY
+-------
+Campaigns: 2/2
+Checks:    8/8
+Status:    PASS
+

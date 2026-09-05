@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T05:56:30.1553864-07:00",
+  "FinishedAt": "2026-09-02T05:56:31.824897-07:00",
+  "Options": {
+    "Command": "relationship-scaling",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Relationship Scaling",
+      "Command": "relationship-scaling",
+      "Status": 0,
+      "PassedChecks": 8,
+      "TotalChecks": 8,
+      "Duration": "00:00:01.6442702",
+      "Message": "Measured 2 graph sizes. Outgoing query throughput changed 0.12x from 1,000 to 10,000 entities. Peak working set: 37.8 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 8,
+  "TotalChecks": 8
+}

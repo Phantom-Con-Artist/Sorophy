@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T09:58:22.7773689-07:00",
+  "FinishedAt": "2026-09-02T09:58:24.1704135-07:00",
+  "Options": {
+    "Command": "crash-recovery",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Crash / Recovery Torture",
+      "Command": "crash-recovery",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.3743597",
+      "Message": "Persistence survived valid round trips, missing files, empty/truncated documents, interrupted writes, corruption, invalid relationship endpoints, last-known-good recovery, repeated overwrites, and repeated corruption/recovery.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 10,
+  "TotalChecks": 10
+}

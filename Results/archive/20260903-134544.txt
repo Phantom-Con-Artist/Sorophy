@@ -1,0 +1,43 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/3/2026 1:45:44 PM -07:00
+Finished:    9/3/2026 1:46:02 PM -07:00
+Seed:        12345
+Profile:     full
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      0.175s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay                0.487s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed        7/7      Mutation Performance                0.710s
+          Pure entity and relationship mutation performance benchmarks passed.
+Failed        0/1      Pool Reuse                          0.014s
+          Relationship ID 'f5029edf-f2ad-3c47-1457-fd6bb75b3c01' has been retired and cannot be reused.
+Passed        1/1      High-Degree Topology                0.318s
+          High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
+Failed        0/10     Performance Benchmark               0.114s
+          Relationship ID '94fb2a3a-4867-5043-f71e-b0a96b69d28a' has been retired and cannot be reused.
+Passed        8/8      Relationship Scaling                1.803s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.41x from 1,000 to 100,000 entities. Peak working set: 168.0 MB.
+Passed       10/10     Memory Benchmark                    2.175s
+          Largest measured managed-memory footprint: Relationship churn (100,000) at 83.19 MB.
+Passed        1/1      Differential Fuzzing                0.308s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+Passed        1/1      Serialization Torture               0.878s
+          Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
+Passed        1/1      Crash / Recovery Torture           10.174s
+          Crash/recovery contract checks and the requested endurance workload passed.
+Passed        1/1      Soak / Endurance                    0.257s
+          Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.
+
+SUMMARY
+-------
+Campaigns: 10/12
+Checks:    38/49
+Status:    FAIL
+

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Sorophy.Engine.StressTests/Sorophy.Engine.StressTests.csproj" />
+  <Project Path="Sorophy.Engine.Tests/Sorophy.Engine.Tests.csproj" />
+  <Project Path="Sorophy.Engine/Sorophy.Engine.csproj" />
+</Solution>

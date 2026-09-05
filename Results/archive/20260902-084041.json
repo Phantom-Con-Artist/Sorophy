@@ -1,0 +1,130 @@
+﻿{
+  "StartedAt": "2026-09-02T08:40:41.4136778-07:00",
+  "FinishedAt": "2026-09-02T09:35:33.7324933-07:00",
+  "Options": {
+    "Command": "all",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 10000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Chaos",
+      "Command": "mutation",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:12:38.6506786",
+      "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:36:29.0395430",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Mutation Performance",
+      "Command": "mutation-performance",
+      "Status": 0,
+      "PassedChecks": 7,
+      "TotalChecks": 7,
+      "Duration": "00:00:54.5572431",
+      "Message": "Pure entity and relationship mutation performance benchmarks passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Pool Reuse",
+      "Command": "pool-reuse",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:05.8513158",
+      "Message": "Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "High-Degree Topology",
+      "Command": "high-degree",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:32.3985632",
+      "Message": "High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.4639039",
+      "Message": "Fastest: Entities / Contains (10,000) at 21,204,411 ops/s. Slowest: Graph / Validate (100,000) at 4 ops/s. Peak working set: 3343.7 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Relationship Scaling",
+      "Command": "relationship-scaling",
+      "Status": 0,
+      "PassedChecks": 8,
+      "TotalChecks": 8,
+      "Duration": "00:00:01.2917484",
+      "Message": "Measured 4 graph sizes. Outgoing query throughput changed 1.57x from 1,000 to 100,000 entities. Peak working set: 3343.7 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Memory Benchmark",
+      "Command": "memory",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.4687557",
+      "Message": "Largest measured managed-memory footprint: Relationship churn (100,000) at 50.64 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Differential Fuzzing",
+      "Command": "differential-fuzz",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:02:42.4620639",
+      "Message": "Deterministic randomized graph workloads matched an independent reference model across all configured seed families.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Serialization Torture",
+      "Command": "serialization-torture",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:01:24.6855219",
+      "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 10,
+  "TotalCampaigns": 10,
+  "PassedChecks": 47,
+  "TotalChecks": 47
+}

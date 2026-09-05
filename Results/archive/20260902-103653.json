@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T10:36:53.1714509-07:00",
+  "FinishedAt": "2026-09-02T10:57:37.5143694-07:00",
+  "Options": {
+    "Command": "crash-recovery",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 10000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Crash / Recovery Torture",
+      "Command": "crash-recovery",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:20:44.3239328",
+      "Message": "Crash/recovery contract checks and the requested endurance workload passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 1,
+  "TotalChecks": 1
+}

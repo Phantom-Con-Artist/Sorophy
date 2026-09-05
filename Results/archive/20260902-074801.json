@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-02T07:48:01.0540397-07:00",
+  "FinishedAt": "2026-09-02T07:50:12.6855308-07:00",
+  "Options": {
+    "Command": "high-degree",
+    "Seed": 12345,
+    "Operations": 100000,
+    "AuditInterval": 1000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "High-Degree Topology",
+      "Command": "high-degree",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:02:11.6136871",
+      "Message": "High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 1,
+  "TotalChecks": 1
+}

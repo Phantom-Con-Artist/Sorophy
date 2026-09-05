@@ -1,0 +1,110 @@
+root = true
+
+# ============================================================
+# C# — General Source Formatting
+# ============================================================
+
+[*.cs]
+
+# ------------------------------------------------------------
+# Indentation
+# ------------------------------------------------------------
+
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# ------------------------------------------------------------
+# Newline / Encoding
+# ------------------------------------------------------------
+
+end_of_line = crlf
+insert_final_newline = true
+charset = utf-8
+
+# ------------------------------------------------------------
+# Whitespace
+# ------------------------------------------------------------
+
+trim_trailing_whitespace = true
+
+# ============================================================
+# C# — Code Style
+# ============================================================
+
+# Prefer explicit braces for control-flow blocks.
+csharp_prefer_braces = true:suggestion
+
+# Prefer System types rather than language keywords where
+# analyzers support the preference.
+dotnet_style_predefined_type_for_locals_parameters_members = true:silent
+
+# Prefer readonly fields where applicable.
+dotnet_style_readonly_field = true:suggestion
+
+# Prefer object/collection initializers where applicable.
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+
+# Prefer simplified boolean expressions.
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+
+# Prefer conditional expressions where they improve clarity.
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+
+# Prefer null-coalescing expressions where applicable.
+dotnet_style_coalesce_expression = true:suggestion
+
+# Prefer null propagation where applicable.
+dotnet_style_null_propagation = true:suggestion
+
+# ============================================================
+# C# — Expression / Pattern Preferences
+# ============================================================
+
+# Prefer pattern matching where applicable.
+csharp_style_pattern_matching_over_is_with_cast = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+
+# Prefer switch expressions where they improve clarity.
+csharp_style_prefer_switch_expression = true:suggestion
+
+# Prefer simple using statements.
+csharp_prefer_simple_using_statement = true:suggestion
+
+# ============================================================
+# Documentation / Analyzer Policy
+# ============================================================
+
+# CS1591:
+# The public API does not currently require XML documentation on
+# every public member. XML documentation generation remains
+# enabled by the project; only the missing-comment diagnostic is
+# suppressed.
+dotnet_diagnostic.CS1591.severity = none
+
+# ============================================================
+# xUnit Analyzer Policy
+# ============================================================
+
+# xUnit2029:
+# Existing tests use Assert.Empty for collection-emptiness
+# assertions. This is a test-style analyzer recommendation and
+# is not treated as a release-gate failure.
+dotnet_diagnostic.xUnit2029.severity = none
+
+# xUnit2031:
+# Existing tests contain Where(...).Single() patterns.
+# This is a test-style analyzer recommendation and is not treated
+# as a release-gate failure.
+dotnet_diagnostic.xUnit2031.severity = none
+
+# ============================================================
+# Analyzer Philosophy
+# ============================================================
+
+# Do NOT disable all warnings globally.
+#
+# Compiler, nullable-analysis, build, security, correctness,
+# and other analyzer diagnostics remain enabled unless explicitly
+# suppressed above.

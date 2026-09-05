@@ -1,0 +1,27 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/2/2026 6:17:35 AM -07:00
+Finished:    9/2/2026 6:17:55 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  100000
+Audit:       5000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      3.830s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay               11.456s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed       10/10     Performance Benchmark               1.920s
+          Fastest: Entities / Contains (100,000) at 29,797,378 ops/s. Slowest: Graph / Validate (100,000) at 5 ops/s. Peak working set: 283.5 MB.
+Passed        8/8      Relationship Scaling                1.877s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.51x from 1,000 to 100,000 entities. Peak working set: 283.5 MB.
+
+SUMMARY
+-------
+Campaigns: 4/4
+Checks:    26/26
+Status:    PASS
+

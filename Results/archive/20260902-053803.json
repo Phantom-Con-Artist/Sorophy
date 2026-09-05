@@ -1,0 +1,42 @@
+﻿{
+  "StartedAt": "2026-09-02T05:38:03.7868814-07:00",
+  "FinishedAt": "2026-09-02T05:38:24.1152245-07:00",
+  "Options": {
+    "Command": "all",
+    "Seed": 12345,
+    "Operations": 100000,
+    "AuditInterval": 5000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Chaos",
+      "Command": "mutation",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:06.7494902",
+      "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:13.5606937",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 2,
+  "TotalCampaigns": 2,
+  "PassedChecks": 8,
+  "TotalChecks": 8
+}

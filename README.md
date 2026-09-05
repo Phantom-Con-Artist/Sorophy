@@ -1387,6 +1387,13 @@ Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or
 <h2>Subhradeep Sarkar</h2>
 <p>Creator and maintainer of Sorophy Engine</p>
 
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/Phantom-Con-Artist/The-Saga-Documentation/main/assets/badges/the-saga-founder-badge.png"
+    alt="The Saga — Founder & Lead Maintainer"
+    width="300">
+</p>
+
 <p>
 <a href="mailto:personalsarkar345@gmail.com">
   <img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
@@ -1423,12 +1430,7 @@ Structured information. Connected by design. Aware of change.
 
 © 2026 <strong>Subhradeep Sarkar</strong>. Sorophy.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for details.
 
-<p align="center">
-  <img
-    src="https://raw.githubusercontent.com/Phantom-Con-Artist/The-Saga-Documentation/main/assets/badges/the-saga-founder-badge.png"
-    alt="The Saga — Founder & Lead Maintainer"
-    width="300">
-</p>
+
 
 </div>
 ```

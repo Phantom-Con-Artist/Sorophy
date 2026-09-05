@@ -258,6 +258,33 @@ public sealed partial class SorophyGraph
                     $"does not match history relationship ID " +
                     $"'{history.RelationshipId}'.");
             }
+
+            foreach (var fact in history.Facts)
+            {
+                if (fact.EventEntityId is not null)
+                {
+                    if (fact.EventEntityId.Value == Guid.Empty)
+                    {
+                        errors.Add(
+                            $"Relationship '{relationshipId}' fact contains an empty event entity ID.");
+                    }
+                    else if (!_entities.TryGetValue(
+                            fact.EventEntityId.Value,
+                            out var eventEntity))
+                    {
+                        errors.Add(
+                            $"Relationship '{relationshipId}' fact references missing event entity '{fact.EventEntityId.Value}'.");
+                    }
+                    else if (!string.Equals(
+                            eventEntity.Type,
+                            "Event",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        errors.Add(
+                            $"Relationship '{relationshipId}' fact references entity '{fact.EventEntityId.Value}' with non-event type '{eventEntity.Type}'.");
+                    }
+                }
+            }
         }
 
         foreach (var relationshipId in

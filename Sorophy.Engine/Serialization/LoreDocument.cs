@@ -121,6 +121,10 @@ internal sealed class LoreRelationshipFactDocument
 
     [JsonPropertyName("validTill")]
     public LoreTimeDocument? ValidTill { get; set; }
+
+    [JsonPropertyName("eventEntityId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Guid? EventEntityId { get; set; }
 }
 
 internal sealed class LoreTimeDocument

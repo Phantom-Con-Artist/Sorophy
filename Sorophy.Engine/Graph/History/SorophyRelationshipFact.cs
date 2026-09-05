@@ -92,6 +92,12 @@ public sealed class SorophyRelationshipFact
     public SorophyTime? ValidTill { get; }
 
     /// <summary>
+    /// Gets the identity of the event entity that originated this fact,
+    /// or null when the fact is not associated with an event entity.
+    /// </summary>
+    public Guid? EventEntityId { get; }
+
+    /// <summary>
     /// Initializes a new historical relationship fact.
     /// </summary>
     /// <param name="at">
@@ -118,6 +124,9 @@ public sealed class SorophyRelationshipFact
     /// <param name="validTill">
     /// Optional validity end of the represented relationship state.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this fact.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="at"/> is null.
     /// </exception>
@@ -133,7 +142,8 @@ public sealed class SorophyRelationshipFact
         string type,
         IReadOnlyDictionary<string, SorophyProperty>? properties = null,
         SorophyTime? validFrom = null,
-        SorophyTime? validTill = null)
+        SorophyTime? validTill = null,
+        Guid? eventEntityId = null)
     {
         ArgumentNullException.ThrowIfNull(
             at);
@@ -143,6 +153,13 @@ public sealed class SorophyRelationshipFact
             throw new ArgumentException(
                 "Relationship ID cannot be empty.",
                 nameof(relationshipId));
+        }
+
+        if (eventEntityId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "Event entity ID cannot be empty when provided.",
+                nameof(eventEntityId));
         }
 
         if (sourceId == Guid.Empty)
@@ -197,6 +214,9 @@ public sealed class SorophyRelationshipFact
 
         ValidTill =
             validTill;
+
+        EventEntityId =
+            eventEntityId;
     }
 
     /// <summary>

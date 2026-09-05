@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/5/2026 4:03:47 PM -07:00
+Finished:    9/5/2026 4:03:49 PM -07:00
+Seed:        12345
+Profile:     full
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Krono Temporal Scope                1.357s
+          Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    4/4
+Status:    PASS
+

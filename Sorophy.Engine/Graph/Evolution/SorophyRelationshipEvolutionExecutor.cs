@@ -83,6 +83,13 @@ public sealed class SorophyRelationshipEvolutionExecutor
         ArgumentNullException.ThrowIfNull(
             evolution);
 
+        if (evolution.EventEntityId is not null)
+        {
+            ValidateEventEntity(
+                graph,
+                evolution.EventEntityId.Value);
+        }
+
         switch (evolution)
         {
             case SorophyRelationshipCreation creation:
@@ -162,7 +169,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
             CreateHistoricalFact(
                 relationship,
                 operation.EffectiveTime,
-                operation.ValidTill);
+                operation.ValidTill,
+                operation.EventEntityId);
 
         graph.RecordRelationshipFact(
             fact);
@@ -184,7 +192,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
             CreateHistoricalFact(
                 relationship,
                 operation.EffectiveTime,
-                operation.EffectiveTime);
+                operation.EffectiveTime,
+                operation.EventEntityId);
 
         graph.RecordRelationshipFact(
             fact);
@@ -209,7 +218,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
             CreateHistoricalFact(
                 relationship,
                 operation.EffectiveTime,
-                operation.EffectiveTime);
+                operation.EffectiveTime,
+                operation.EventEntityId);
 
         graph.RecordRelationshipFact(
             fact);
@@ -234,7 +244,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
             CreateHistoricalFact(
                 relationship,
                 operation.EffectiveTime,
-                operation.EffectiveTime);
+                operation.EffectiveTime,
+                operation.EventEntityId);
 
         graph.RecordRelationshipFact(
             fact);
@@ -276,7 +287,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
             CreateHistoricalFact(
                 relationship,
                 operation.EffectiveTime,
-                operation.EffectiveTime);
+                operation.EffectiveTime,
+                operation.EventEntityId);
 
         graph.RecordRelationshipFact(
             fact);
@@ -314,7 +326,8 @@ public sealed class SorophyRelationshipEvolutionExecutor
     private static SorophyRelationshipFact CreateHistoricalFact(
         SorophyRelationship relationship,
         Sorophy.Engine.Time.SorophyTime effectiveTime,
-        Sorophy.Engine.Time.SorophyTime? historicalValidTill)
+        Sorophy.Engine.Time.SorophyTime? historicalValidTill,
+        Guid? eventEntityId = null)
     {
         var properties =
             new Dictionary<string, SorophyProperty>(
@@ -329,7 +342,41 @@ public sealed class SorophyRelationshipEvolutionExecutor
             relationship.Type,
             properties,
             relationship.ValidFrom,
-            historicalValidTill);
+            historicalValidTill,
+            eventEntityId);
+    }
+
+    /// <summary>
+    /// Validates that an event entity exists in the graph and has type "Event".
+    /// </summary>
+    private static void ValidateEventEntity(
+        SorophyGraph graph,
+        Guid eventEntityId)
+    {
+        if (eventEntityId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "Event entity ID cannot be empty.",
+                nameof(eventEntityId));
+        }
+
+        if (!graph.TryGetEntity(
+                eventEntityId,
+                out var entity) ||
+            entity is null)
+        {
+            throw new InvalidOperationException(
+                $"Event entity '{eventEntityId}' does not exist in the active graph.");
+        }
+
+        if (!string.Equals(
+                entity.Type,
+                "Event",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                $"Entity '{eventEntityId}' has type '{entity.Type}', but an event entity must have type 'Event'.");
+        }
     }
 
     /// <summary>

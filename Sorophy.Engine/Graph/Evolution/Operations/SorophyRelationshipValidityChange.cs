@@ -64,6 +64,9 @@ public sealed class SorophyRelationshipValidityChange
     /// <param name="newValidTill">
     /// The new validity end, or null for an unbounded end.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this validity change.
+    /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when the supplied endpoints belong to different temporal
     /// schemas.
@@ -72,10 +75,12 @@ public sealed class SorophyRelationshipValidityChange
         Guid relationshipId,
         SorophyTime effectiveTime,
         SorophyTime? newValidFrom = null,
-        SorophyTime? newValidTill = null)
+        SorophyTime? newValidTill = null,
+        Guid? eventEntityId = null)
         : base(
             relationshipId,
-            effectiveTime)
+            effectiveTime,
+            eventEntityId)
     {
         ValidateSchema(
             newValidFrom,

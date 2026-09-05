@@ -68,6 +68,9 @@ public sealed class SorophyRelationshipPropertyModification
     /// <param name="propertiesToRemove">
     /// Property names to remove.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this property modification.
+    /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when a property name is blank or when the same property is
     /// requested for both setting and removal.
@@ -76,10 +79,12 @@ public sealed class SorophyRelationshipPropertyModification
         Guid relationshipId,
         SorophyTime effectiveTime,
         IReadOnlyDictionary<string, SorophyProperty>? propertiesToSet = null,
-        IEnumerable<string>? propertiesToRemove = null)
+        IEnumerable<string>? propertiesToRemove = null,
+        Guid? eventEntityId = null)
         : base(
             relationshipId,
-            effectiveTime)
+            effectiveTime,
+            eventEntityId)
     {
         PropertiesToSet =
             CopyPropertiesToSet(

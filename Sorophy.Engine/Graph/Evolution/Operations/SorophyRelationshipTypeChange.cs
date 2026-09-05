@@ -44,16 +44,21 @@ public sealed class SorophyRelationshipTypeChange
     /// <param name="effectiveTime">
     /// The temporal point at which the new type takes effect.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this type change.
+    /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="newType"/> is null, empty, or whitespace.
     /// </exception>
     public SorophyRelationshipTypeChange(
         Guid relationshipId,
         string newType,
-        SorophyTime effectiveTime)
+        SorophyTime effectiveTime,
+        Guid? eventEntityId = null)
         : base(
             relationshipId,
-            effectiveTime)
+            effectiveTime,
+            eventEntityId)
     {
         if (string.IsNullOrWhiteSpace(
                 newType))

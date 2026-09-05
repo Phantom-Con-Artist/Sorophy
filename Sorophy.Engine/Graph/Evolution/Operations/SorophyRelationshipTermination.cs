@@ -43,12 +43,17 @@ public sealed class SorophyRelationshipTermination
     /// <param name="effectiveTime">
     /// The temporal point at which the relationship terminates.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this termination.
+    /// </param>
     public SorophyRelationshipTermination(
         Guid relationshipId,
-        SorophyTime effectiveTime)
+        SorophyTime effectiveTime,
+        Guid? eventEntityId = null)
         : base(
             relationshipId,
-            effectiveTime)
+            effectiveTime,
+            eventEntityId)
     {
     }
 }

@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-05T16:07:44.5734845-07:00",
+  "FinishedAt": "2026-09-05T16:07:45.9490685-07:00",
+  "Options": {
+    "Command": "krono-time",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Krono Temporal Scope",
+      "Command": "krono-time",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:01.3630342",
+      "Message": "Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 4,
+  "TotalChecks": 4
+}

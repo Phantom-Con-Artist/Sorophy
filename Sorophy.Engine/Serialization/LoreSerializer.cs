@@ -144,7 +144,9 @@ public static class LoreSerializer
         foreach (var history in graph.RelationshipHistories.Values
                      .OrderBy(h => h.RelationshipId))
         {
-            ValidateRelationshipHistory(history);
+            ValidateRelationshipHistory(
+                history,
+                graph);
 
             var historyDocument =
                 new LoreRelationshipHistoryDocument
@@ -157,7 +159,8 @@ public static class LoreSerializer
             {
                 ValidateRelationshipFact(
                     fact,
-                    history.RelationshipId);
+                    history.RelationshipId,
+                    graph);
 
                 historyDocument.Facts.Add(
                     new LoreRelationshipFactDocument
@@ -177,7 +180,9 @@ public static class LoreSerializer
                                 fact.ValidFrom),
                         ValidTill =
                             SerializeTime(
-                                fact.ValidTill)
+                                fact.ValidTill),
+                        EventEntityId =
+                            fact.EventEntityId
                     });
             }
 
@@ -351,7 +356,8 @@ public static class LoreSerializer
                             factDocument.Type,
                             factProperties,
                             validFrom,
-                            validTill);
+                            validTill,
+                            factDocument.EventEntityId);
                     }
                     catch (ArgumentException ex)
                     {
@@ -708,6 +714,9 @@ public static class LoreSerializer
         var entityIds =
             new HashSet<Guid>();
 
+        var entityTypes =
+            new Dictionary<Guid, string?>();
+
         foreach (var entity in document.Entities)
         {
             if (entity is null)
@@ -727,6 +736,10 @@ public static class LoreSerializer
                 throw new InvalidOperationException(
                     $"Duplicate entity id '{entity.Id}'.");
             }
+
+            entityTypes.Add(
+                entity.Id,
+                entity.Type);
 
             if (string.IsNullOrWhiteSpace(
                     entity.Name))
@@ -1013,6 +1026,32 @@ public static class LoreSerializer
                     ValidateFactTemporalSchemas(
                         fact,
                         history.RelationshipId);
+
+                    if (fact.EventEntityId is not null)
+                    {
+                        if (fact.EventEntityId.Value == Guid.Empty)
+                        {
+                            throw new InvalidOperationException(
+                                $"Fact for relationship '{history.RelationshipId}' must have a non-empty event entity id.");
+                        }
+
+                        if (!entityTypes.TryGetValue(
+                                fact.EventEntityId.Value,
+                                out var eventEntityType))
+                        {
+                            throw new InvalidOperationException(
+                                $"Fact for relationship '{history.RelationshipId}' references missing event entity '{fact.EventEntityId.Value}'.");
+                        }
+
+                        if (!string.Equals(
+                                eventEntityType,
+                                "Event",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            throw new InvalidOperationException(
+                                $"Fact for relationship '{history.RelationshipId}' references entity '{fact.EventEntityId.Value}' with non-event type '{eventEntityType}'.");
+                        }
+                    }
                 }
             }
         }
@@ -1281,7 +1320,9 @@ public static class LoreSerializer
                     $"Duplicate relationship history for relationship id '{history.RelationshipId}'.");
             }
 
-            ValidateRelationshipHistory(history);
+            ValidateRelationshipHistory(
+                history,
+                graph);
         }
     }
 
@@ -1454,7 +1495,8 @@ public static class LoreSerializer
     }
 
     private static void ValidateRelationshipHistory(
-        SorophyRelationshipHistory history)
+        SorophyRelationshipHistory history,
+        SorophyGraph graph)
     {
         if (history is null)
         {
@@ -1478,13 +1520,15 @@ public static class LoreSerializer
         {
             ValidateRelationshipFact(
                 fact,
-                history.RelationshipId);
+                history.RelationshipId,
+                graph);
         }
     }
 
     private static void ValidateRelationshipFact(
         SorophyRelationshipFact fact,
-        Guid expectedRelationshipId)
+        Guid expectedRelationshipId,
+        SorophyGraph graph)
     {
         if (fact is null)
         {
@@ -1567,6 +1611,32 @@ public static class LoreSerializer
         {
             throw new InvalidOperationException(
                 $"Fact for relationship '{expectedRelationshipId}' ValidFrom and ValidTill must belong to the same temporal schema.");
+        }
+
+        if (fact.EventEntityId is not null)
+        {
+            if (fact.EventEntityId.Value == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    $"Fact for relationship '{expectedRelationshipId}' must have a non-empty event entity ID.");
+            }
+
+            if (!graph.Entities.TryGetValue(
+                    fact.EventEntityId.Value,
+                    out var eventEntity))
+            {
+                throw new InvalidOperationException(
+                    $"Fact for relationship '{expectedRelationshipId}' references missing event entity '{fact.EventEntityId.Value}'.");
+            }
+
+            if (!string.Equals(
+                    eventEntity.Type,
+                    "Event",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"Fact for relationship '{expectedRelationshipId}' references entity '{fact.EventEntityId.Value}' with non-event type '{eventEntity.Type}'.");
+            }
         }
     }
 

@@ -56,6 +56,12 @@ public abstract class SorophyRelationshipEvolution
     public SorophyTime EffectiveTime { get; }
 
     /// <summary>
+    /// Gets the identity of the event entity that originated this evolution,
+    /// or null when the evolution is not associated with an event entity.
+    /// </summary>
+    public Guid? EventEntityId { get; }
+
+    /// <summary>
     /// Initializes a new relationship evolution.
     /// </summary>
     /// <param name="relationshipId">
@@ -65,21 +71,33 @@ public abstract class SorophyRelationshipEvolution
     /// <param name="effectiveTime">
     /// The temporal point at which the evolution takes effect.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this evolution.
+    /// </param>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="relationshipId"/> is empty.
+    /// Thrown when <paramref name="relationshipId"/> is empty or when
+    /// <paramref name="eventEntityId"/> is explicitly supplied as empty.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="effectiveTime"/> is null.
     /// </exception>
     protected SorophyRelationshipEvolution(
         Guid relationshipId,
-        SorophyTime effectiveTime)
+        SorophyTime effectiveTime,
+        Guid? eventEntityId = null)
     {
         if (relationshipId == Guid.Empty)
         {
             throw new ArgumentException(
                 "Relationship ID cannot be empty.",
                 nameof(relationshipId));
+        }
+
+        if (eventEntityId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "Event entity ID cannot be empty when provided.",
+                nameof(eventEntityId));
         }
 
         ArgumentNullException.ThrowIfNull(
@@ -90,5 +108,8 @@ public abstract class SorophyRelationshipEvolution
 
         EffectiveTime =
             effectiveTime;
+
+        EventEntityId =
+            eventEntityId;
     }
 }

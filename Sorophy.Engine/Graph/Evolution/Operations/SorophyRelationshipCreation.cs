@@ -98,6 +98,9 @@ public sealed class SorophyRelationshipCreation
     /// <param name="validTill">
     /// Optional temporal validity end.
     /// </param>
+    /// <param name="eventEntityId">
+    /// Optional identity of the event entity that originated this creation.
+    /// </param>
     /// <exception cref="ArgumentException">
     /// Thrown when an entity identity is empty or when the relationship
     /// type is blank.
@@ -113,10 +116,12 @@ public sealed class SorophyRelationshipCreation
         SorophyTime effectiveTime,
         IReadOnlyDictionary<string, SorophyProperty>? properties = null,
         SorophyTime? validFrom = null,
-        SorophyTime? validTill = null)
+        SorophyTime? validTill = null,
+        Guid? eventEntityId = null)
         : base(
             relationshipId,
-            effectiveTime)
+            effectiveTime,
+            eventEntityId)
     {
         if (sourceId == Guid.Empty)
         {

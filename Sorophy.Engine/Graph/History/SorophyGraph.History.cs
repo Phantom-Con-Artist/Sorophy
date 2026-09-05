@@ -185,6 +185,12 @@ public sealed partial class SorophyGraph
     }
 
     /// <summary>
+    /// Gets the set of retired relationship identities.
+    /// </summary>
+    internal IReadOnlyCollection<Guid> RetiredRelationshipIds =>
+        _retiredRelationshipIds;
+
+    /// <summary>
     /// Permanently retires a relationship identity.
     /// </summary>
     /// <param name="relationshipId">

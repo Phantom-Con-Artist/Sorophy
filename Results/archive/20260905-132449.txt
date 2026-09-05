@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/5/2026 1:24:49 PM -07:00
+Finished:    9/5/2026 1:24:50 PM -07:00
+Seed:        12345
+Profile:     full
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Failed        0/1      Soak / Endurance                    0.325s
+          Canonical serialization drift at cycle 1,000.
+
+SUMMARY
+-------
+Campaigns: 0/1
+Checks:    0/1
+Status:    FAIL
+

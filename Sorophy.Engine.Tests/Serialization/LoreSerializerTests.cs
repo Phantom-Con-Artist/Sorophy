@@ -13,7 +13,7 @@ public class LoreSerializerTests
 
         var json = LoreSerializer.Serialize(graph);
 
-        Assert.Contains("\"formatVersion\": 1", json);
+        Assert.Contains("\"formatVersion\": 2", json);
     }
 
     [Fact]

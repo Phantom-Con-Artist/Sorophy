@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Nodes;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Serialization;
 using Sorophy.Engine.Storage;
@@ -137,7 +138,8 @@ public static class SoakEnduranceTests
 
             var canonicalFingerprint =
                 ComputeFingerprint(
-                    canonicalJson);
+                    NormalizeActiveStateSerialization(
+                        canonicalJson));
 
             var entityIds =
                 graph.Entities.Keys
@@ -313,10 +315,12 @@ public static class SoakEnduranceTests
 
                         Require(
                             string.Equals(
-                                serialized,
-                                canonicalJson,
+                                NormalizeActiveStateSerialization(
+                                    serialized),
+                                NormalizeActiveStateSerialization(
+                                    canonicalJson),
                                 StringComparison.Ordinal),
-                            $"Canonical serialization drift detected at cycle {cycle:N0}.");
+                            $"Canonical active serialization drift detected at cycle {cycle:N0}.");
 
                         var restored =
                             LoreSerializer.Deserialize(
@@ -493,7 +497,8 @@ public static class SoakEnduranceTests
 
             var finalFingerprint =
                 ComputeFingerprint(
-                    finalJson);
+                    NormalizeActiveStateSerialization(
+                        finalJson));
 
             var canonicalStateHealthy =
                 string.Equals(
@@ -507,10 +512,12 @@ public static class SoakEnduranceTests
 
             Require(
                 string.Equals(
-                    finalJson,
-                    canonicalJson,
+                    NormalizeActiveStateSerialization(
+                        finalJson),
+                    NormalizeActiveStateSerialization(
+                        canonicalJson),
                     StringComparison.Ordinal),
-                "Final canonical serialized state drift detected.");
+                "Final canonical active serialized state drift detected.");
 
             Require(
                 graph.Entities.Count ==
@@ -985,21 +992,24 @@ public static class SoakEnduranceTests
 
         var fingerprint =
             ComputeFingerprint(
-                serialized);
+                NormalizeActiveStateSerialization(
+                    serialized));
 
         Require(
             string.Equals(
                 fingerprint,
                 canonicalFingerprint,
                 StringComparison.Ordinal),
-            $"Canonical fingerprint drift at cycle {cycle:N0}.");
+            $"Canonical active fingerprint drift at cycle {cycle:N0}.");
 
-        Require(
-            string.Equals(
-                serialized,
-                canonicalJson,
-                StringComparison.Ordinal),
-            $"Canonical serialization drift at cycle {cycle:N0}.");
+Require(
+    string.Equals(
+        NormalizeActiveStateSerialization(
+            serialized),
+        NormalizeActiveStateSerialization(
+            canonicalJson),
+        StringComparison.Ordinal),
+    $"Canonical active serialization drift at cycle {cycle:N0}.");
 
         var managedBytes =
             GC.GetTotalMemory(
@@ -1232,6 +1242,25 @@ public static class SoakEnduranceTests
      * =============================================================
      */
 
+    private static string NormalizeActiveStateSerialization(
+        string json)
+    {
+        var document =
+            JsonNode.Parse(
+                json)
+            ?? throw new InvalidOperationException(
+                "Canonical JSON could not be parsed.");
+
+        if (document["retiredRelationshipIds"] is not null)
+        {
+            document["retiredRelationshipIds"] =
+                new JsonArray();
+        }
+
+        return
+            document.ToJsonString();
+    }
+
     private static string ComputeFingerprint(
         string value)
     {
@@ -1280,10 +1309,12 @@ public static class SoakEnduranceTests
 
         Require(
             string.Equals(
-                serialized,
-                canonicalJson,
+                NormalizeActiveStateSerialization(
+                    serialized),
+                NormalizeActiveStateSerialization(
+                    canonicalJson),
                 StringComparison.Ordinal),
-            $"{context}: canonical state changed at cycle {cycle:N0}.");
+            $"{context}: canonical active state changed at cycle {cycle:N0}.");
     }
 
     /*

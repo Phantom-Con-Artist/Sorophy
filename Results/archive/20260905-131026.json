@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-05T13:10:26.9783204-07:00",
+  "FinishedAt": "2026-09-05T13:10:27.2457243-07:00",
+  "Options": {
+    "Command": "soak",
+    "Seed": 12345,
+    "Operations": 100,
+    "AuditInterval": 100,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Soak / Endurance",
+      "Command": "soak",
+      "Status": 1,
+      "PassedChecks": 0,
+      "TotalChecks": 1,
+      "Duration": "00:00:00.2530295",
+      "Message": "Canonical serialization drift detected at cycle 100.",
+      "ExceptionType": "System.InvalidOperationException",
+      "Success": false
+    }
+  ],
+  "OverallPass": false,
+  "PassedCampaigns": 0,
+  "TotalCampaigns": 1,
+  "PassedChecks": 0,
+  "TotalChecks": 1
+}

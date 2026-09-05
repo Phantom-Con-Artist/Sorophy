@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-05T13:08:48.3401492-07:00",
+  "FinishedAt": "2026-09-05T13:08:59.1109598-07:00",
+  "Options": {
+    "Command": "crash-recovery",
+    "Seed": 12345,
+    "Operations": 10000,
+    "AuditInterval": 1000,
+    "Profile": "full",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Crash / Recovery Torture",
+      "Command": "crash-recovery",
+      "Status": 1,
+      "PassedChecks": 0,
+      "TotalChecks": 1,
+      "Duration": "00:00:10.7588866",
+      "Message": "Crash/recovery torture campaign failed.",
+      "ExceptionType": null,
+      "Success": false
+    }
+  ],
+  "OverallPass": false,
+  "PassedCampaigns": 0,
+  "TotalCampaigns": 1,
+  "PassedChecks": 0,
+  "TotalChecks": 1
+}

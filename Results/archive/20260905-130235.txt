@@ -1,0 +1,43 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/5/2026 1:02:35 PM -07:00
+Finished:    9/5/2026 1:02:52 PM -07:00
+Seed:        12345
+Profile:     full
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      0.182s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Deterministic Replay                0.462s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed        7/7      Mutation Performance                0.696s
+          Pure entity and relationship mutation performance benchmarks passed.
+Passed        1/1      Pool Reuse                          0.108s
+          Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.
+Passed        1/1      High-Degree Topology                0.331s
+          High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
+Passed       10/10     Performance Benchmark               0.327s
+          Fastest: Entities / Contains (10,000) at 29,463,760 ops/s. Slowest: Graph / Validate (10,000) at 50 ops/s. Peak working set: 89.7 MB.
+Passed        8/8      Relationship Scaling                1.671s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.00x from 1,000 to 100,000 entities. Peak working set: 168.4 MB.
+Passed       10/10     Memory Benchmark                    2.096s
+          Largest measured managed-memory footprint: Relationship churn (100,000) at 83.19 MB.
+Passed        1/1      Differential Fuzzing                0.283s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+Passed        1/1      Serialization Torture               1.045s
+          Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
+Failed        0/1      Crash / Recovery Torture            8.938s
+          Crash/recovery torture campaign failed.
+Failed        0/1      Soak / Endurance                    0.035s
+          Canonical serialization drift detected at cycle 100.
+
+SUMMARY
+-------
+Campaigns: 10/12
+Checks:    47/49
+Status:    FAIL
+

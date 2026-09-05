@@ -17,8 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using Sorophy.Engine.Graph;
+using Sorophy.Engine.Graph.History;
 using Sorophy.Engine.Time;
 using Sorophy.Engine.Types;
 
@@ -26,7 +30,8 @@ namespace Sorophy.Engine.Serialization;
 
 public static class LoreSerializer
 {
-    private const int CurrentFormatVersion = 1;
+    private const int CurrentFormatVersion = 2;
+    private const int MinimumSupportedFormatVersion = 1;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -79,10 +84,13 @@ public static class LoreSerializer
     {
         var document = new LoreDocument
         {
-            FormatVersion = CurrentFormatVersion
+            FormatVersion = CurrentFormatVersion,
+            RelationshipHistories = new List<LoreRelationshipHistoryDocument>(),
+            RetiredRelationshipIds = new List<Guid>()
         };
 
-        foreach (var entity in graph.Entities.Values)
+        foreach (var entity in graph.Entities.Values
+                     .OrderBy(e => e.Id))
         {
             ValidateEntity(entity);
 
@@ -92,13 +100,23 @@ public static class LoreSerializer
                     Id = entity.Id,
                     Name = entity.Name,
                     Type = entity.Type,
+                    Description = entity.Description,
+                    Tags = entity.Tags
+                        .OrderBy(
+                            tag => tag,
+                            StringComparer.Ordinal)
+                        .ToList(),
+                    Documents =
+                        ConvertDocuments(
+                            entity.Documents),
                     Properties =
                         ConvertProperties(
                             entity.Properties)
                 });
         }
 
-        foreach (var relationship in graph.Relationships.Values)
+        foreach (var relationship in graph.Relationships.Values
+                     .OrderBy(r => r.Id))
         {
             ValidateRelationship(
                 relationship,
@@ -123,6 +141,61 @@ public static class LoreSerializer
                 });
         }
 
+        foreach (var history in graph.RelationshipHistories.Values
+                     .OrderBy(h => h.RelationshipId))
+        {
+            ValidateRelationshipHistory(history);
+
+            var historyDocument =
+                new LoreRelationshipHistoryDocument
+                {
+                    RelationshipId = history.RelationshipId,
+                    Facts = new List<LoreRelationshipFactDocument>()
+                };
+
+            foreach (var fact in history.Facts)
+            {
+                ValidateRelationshipFact(
+                    fact,
+                    history.RelationshipId);
+
+                historyDocument.Facts.Add(
+                    new LoreRelationshipFactDocument
+                    {
+                        At =
+                            SerializeTime(
+                                fact.At),
+                        RelationshipId = fact.RelationshipId,
+                        SourceId = fact.SourceId,
+                        TargetId = fact.TargetId,
+                        Type = fact.Type,
+                        Properties =
+                            ConvertProperties(
+                                fact.Properties),
+                        ValidFrom =
+                            SerializeTime(
+                                fact.ValidFrom),
+                        ValidTill =
+                            SerializeTime(
+                                fact.ValidTill)
+                    });
+            }
+
+            document.RelationshipHistories.Add(historyDocument);
+        }
+
+        foreach (var retiredId in graph.RetiredRelationshipIds
+                     .OrderBy(id => id))
+        {
+            if (retiredId == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "Retired relationship ID cannot be empty.");
+            }
+
+            document.RetiredRelationshipIds.Add(retiredId);
+        }
+
         return document;
     }
 
@@ -137,14 +210,48 @@ public static class LoreSerializer
             {
                 Id = entityDocument.Id,
                 Name = entityDocument.Name!,
-                Type = entityDocument.Type
+                Type = entityDocument.Type,
+                Description = entityDocument.Description
             };
+
+            if (entityDocument.Tags is not null)
+            {
+                foreach (var tag in entityDocument.Tags)
+                {
+                    ValidateTag(tag);
+                    entity.Tags.Add(tag);
+                }
+            }
+
+            if (entityDocument.Documents is not null)
+            {
+                foreach (var documentEntry in entityDocument.Documents)
+                {
+                    ValidateDocumentEntry(
+                        documentEntry.Key,
+                        documentEntry.Value);
+
+                    entity.Documents[documentEntry.Key] =
+                        new SorophyEntityDocument(
+                            documentEntry.Key,
+                            documentEntry.Value.Content!,
+                            documentEntry.Value.ContentType!);
+                }
+            }
 
             RestoreProperties(
                 entity.Properties,
                 entityDocument.Properties);
 
             graph.AddEntity(entity);
+        }
+
+        if (document.RetiredRelationshipIds is not null)
+        {
+            foreach (var retiredId in document.RetiredRelationshipIds)
+            {
+                graph.RetireRelationshipId(retiredId);
+            }
         }
 
         foreach (var relationshipDocument in document.Relationships)
@@ -195,6 +302,67 @@ public static class LoreSerializer
                 relationshipDocument.Properties);
 
             graph.AddRelationship(relationship);
+        }
+
+        if (document.RelationshipHistories is not null)
+        {
+            foreach (var historyDocument in document.RelationshipHistories)
+            {
+                var history =
+                    graph.GetOrCreateRelationshipHistory(
+                        historyDocument.RelationshipId);
+
+                foreach (var factDocument in historyDocument.Facts)
+                {
+                    var at =
+                        DeserializeTime(
+                            factDocument.At,
+                            $"Relationship '{factDocument.RelationshipId}' fact At")
+                        ?? throw new InvalidOperationException(
+                            $"Relationship '{factDocument.RelationshipId}' fact is missing At temporal point.");
+
+                    var validFrom =
+                        DeserializeTime(
+                            factDocument.ValidFrom,
+                            $"Relationship '{factDocument.RelationshipId}' fact ValidFrom");
+
+                    var validTill =
+                        DeserializeTime(
+                            factDocument.ValidTill,
+                            $"Relationship '{factDocument.RelationshipId}' fact ValidTill");
+
+                    var factProperties =
+                        new Dictionary<string, SorophyProperty>(
+                            StringComparer.Ordinal);
+
+                    RestoreProperties(
+                        factProperties,
+                        factDocument.Properties);
+
+                    SorophyRelationshipFact fact;
+
+                    try
+                    {
+                        fact = new SorophyRelationshipFact(
+                            at,
+                            factDocument.RelationshipId,
+                            factDocument.SourceId,
+                            factDocument.TargetId,
+                            factDocument.Type,
+                            factProperties,
+                            validFrom,
+                            validTill);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        throw new InvalidOperationException(
+                            $"Relationship '{factDocument.RelationshipId}' fact contains invalid temporal or identity data.",
+                            ex);
+                    }
+
+                    history.Add(fact);
+                }
+            }
         }
 
         return graph;
@@ -408,12 +576,16 @@ public static class LoreSerializer
 
     private static Dictionary<string, EntityPropertyDocument>
         ConvertProperties(
-            Dictionary<string, SorophyProperty> properties)
+            IReadOnlyDictionary<string, SorophyProperty> properties)
     {
         var result =
-            new Dictionary<string, EntityPropertyDocument>();
+            new Dictionary<string, EntityPropertyDocument>(
+                StringComparer.Ordinal);
 
-        foreach (var property in properties)
+        foreach (var property in properties
+                     .OrderBy(
+                         p => p.Key,
+                         StringComparer.Ordinal))
         {
             ValidateProperty(
                 property.Key,
@@ -505,7 +677,15 @@ public static class LoreSerializer
     private static void ValidateDocument(
         LoreDocument document)
     {
-        if (document.FormatVersion !=
+        if (document.FormatVersion is null)
+        {
+            throw new InvalidOperationException(
+                "Lore document is missing its format version.");
+        }
+
+        if (document.FormatVersion <
+            MinimumSupportedFormatVersion ||
+            document.FormatVersion >
             CurrentFormatVersion)
         {
             throw new InvalidOperationException(
@@ -563,6 +743,48 @@ public static class LoreSerializer
 
             ValidateProperties(
                 entity.Properties);
+
+            if (document.FormatVersion == 2)
+            {
+                if (entity.Tags is null)
+                {
+                    throw new InvalidOperationException(
+                        $"Lore entity '{entity.Id}' tags cannot be null in format version 2.");
+                }
+
+                if (entity.Documents is null)
+                {
+                    throw new InvalidOperationException(
+                        $"Lore entity '{entity.Id}' documents cannot be null in format version 2.");
+                }
+            }
+
+            if (entity.Tags is not null)
+            {
+                var seenTags =
+                    new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (var tag in entity.Tags)
+                {
+                    ValidateTag(tag);
+
+                    if (!seenTags.Add(tag))
+                    {
+                        throw new InvalidOperationException(
+                            $"Lore entity '{entity.Id}' contains duplicate tag '{tag}'.");
+                    }
+                }
+            }
+
+            if (entity.Documents is not null)
+            {
+                foreach (var documentEntry in entity.Documents)
+                {
+                    ValidateDocumentEntry(
+                        documentEntry.Key,
+                        documentEntry.Value);
+                }
+            }
         }
 
         var relationshipIds =
@@ -627,6 +849,172 @@ public static class LoreSerializer
             ValidateSerializedTime(
                 relationship.ValidTill,
                 $"Relationship '{relationship.Id}' ValidTill");
+
+            if (relationship.ValidFrom is not null &&
+                relationship.ValidTill is not null)
+            {
+                var validFrom =
+                    DeserializeTime(
+                        relationship.ValidFrom,
+                        $"Relationship '{relationship.Id}' ValidFrom");
+
+                var validTill =
+                    DeserializeTime(
+                        relationship.ValidTill,
+                        $"Relationship '{relationship.Id}' ValidTill");
+
+                if (!Equals(
+                        validFrom!.Schema,
+                        validTill!.Schema))
+                {
+                    throw new InvalidOperationException(
+                        $"Relationship '{relationship.Id}' ValidFrom and ValidTill must belong to the same temporal schema.");
+                }
+            }
+        }
+
+        if (document.FormatVersion == 2)
+        {
+            if (document.RelationshipHistories is null)
+            {
+                throw new InvalidOperationException(
+                    "Lore document relationship histories cannot be null in format version 2.");
+            }
+
+            if (document.RetiredRelationshipIds is null)
+            {
+                throw new InvalidOperationException(
+                    "Lore document retired relationship IDs cannot be null in format version 2.");
+            }
+        }
+
+        var retiredIds =
+            new HashSet<Guid>();
+
+        if (document.RetiredRelationshipIds is not null)
+        {
+            foreach (var retiredId in document.RetiredRelationshipIds)
+            {
+                if (retiredId == Guid.Empty)
+                {
+                    throw new InvalidOperationException(
+                        "Retired relationship ID cannot be empty.");
+                }
+
+                if (!retiredIds.Add(retiredId))
+                {
+                    throw new InvalidOperationException(
+                        $"Duplicate retired relationship ID '{retiredId}'.");
+                }
+
+                if (relationshipIds.Contains(retiredId))
+                {
+                    throw new InvalidOperationException(
+                        $"Relationship '{retiredId}' cannot be both active and retired.");
+                }
+            }
+        }
+
+        if (document.RelationshipHistories is not null)
+        {
+            var historyIds =
+                new HashSet<Guid>();
+
+            foreach (var history in document.RelationshipHistories)
+            {
+                if (history is null)
+                {
+                    throw new InvalidOperationException(
+                        "Lore document cannot contain a null relationship history.");
+                }
+
+                if (history.RelationshipId == Guid.Empty)
+                {
+                    throw new InvalidOperationException(
+                        "Relationship history must have a non-empty relationship id.");
+                }
+
+                if (!historyIds.Add(history.RelationshipId))
+                {
+                    throw new InvalidOperationException(
+                        $"Duplicate relationship history for relationship id '{history.RelationshipId}'.");
+                }
+
+                if (history.Facts is null)
+                {
+                    throw new InvalidOperationException(
+                        $"Relationship history '{history.RelationshipId}' facts cannot be null.");
+                }
+
+                foreach (var fact in history.Facts)
+                {
+                    if (fact is null)
+                    {
+                        throw new InvalidOperationException(
+                            $"Relationship history '{history.RelationshipId}' cannot contain a null fact.");
+                    }
+
+                    if (fact.RelationshipId == Guid.Empty)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact in history '{history.RelationshipId}' must have a non-empty relationship id.");
+                    }
+
+                    if (fact.RelationshipId != history.RelationshipId)
+                    {
+                        throw new InvalidOperationException(
+                            $"Historical fact belongs to relationship '{fact.RelationshipId}', but this history belongs to relationship '{history.RelationshipId}'.");
+                    }
+
+                    if (fact.SourceId == Guid.Empty)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for relationship '{history.RelationshipId}' must have a non-empty source id.");
+                    }
+
+                    if (fact.TargetId == Guid.Empty)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for relationship '{history.RelationshipId}' must have a non-empty target id.");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(fact.Type))
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for relationship '{history.RelationshipId}' must have a type.");
+                    }
+
+                    if (fact.Properties is null)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for relationship '{history.RelationshipId}' properties cannot be null.");
+                    }
+
+                    ValidateProperties(fact.Properties);
+
+                    if (fact.At is null)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for relationship '{history.RelationshipId}' must have an At temporal point.");
+                    }
+
+                    ValidateSerializedTime(
+                        fact.At,
+                        $"Relationship '{history.RelationshipId}' fact At");
+
+                    ValidateSerializedTime(
+                        fact.ValidFrom,
+                        $"Relationship '{history.RelationshipId}' fact ValidFrom");
+
+                    ValidateSerializedTime(
+                        fact.ValidTill,
+                        $"Relationship '{history.RelationshipId}' fact ValidTill");
+
+                    ValidateFactTemporalSchemas(
+                        fact,
+                        history.RelationshipId);
+                }
+            }
         }
     }
 
@@ -794,6 +1182,18 @@ public static class LoreSerializer
                 "Graph relationships cannot be null.");
         }
 
+        if (graph.RelationshipHistories is null)
+        {
+            throw new InvalidOperationException(
+                "Graph relationship histories cannot be null.");
+        }
+
+        if (graph.RetiredRelationshipIds is null)
+        {
+            throw new InvalidOperationException(
+                "Graph retired relationship IDs cannot be null.");
+        }
+
         var entityIds =
             new HashSet<Guid>();
 
@@ -808,12 +1208,80 @@ public static class LoreSerializer
             }
         }
 
+        var relationshipIds =
+            new HashSet<Guid>();
+
         foreach (var relationship in
                  graph.Relationships.Values)
         {
             ValidateRelationship(
                 relationship,
                 graph);
+
+            if (!relationshipIds.Add(relationship.Id))
+            {
+                throw new InvalidOperationException(
+                    $"Duplicate relationship id '{relationship.Id}'.");
+            }
+        }
+
+        var retiredIds =
+            new HashSet<Guid>();
+
+        foreach (var retiredId in graph.RetiredRelationshipIds)
+        {
+            if (retiredId == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "Retired relationship ID cannot be empty.");
+            }
+
+            if (!retiredIds.Add(retiredId))
+            {
+                throw new InvalidOperationException(
+                    $"Duplicate retired relationship ID '{retiredId}'.");
+            }
+
+            if (relationshipIds.Contains(retiredId))
+            {
+                throw new InvalidOperationException(
+                    $"Relationship '{retiredId}' cannot be both active and retired.");
+            }
+        }
+
+        var historyIds =
+            new HashSet<Guid>();
+
+        foreach (var pair in graph.RelationshipHistories)
+        {
+            var relationshipId = pair.Key;
+            var history = pair.Value;
+
+            if (relationshipId == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "Relationship history store contains an empty relationship ID.");
+            }
+
+            if (history is null)
+            {
+                throw new InvalidOperationException(
+                    $"Relationship history store contains a null history for relationship '{relationshipId}'.");
+            }
+
+            if (history.RelationshipId != relationshipId)
+            {
+                throw new InvalidOperationException(
+                    $"Relationship history dictionary key '{relationshipId}' does not match history relationship ID '{history.RelationshipId}'.");
+            }
+
+            if (!historyIds.Add(history.RelationshipId))
+            {
+                throw new InvalidOperationException(
+                    $"Duplicate relationship history for relationship id '{history.RelationshipId}'.");
+            }
+
+            ValidateRelationshipHistory(history);
         }
     }
 
@@ -843,6 +1311,30 @@ public static class LoreSerializer
         {
             throw new InvalidOperationException(
                 $"Entity '{entity.Id}' properties cannot be null.");
+        }
+
+        if (entity.Tags is null)
+        {
+            throw new InvalidOperationException(
+                $"Entity '{entity.Id}' tags cannot be null.");
+        }
+
+        if (entity.Documents is null)
+        {
+            throw new InvalidOperationException(
+                $"Entity '{entity.Id}' documents cannot be null.");
+        }
+
+        foreach (var tag in entity.Tags)
+        {
+            ValidateTag(tag);
+        }
+
+        foreach (var documentEntry in entity.Documents)
+        {
+            ValidateDocumentEntry(
+                documentEntry.Key,
+                documentEntry.Value);
         }
     }
 
@@ -958,6 +1450,283 @@ public static class LoreSerializer
         {
             throw new InvalidOperationException(
                 $"Property '{key}' cannot contain a null SorophyValue.");
+        }
+    }
+
+    private static void ValidateRelationshipHistory(
+        SorophyRelationshipHistory history)
+    {
+        if (history is null)
+        {
+            throw new InvalidOperationException(
+                "Relationship history cannot be null.");
+        }
+
+        if (history.RelationshipId == Guid.Empty)
+        {
+            throw new InvalidOperationException(
+                "Relationship history must have a non-empty relationship ID.");
+        }
+
+        if (history.Facts is null)
+        {
+            throw new InvalidOperationException(
+                $"Relationship history '{history.RelationshipId}' facts cannot be null.");
+        }
+
+        foreach (var fact in history.Facts)
+        {
+            ValidateRelationshipFact(
+                fact,
+                history.RelationshipId);
+        }
+    }
+
+    private static void ValidateRelationshipFact(
+        SorophyRelationshipFact fact,
+        Guid expectedRelationshipId)
+    {
+        if (fact is null)
+        {
+            throw new InvalidOperationException(
+                $"Relationship history '{expectedRelationshipId}' cannot contain a null fact.");
+        }
+
+        if (fact.RelationshipId == Guid.Empty)
+        {
+            throw new InvalidOperationException(
+                $"Fact in history '{expectedRelationshipId}' must have a non-empty relationship ID.");
+        }
+
+        if (fact.RelationshipId != expectedRelationshipId)
+        {
+            throw new InvalidOperationException(
+                $"Historical fact belongs to relationship '{fact.RelationshipId}', but this history belongs to relationship '{expectedRelationshipId}'.");
+        }
+
+        if (fact.At is null)
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' must have an At temporal point.");
+        }
+
+        if (fact.SourceId == Guid.Empty)
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' must have a non-empty source ID.");
+        }
+
+        if (fact.TargetId == Guid.Empty)
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' must have a non-empty target ID.");
+        }
+
+        if (string.IsNullOrWhiteSpace(fact.Type))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' must have a type.");
+        }
+
+        if (fact.Properties is null)
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' properties cannot be null.");
+        }
+
+        foreach (var property in fact.Properties)
+        {
+            ValidateProperty(
+                property.Key,
+                property.Value);
+        }
+
+        if (fact.ValidFrom is not null &&
+            !Equals(
+                fact.At.Schema,
+                fact.ValidFrom.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' At and ValidFrom must belong to the same temporal schema.");
+        }
+
+        if (fact.ValidTill is not null &&
+            !Equals(
+                fact.At.Schema,
+                fact.ValidTill.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' At and ValidTill must belong to the same temporal schema.");
+        }
+
+        if (fact.ValidFrom is not null &&
+            fact.ValidTill is not null &&
+            !Equals(
+                fact.ValidFrom.Schema,
+                fact.ValidTill.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{expectedRelationshipId}' ValidFrom and ValidTill must belong to the same temporal schema.");
+        }
+    }
+
+    private static void ValidateFactTemporalSchemas(
+        LoreRelationshipFactDocument fact,
+        Guid relationshipId)
+    {
+        var at =
+            DeserializeTime(
+                fact.At,
+                $"Relationship '{relationshipId}' fact At")!;
+
+        var validFrom =
+            DeserializeTime(
+                fact.ValidFrom,
+                $"Relationship '{relationshipId}' fact ValidFrom");
+
+        var validTill =
+            DeserializeTime(
+                fact.ValidTill,
+                $"Relationship '{relationshipId}' fact ValidTill");
+
+        if (validFrom is not null &&
+            !Equals(
+                at.Schema,
+                validFrom.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{relationshipId}' At and ValidFrom must belong to the same temporal schema.");
+        }
+
+        if (validTill is not null &&
+            !Equals(
+                at.Schema,
+                validTill.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{relationshipId}' At and ValidTill must belong to the same temporal schema.");
+        }
+
+        if (validFrom is not null &&
+            validTill is not null &&
+            !Equals(
+                validFrom.Schema,
+                validTill.Schema))
+        {
+            throw new InvalidOperationException(
+                $"Fact for relationship '{relationshipId}' ValidFrom and ValidTill must belong to the same temporal schema.");
+        }
+    }
+
+    private static Dictionary<string, EntityEmbeddedDocument>
+        ConvertDocuments(
+            Dictionary<string, SorophyEntityDocument> documents)
+    {
+        var result =
+            new Dictionary<string, EntityEmbeddedDocument>(
+                StringComparer.Ordinal);
+
+        foreach (var entry in documents
+                     .OrderBy(
+                         d => d.Key,
+                         StringComparer.Ordinal))
+        {
+            ValidateDocumentEntry(
+                entry.Key,
+                entry.Value);
+
+            result[entry.Key] =
+                new EntityEmbeddedDocument
+                {
+                    ContentType =
+                        entry.Value.ContentType,
+                    Content =
+                        entry.Value.Content
+                };
+        }
+
+        return result;
+    }
+
+    private static void ValidateTag(string tag)
+    {
+        if (string.IsNullOrWhiteSpace(tag))
+        {
+            throw new InvalidOperationException(
+                "Entity contains an empty tag.");
+        }
+    }
+
+    private static void ValidateDocumentEntry(
+        string name,
+        SorophyEntityDocument? document)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new InvalidOperationException(
+                "Entity contains an embedded document with an empty name.");
+        }
+
+        if (document is null)
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(document.Name))
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' has an empty document name.");
+        }
+
+        if (!string.Equals(
+                name,
+                document.Name,
+                StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"Embedded document key '{name}' does not match document name '{document.Name}'.");
+        }
+
+        if (string.IsNullOrWhiteSpace(document.ContentType))
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' must have a content type.");
+        }
+
+        if (document.Content is null)
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' cannot contain null content.");
+        }
+    }
+
+    private static void ValidateDocumentEntry(
+        string name,
+        EntityEmbeddedDocument? document)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new InvalidOperationException(
+                "Entity document contains an embedded document with an empty name.");
+        }
+
+        if (document is null)
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(document.ContentType))
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' must have a content type.");
+        }
+
+        if (document.Content is null)
+        {
+            throw new InvalidOperationException(
+                $"Embedded document '{name}' cannot contain null content.");
         }
     }
 }

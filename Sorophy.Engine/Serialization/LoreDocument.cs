@@ -31,6 +31,12 @@ internal sealed class LoreDocument
 
     [JsonPropertyName("relationships")]
     public List<LoreRelationshipDocument> Relationships { get; set; } = new();
+
+    [JsonPropertyName("relationshipHistories")]
+    public List<LoreRelationshipHistoryDocument>? RelationshipHistories { get; set; }
+
+    [JsonPropertyName("retiredRelationshipIds")]
+    public List<Guid>? RetiredRelationshipIds { get; set; }
 }
 
 internal sealed class LoreEntityDocument
@@ -43,6 +49,15 @@ internal sealed class LoreEntityDocument
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
+    [JsonPropertyName("tags")]
+    public List<string>? Tags { get; set; }
+
+    [JsonPropertyName("documents")]
+    public Dictionary<string, EntityEmbeddedDocument>? Documents { get; set; }
 
     [JsonPropertyName("properties")]
     public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
@@ -70,6 +85,42 @@ internal sealed class LoreRelationshipDocument
 
     [JsonPropertyName("properties")]
     public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
+}
+
+internal sealed class LoreRelationshipHistoryDocument
+{
+    [JsonPropertyName("relationshipId")]
+    public Guid RelationshipId { get; set; }
+
+    [JsonPropertyName("facts")]
+    public List<LoreRelationshipFactDocument> Facts { get; set; } = new();
+}
+
+internal sealed class LoreRelationshipFactDocument
+{
+    [JsonPropertyName("at")]
+    public LoreTimeDocument? At { get; set; }
+
+    [JsonPropertyName("relationshipId")]
+    public Guid RelationshipId { get; set; }
+
+    [JsonPropertyName("sourceId")]
+    public Guid SourceId { get; set; }
+
+    [JsonPropertyName("targetId")]
+    public Guid TargetId { get; set; }
+
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+
+    [JsonPropertyName("properties")]
+    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
+
+    [JsonPropertyName("validFrom")]
+    public LoreTimeDocument? ValidFrom { get; set; }
+
+    [JsonPropertyName("validTill")]
+    public LoreTimeDocument? ValidTill { get; set; }
 }
 
 internal sealed class LoreTimeDocument

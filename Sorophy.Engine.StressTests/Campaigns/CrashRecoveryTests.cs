@@ -1319,16 +1319,26 @@ public static class CrashRecoveryTests
                     knownGood.Length - 1)],
 
             2 =>
-                knownGood.Replace(
-                    "\"formatVersion\": 1",
-                    "\"formatVersion\": 999",
-                    StringComparison.Ordinal),
+                knownGood
+                    .Replace(
+                        "\"formatVersion\": 2",
+                        "\"formatVersion\": 999",
+                        StringComparison.Ordinal)
+                    .Replace(
+                        "\"formatVersion\": 1",
+                        "\"formatVersion\": 999",
+                        StringComparison.Ordinal),
 
             3 =>
-                knownGood.Replace(
-                    "\"formatVersion\": 1",
-                    "\"formatVersion\": 0",
-                    StringComparison.Ordinal),
+                knownGood
+                    .Replace(
+                        "\"formatVersion\": 2",
+                        "\"formatVersion\": 0",
+                        StringComparison.Ordinal)
+                    .Replace(
+                        "\"formatVersion\": 1",
+                        "\"formatVersion\": 0",
+                        StringComparison.Ordinal),
 
             4 =>
                 knownGood.Replace(

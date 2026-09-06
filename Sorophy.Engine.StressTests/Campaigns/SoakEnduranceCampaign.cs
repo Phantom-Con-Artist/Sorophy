@@ -34,17 +34,17 @@ public static class SoakEnduranceCampaign
                 ? TestCampaignResult.Pass(
                     "Soak / Endurance",
                     "soak",
-                    passedChecks: 1,
-                    totalChecks: 1,
+                    passedChecks: 6,
+                    totalChecks: 6,
                     duration,
-                    "Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.")
+                    "Bounded active-state soak, retirement scale endurance, retirement scaling analysis, and memory retention verification succeeded.")
                 : TestCampaignResult.Fail(
                     "Soak / Endurance",
                     "soak",
                     duration,
                     "Soak / endurance campaign failed.",
                     passedChecks: 0,
-                    totalChecks: 1);
+                    totalChecks: 6);
         }
         catch (Exception exception)
         {
@@ -59,7 +59,7 @@ public static class SoakEnduranceCampaign
                 exception.Message,
                 exception,
                 passedChecks: 0,
-                totalChecks: 1);
+                totalChecks: 6);
         }
     }
 }

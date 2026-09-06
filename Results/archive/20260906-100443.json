@@ -1,10 +1,10 @@
 ﻿{
-  "StartedAt": "2026-09-06T10:11:45.3349633-07:00",
-  "FinishedAt": "2026-09-06T10:12:38.9579167-07:00",
+  "StartedAt": "2026-09-06T10:04:43.0963538-07:00",
+  "FinishedAt": "2026-09-06T10:04:45.7158681-07:00",
   "Options": {
     "Command": "soak",
     "Seed": 12345,
-    "Operations": 100000,
+    "Operations": 10000,
     "AuditInterval": 1000,
     "Profile": "quick",
     "OutputDirectory": "Results",
@@ -17,7 +17,7 @@
       "Status": 0,
       "PassedChecks": 6,
       "TotalChecks": 6,
-      "Duration": "00:00:53.6109432",
+      "Duration": "00:00:02.6072279",
       "Message": "Bounded active-state soak, retirement scale endurance, retirement scaling analysis, and memory retention verification succeeded.",
       "ExceptionType": null,
       "Success": true

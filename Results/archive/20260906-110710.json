@@ -1,0 +1,163 @@
+﻿{
+  "StartedAt": "2026-09-06T11:07:10.903786-07:00",
+  "FinishedAt": "2026-09-06T11:07:21.726549-07:00",
+  "Options": {
+    "Command": "all",
+    "Seed": 42,
+    "Operations": 5000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Mutation Chaos",
+      "Command": "mutation",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:00.1044841",
+      "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Krono Temporal Scope",
+      "Command": "krono-time",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:01.0792221",
+      "Message": "Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:00:00.1793228",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Mutation Performance",
+      "Command": "mutation-performance",
+      "Status": 0,
+      "PassedChecks": 7,
+      "TotalChecks": 7,
+      "Duration": "00:00:00.4388380",
+      "Message": "Pure entity and relationship mutation performance benchmarks passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Pool Reuse",
+      "Command": "pool-reuse",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:00.0255080",
+      "Message": "Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "High-Degree Topology",
+      "Command": "high-degree",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:00.0363822",
+      "Message": "High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:00.3274264",
+      "Message": "Fastest: Entities / Contains (5,000) at 18,511,662 ops/s. Slowest: Graph / Validate (5,000) at 33 ops/s. Peak working set: 72.8 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Relationship Scaling",
+      "Command": "relationship-scaling",
+      "Status": 0,
+      "PassedChecks": 8,
+      "TotalChecks": 8,
+      "Duration": "00:00:00.3959658",
+      "Message": "Measured 2 graph sizes. Outgoing query throughput changed 1.96x from 1,000 to 10,000 entities. Peak working set: 72.8 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Memory Benchmark",
+      "Command": "memory",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:00.4250492",
+      "Message": "Largest measured managed-memory footprint: Relationship churn (10,000) at 9.46 MB.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Differential Fuzzing",
+      "Command": "differential-fuzz",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:00.1114990",
+      "Message": "Deterministic randomized graph workloads matched an independent reference model across all configured seed families.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Serialization Torture",
+      "Command": "serialization-torture",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:00.2219109",
+      "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Crash / Recovery Torture",
+      "Command": "crash-recovery",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:06.6751451",
+      "Message": "Crash/recovery contract checks and the requested endurance workload passed.",
+      "ExceptionType": null,
+      "Success": true
+    },
+    {
+      "Name": "Soak / Endurance",
+      "Command": "soak",
+      "Status": 0,
+      "PassedChecks": 6,
+      "TotalChecks": 6,
+      "Duration": "00:00:00.7741841",
+      "Message": "Bounded active-state soak, retirement scale endurance, retirement scaling analysis, and memory retention verification succeeded.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 13,
+  "TotalCampaigns": 13,
+  "PassedChecks": 58,
+  "TotalChecks": 58
+}

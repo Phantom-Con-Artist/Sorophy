@@ -1,10 +1,10 @@
 ﻿{
-  "StartedAt": "2026-09-06T11:17:21.8455971-07:00",
-  "FinishedAt": "2026-09-06T11:30:26.1357095-07:00",
+  "StartedAt": "2026-09-06T11:14:09.7130164-07:00",
+  "FinishedAt": "2026-09-06T11:14:13.6973204-07:00",
   "Options": {
     "Command": "mutation",
     "Seed": 12345,
-    "Operations": 1000000,
+    "Operations": 100000,
     "AuditInterval": 1000,
     "Profile": "quick",
     "OutputDirectory": "Results",
@@ -17,7 +17,7 @@
       "Status": 0,
       "PassedChecks": 4,
       "TotalChecks": 4,
-      "Duration": "00:13:04.2765405",
+      "Duration": "00:00:03.8403476",
       "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
       "ExceptionType": null,
       "Success": true

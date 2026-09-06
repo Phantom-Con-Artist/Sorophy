@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 2:39:44 PM -07:00
+Finished:    9/6/2026 2:39:44 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  1000000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed       10/10     Memory Benchmark                    0.337s
+          Largest measured managed-memory footprint: Relationship churn (10,000) at 8.33 MB.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    10/10
+Status:    PASS
+

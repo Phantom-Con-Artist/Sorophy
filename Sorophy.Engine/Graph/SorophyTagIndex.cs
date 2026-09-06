@@ -36,6 +36,9 @@ namespace Sorophy.Engine.Graph;
 /// </summary>
 public sealed class SorophyTagIndex
 {
+    private static readonly HashSet<string> EmptyTagSet =
+        new(StringComparer.Ordinal);
+
     private readonly Dictionary<string, HashSet<Guid>> _tagToEntities =
         new(StringComparer.Ordinal);
 
@@ -62,6 +65,18 @@ public sealed class SorophyTagIndex
         _entityToTags.Count;
 
     /// <summary>
+    /// Ensures that the internal entity-to-tags dictionary has at least the specified capacity.
+    /// </summary>
+    internal void EnsureCapacity(
+        int capacity)
+    {
+        if (capacity > 0)
+        {
+            _entityToTags.EnsureCapacity(capacity);
+        }
+    }
+
+    /// <summary>
     /// Adds an entity's current tags to the index.
     ///
     /// If the entity is already indexed, its existing tag memberships are
@@ -71,6 +86,12 @@ public sealed class SorophyTagIndex
         SorophyEntity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
+
+        if (entity.Tags.Count == 0 &&
+            _entityToTags.TryAdd(entity.Id, EmptyTagSet))
+        {
+            return;
+        }
 
         UpdateEntity(entity);
     }
@@ -125,7 +146,7 @@ public sealed class SorophyTagIndex
     public bool RemoveEntity(
         Guid entityId)
     {
-        if (!_entityToTags.TryGetValue(
+        if (!_entityToTags.Remove(
                 entityId,
                 out var indexedTags))
         {
@@ -138,9 +159,6 @@ public sealed class SorophyTagIndex
                 tag,
                 entityId);
         }
-
-        _entityToTags.Remove(
-            entityId);
 
         return true;
     }
@@ -382,6 +400,11 @@ public sealed class SorophyTagIndex
     private static HashSet<string> CreateValidatedTagSet(
         SorophyEntity entity)
     {
+        if (entity.Tags.Count == 0)
+        {
+            return EmptyTagSet;
+        }
+
         var result =
             new HashSet<string>(
                 StringComparer.Ordinal);

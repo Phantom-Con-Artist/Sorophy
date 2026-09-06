@@ -36,6 +36,15 @@ public static class EntitySerializer
         PropertyNameCaseInsensitive = true
     };
 
+    private static readonly List<string> EmptyTagList =
+        new(0);
+
+    private static readonly Dictionary<string, EntityPropertyDocument> EmptyPropertyDict =
+        new(0, StringComparer.Ordinal);
+
+    private static readonly Dictionary<string, EntityEmbeddedDocument> EmptyDocumentDict =
+        new(0, StringComparer.Ordinal);
+
     public static string Serialize(SorophyEntity entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
@@ -85,35 +94,54 @@ public static class EntitySerializer
             Name = entity.Name,
             Type = entity.Type,
             Description = entity.Description,
-            Tags = entity.Tags
-                .OrderBy(
-                    tag => tag,
+            Tags = entity.Tags.Count switch
+            {
+                0 => EmptyTagList,
+                1 => new List<string>(1) { entity.Tags.First() },
+                _ => entity.Tags
+                    .OrderBy(
+                        tag => tag,
+                        StringComparer.Ordinal)
+                    .ToList()
+            },
+            Properties = entity.Properties.Count == 0
+                ? EmptyPropertyDict
+                : new Dictionary<string, EntityPropertyDocument>(
+                    entity.Properties.Count,
+                    StringComparer.Ordinal),
+            Documents = entity.Documents.Count == 0
+                ? EmptyDocumentDict
+                : new Dictionary<string, EntityEmbeddedDocument>(
+                    entity.Documents.Count,
                     StringComparer.Ordinal)
-                .ToList()
         };
 
-        foreach (var property in entity.Properties)
+        if (entity.Properties.Count > 0)
         {
-            ValidateProperty(
-                property.Key,
-                property.Value);
+            foreach (var property in entity.Properties)
+            {
+                ValidateProperty(
+                    property.Key,
+                    property.Value);
 
-            document.Properties[property.Key] =
-                new EntityPropertyDocument
-                {
-                    Type =
-                        property.Value.Value.Type.ToString(),
-                    Value =
-                        SorophyValueCodec.Serialize(
-                            property.Value.Value)
-                };
+                document.Properties[property.Key] =
+                    new EntityPropertyDocument
+                    {
+                        Type =
+                            property.Value.Value.Type.ToString(),
+                        Value =
+                            SorophyValueCodec.Serialize(
+                                property.Value.Value)
+                    };
+            }
         }
 
-        foreach (var documentEntry in entity.Documents
-                     .OrderBy(
-                         entry => entry.Key,
-                         StringComparer.Ordinal))
+        if (entity.Documents.Count == 1)
         {
+            using var enumerator = entity.Documents.GetEnumerator();
+            enumerator.MoveNext();
+            var documentEntry = enumerator.Current;
+
             ValidateDocumentEntry(
                 documentEntry.Key,
                 documentEntry.Value);
@@ -126,6 +154,27 @@ public static class EntitySerializer
                     Content =
                         documentEntry.Value.Content
                 };
+        }
+        else if (entity.Documents.Count > 1)
+        {
+            foreach (var documentEntry in entity.Documents
+                         .OrderBy(
+                             entry => entry.Key,
+                             StringComparer.Ordinal))
+            {
+                ValidateDocumentEntry(
+                    documentEntry.Key,
+                    documentEntry.Value);
+
+                document.Documents[documentEntry.Key] =
+                    new EntityEmbeddedDocument
+                    {
+                        ContentType =
+                            documentEntry.Value.ContentType,
+                        Content =
+                            documentEntry.Value.Content
+                    };
+            }
         }
 
         return document;
@@ -158,6 +207,11 @@ public static class EntitySerializer
                     documentEntry.Key,
                     documentEntry.Value.Content!,
                     documentEntry.Value.ContentType!);
+        }
+
+        if (document.Properties.Count > 0)
+        {
+            entity.Properties.EnsureCapacity(document.Properties.Count);
         }
 
         foreach (var property in document.Properties)

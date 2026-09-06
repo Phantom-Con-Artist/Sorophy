@@ -1,6 +1,6 @@
 ﻿{
-  "StartedAt": "2026-09-06T16:39:31.2752748-07:00",
-  "FinishedAt": "2026-09-06T16:40:29.7918857-07:00",
+  "StartedAt": "2026-09-06T16:36:27.2147854-07:00",
+  "FinishedAt": "2026-09-06T16:37:27.6541902-07:00",
   "Options": {
     "Command": "soak",
     "Seed": 12345,
@@ -17,7 +17,7 @@
       "Status": 1,
       "PassedChecks": 0,
       "TotalChecks": 6,
-      "Duration": "00:00:58.5040159",
+      "Duration": "00:01:00.4263256",
       "Message": "Unexplained residual memory (16.13 MB) exceeded tolerance (8.00 MB).",
       "ExceptionType": "System.InvalidOperationException",
       "Success": false

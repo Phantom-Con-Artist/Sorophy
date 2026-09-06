@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-06T14:22:55.5615829-07:00",
+  "FinishedAt": "2026-09-06T14:23:02.0097551-07:00",
+  "Options": {
+    "Command": "pool-reuse",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Pool Reuse",
+      "Command": "pool-reuse",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:00:06.4348411",
+      "Message": "Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 1,
+  "TotalChecks": 1
+}

@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 4:34:31 PM -07:00
+Finished:    9/6/2026 4:35:34 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  100000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        6/6      Soak / Endurance                   62.930s
+          Bounded active-state soak, retirement scale endurance, retirement scaling analysis, and memory retention verification succeeded.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    6/6
+Status:    PASS
+

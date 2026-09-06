@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-06T15:39:34.6049077-07:00",
+  "FinishedAt": "2026-09-06T15:41:21.3916812-07:00",
+  "Options": {
+    "Command": "serialization-torture",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Serialization Torture",
+      "Command": "serialization-torture",
+      "Status": 0,
+      "PassedChecks": 1,
+      "TotalChecks": 1,
+      "Duration": "00:01:46.7730581",
+      "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 1,
+  "TotalChecks": 1
+}

@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 11:57:18 AM -07:00
+Finished:    9/6/2026 12:30:10 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  1000000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Deterministic Replay             1972.371s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    4/4
+Status:    PASS
+

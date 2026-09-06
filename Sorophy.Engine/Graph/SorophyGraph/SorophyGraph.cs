@@ -144,4 +144,28 @@ public sealed partial class SorophyGraph
 
     public IReadOnlyDictionary<Guid, SorophyRelationship> Relationships =>
         _readOnlyRelationships;
+
+    /*
+     * =============================================================
+     * INTERNAL CAPACITY OPTIMIZATION
+     * =============================================================
+     */
+
+    internal void EnsureCapacity(
+        int entityCapacity,
+        int relationshipCapacity)
+    {
+        if (entityCapacity > 0)
+        {
+            _entities.EnsureCapacity(entityCapacity);
+            _entityAdjacency.EnsureCapacity(entityCapacity);
+            _tagIndex.EnsureCapacity(entityCapacity);
+        }
+
+        if (relationshipCapacity > 0)
+        {
+            _relationships.EnsureCapacity(relationshipCapacity);
+            _relationshipIndex.EnsureCapacity(relationshipCapacity);
+        }
+    }
 }

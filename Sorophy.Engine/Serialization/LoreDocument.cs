@@ -27,10 +27,10 @@ internal sealed class LoreDocument
     public int? FormatVersion { get; set; }
 
     [JsonPropertyName("entities")]
-    public List<LoreEntityDocument> Entities { get; set; } = new();
+    public List<LoreEntityDocument> Entities { get; set; } = null!;
 
     [JsonPropertyName("relationships")]
-    public List<LoreRelationshipDocument> Relationships { get; set; } = new();
+    public List<LoreRelationshipDocument> Relationships { get; set; } = null!;
 
     [JsonPropertyName("relationshipHistories")]
     public List<LoreRelationshipHistoryDocument>? RelationshipHistories { get; set; }
@@ -60,7 +60,7 @@ internal sealed class LoreEntityDocument
     public Dictionary<string, EntityEmbeddedDocument>? Documents { get; set; }
 
     [JsonPropertyName("properties")]
-    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
+    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = null!;
 }
 
 internal sealed class LoreRelationshipDocument
@@ -84,7 +84,7 @@ internal sealed class LoreRelationshipDocument
     public LoreTimeDocument? ValidTill { get; set; }
 
     [JsonPropertyName("properties")]
-    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
+    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = null!;
 }
 
 internal sealed class LoreRelationshipHistoryDocument
@@ -93,7 +93,7 @@ internal sealed class LoreRelationshipHistoryDocument
     public Guid RelationshipId { get; set; }
 
     [JsonPropertyName("facts")]
-    public List<LoreRelationshipFactDocument> Facts { get; set; } = new();
+    public List<LoreRelationshipFactDocument> Facts { get; set; } = null!;
 }
 
 internal sealed class LoreRelationshipFactDocument
@@ -114,7 +114,7 @@ internal sealed class LoreRelationshipFactDocument
     public string Type { get; set; } = string.Empty;
 
     [JsonPropertyName("properties")]
-    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = new();
+    public Dictionary<string, EntityPropertyDocument> Properties { get; set; } = null!;
 
     [JsonPropertyName("validFrom")]
     public LoreTimeDocument? ValidFrom { get; set; }

@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 2:52:36 PM -07:00
+Finished:    9/6/2026 3:00:24 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  1000000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        1/1      Differential Fuzzing              468.264s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    1/1
+Status:    PASS
+

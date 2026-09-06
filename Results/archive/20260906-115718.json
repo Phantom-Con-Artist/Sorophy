@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-06T11:57:18.4402732-07:00",
+  "FinishedAt": "2026-09-06T12:30:10.8252966-07:00",
+  "Options": {
+    "Command": "replay",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Deterministic Replay",
+      "Command": "replay",
+      "Status": 0,
+      "PassedChecks": 4,
+      "TotalChecks": 4,
+      "Duration": "00:32:52.3712168",
+      "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 4,
+  "TotalChecks": 4
+}

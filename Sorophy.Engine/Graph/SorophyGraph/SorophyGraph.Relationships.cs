@@ -73,13 +73,6 @@ public sealed partial class SorophyGraph
                 $"Target entity '{relationship.TargetId}' does not exist.");
         }
 
-        if (_relationships.ContainsKey(
-                relationship.Id))
-        {
-            throw new InvalidOperationException(
-                $"A relationship with ID '{relationship.Id}' already exists.");
-        }
-
         /*
          * Allocate one adjacency node for each direction.
          */
@@ -101,9 +94,13 @@ public sealed partial class SorophyGraph
             /*
              * Canonical relationship store.
              */
-            _relationships.Add(
-                relationship.Id,
-                relationship);
+            if (!_relationships.TryAdd(
+                    relationship.Id,
+                    relationship))
+            {
+                throw new InvalidOperationException(
+                    $"A relationship with ID '{relationship.Id}' already exists.");
+            }
 
             relationshipAdded =
                 true;

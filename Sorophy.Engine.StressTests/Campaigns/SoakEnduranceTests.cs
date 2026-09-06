@@ -879,29 +879,37 @@ public static class SoakEnduranceTests
         Console.WriteLine("────────────────────────────────────────────────────────────────");
         Console.WriteLine();
 
-        // 1. Expected permanent retention:
-        //    Baseline canonical graph + modeled retired-ID storage and serialization LOH buffers.
-        var modeledRetirementBytes = retiredIdCount * ModeledBytesPerRetiredId;
-        var expectedPermanentRetention = baselineManagedBytes + modeledRetirementBytes;
+        // 1. Observed retention: actual growth in managed memory from Phase B baseline
+        var observedRetention = Math.Max(0L, finalManagedBytes - baselineManagedBytes);
 
-        // 2. Unexpected retained delta:
-        //    Any memory retained BEYOND the expected baseline and intentional tombstone registry.
-        var unexpectedRetainedDelta = Math.Max(0L, finalManagedBytes - expectedPermanentRetention);
-        var unexpectedRetentionPass = unexpectedRetainedDelta <= RetainedMemoryAbsoluteToleranceBytes;
+        // 2. Modeled retention: expected intentional O(N) tombstone registry footprint
+        var modeledRetention = retiredIdCount * ModeledBytesPerRetiredId;
+        var expectedPermanentRetention = baselineManagedBytes + modeledRetention;
+
+        // 3. Unexplained residual: memory retained beyond baseline + modeled intentional retention
+        var unexplainedResidual = Math.Max(0L, finalManagedBytes - expectedPermanentRetention);
+        var unexpectedRetentionPass = unexplainedResidual <= RetainedMemoryAbsoluteToleranceBytes;
 
         Console.WriteLine($"  Baseline Managed Heap:        {FormatBytes(baselineManagedBytes)}");
         Console.WriteLine($"  Final Managed Heap:           {FormatBytes(finalManagedBytes)}");
         Console.WriteLine($"  Retired Identities:           {retiredIdCount:N0}");
-        Console.WriteLine($"  Modeled Retirement Footprint: {FormatBytes(modeledRetirementBytes)} (~{ModeledBytesPerRetiredId} B/ID harness model)");
+        Console.WriteLine($"  Observed Retention:           {FormatBytes(observedRetention)}");
+        Console.WriteLine($"  Modeled Retention:            {FormatBytes(modeledRetention)} (~{ModeledBytesPerRetiredId} B/ID harness model)");
         Console.WriteLine($"  Expected Permanent Retention: {FormatBytes(expectedPermanentRetention)}");
-        Console.WriteLine($"  Unexpected Retained Delta:    {FormatBytes(unexpectedRetainedDelta)} (limit {FormatBytes(RetainedMemoryAbsoluteToleranceBytes)})");
+        Console.WriteLine($"  Unexplained Residual:         {FormatBytes(unexplainedResidual)} (limit {FormatBytes(RetainedMemoryAbsoluteToleranceBytes)})");
         Console.WriteLine($"  Unexpected Retention Check:   {(unexpectedRetentionPass ? "PASS" : "FAIL")}");
         Console.WriteLine();
 
+        Require(
+            unexpectedRetentionPass,
+            $"Unexplained residual memory ({FormatBytes(unexplainedResidual)}) exceeded tolerance ({FormatBytes(RetainedMemoryAbsoluteToleranceBytes)}).");
+
         return new PhaseDResult(
             unexpectedRetentionPass,
-            expectedPermanentRetention,
-            unexpectedRetainedDelta);
+            observedRetention,
+            modeledRetention,
+            unexplainedResidual,
+            expectedPermanentRetention);
     }
 
     /*
@@ -1229,8 +1237,10 @@ public static class SoakEnduranceTests
 
     private sealed record PhaseDResult(
         bool UnexpectedRetentionPass,
-        long ExpectedPermanentRetention,
-        long UnexpectedRetainedDelta);
+        long ObservedRetentionBytes,
+        long ModeledRetentionBytes,
+        long UnexplainedResidualBytes,
+        long ExpectedPermanentRetention);
 
     private sealed class DeterministicRandom
     {

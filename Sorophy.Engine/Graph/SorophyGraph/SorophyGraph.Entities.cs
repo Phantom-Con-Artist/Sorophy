@@ -67,87 +67,77 @@ public sealed partial class SorophyGraph
     public bool RemoveEntity(
         Guid entityId)
     {
-        if (!_entities.ContainsKey(
+        if (!_entities.Remove(
                 entityId))
         {
             return false;
         }
 
         /*
-         * Remove all outgoing relationships first.
-         *
-         * Self-links are handled naturally because RemoveRelationship()
-         * removes both its outgoing and incoming adjacency nodes.
+         * Remove relationships connected to this entity if any adjacency
+         * records exist.
          */
-        while (_entityAdjacency.TryGetValue(
-                   entityId,
-                   out var outgoingAdjacency) &&
-               outgoingAdjacency.OutgoingHead !=
-                   AdjacencySlabPool.None)
+        if (_entityAdjacency.ContainsKey(
+                entityId))
         {
-            var nodeIndex =
-                outgoingAdjacency.OutgoingHead;
-
-            var node =
-                _adjacencyPool.GetNode(
-                    nodeIndex);
-
-            var relationshipId =
-                node.RelationshipId;
-
-            if (!RemoveRelationship(
-                    relationshipId))
+            while (_entityAdjacency.TryGetValue(
+                       entityId,
+                       out var outgoingAdjacency) &&
+                   outgoingAdjacency.OutgoingHead !=
+                       AdjacencySlabPool.None)
             {
-                throw new InvalidOperationException(
-                    $"Adjacency index references relationship '{relationshipId}', " +
-                    "but the relationship could not be removed.");
+                var nodeIndex =
+                    outgoingAdjacency.OutgoingHead;
+
+                var node =
+                    _adjacencyPool.GetNode(
+                        nodeIndex);
+
+                var relationshipId =
+                    node.RelationshipId;
+
+                if (!RemoveRelationship(
+                        relationshipId))
+                {
+                    throw new InvalidOperationException(
+                        $"Adjacency index references relationship '{relationshipId}', " +
+                        "but the relationship could not be removed.");
+                }
             }
+
+            while (_entityAdjacency.TryGetValue(
+                       entityId,
+                       out var incomingAdjacency) &&
+                   incomingAdjacency.IncomingHead !=
+                       AdjacencySlabPool.None)
+            {
+                var nodeIndex =
+                    incomingAdjacency.IncomingHead;
+
+                var node =
+                    _adjacencyPool.GetNode(
+                        nodeIndex);
+
+                var relationshipId =
+                    node.RelationshipId;
+
+                if (!RemoveRelationship(
+                        relationshipId))
+                {
+                    throw new InvalidOperationException(
+                        $"Adjacency index references relationship '{relationshipId}', " +
+                        "but the relationship could not be removed.");
+                }
+            }
+
+            _entityAdjacency.Remove(
+                entityId);
         }
 
         /*
-         * Remove relationships terminating at this entity.
-         *
-         * IMPORTANT:
-         * This intentionally uses a separate local
-         * `incomingAdjacency`. There is no cross-scope reuse of
-         * the outgoing variable.
-         */
-        while (_entityAdjacency.TryGetValue(
-                   entityId,
-                   out var incomingAdjacency) &&
-               incomingAdjacency.IncomingHead !=
-                   AdjacencySlabPool.None)
-        {
-            var nodeIndex =
-                incomingAdjacency.IncomingHead;
-
-            var node =
-                _adjacencyPool.GetNode(
-                    nodeIndex);
-
-            var relationshipId =
-                node.RelationshipId;
-
-            if (!RemoveRelationship(
-                    relationshipId))
-            {
-                throw new InvalidOperationException(
-                    $"Adjacency index references relationship '{relationshipId}', " +
-                    "but the relationship could not be removed.");
-            }
-        }
-
-        _entityAdjacency.Remove(
-            entityId);
-
-        /*
-         * Remove the entity from every tag bucket before removing it from
-         * canonical storage.
+         * Remove the entity from every tag bucket.
          */
         _tagIndex.RemoveEntity(
-            entityId);
-
-        _entities.Remove(
             entityId);
 
         return true;

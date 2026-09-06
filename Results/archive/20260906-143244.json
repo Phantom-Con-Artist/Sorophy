@@ -1,0 +1,31 @@
+﻿{
+  "StartedAt": "2026-09-06T14:32:44.6432126-07:00",
+  "FinishedAt": "2026-09-06T14:32:45.9686081-07:00",
+  "Options": {
+    "Command": "performance",
+    "Seed": 12345,
+    "Operations": 1000000,
+    "AuditInterval": 1000,
+    "Profile": "quick",
+    "OutputDirectory": "Results",
+    "ShowHelp": false
+  },
+  "Campaigns": [
+    {
+      "Name": "Performance Benchmark",
+      "Command": "performance",
+      "Status": 0,
+      "PassedChecks": 10,
+      "TotalChecks": 10,
+      "Duration": "00:00:01.3049989",
+      "Message": "Fastest: Entities / Contains (100,000) at 31,328,321 ops/s. Slowest: Graph / Validate (100,000) at 4 ops/s. Peak working set: 215.4 MB.",
+      "ExceptionType": null,
+      "Success": true
+    }
+  ],
+  "OverallPass": true,
+  "PassedCampaigns": 1,
+  "TotalCampaigns": 1,
+  "PassedChecks": 10,
+  "TotalChecks": 10
+}

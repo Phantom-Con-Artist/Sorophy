@@ -39,6 +39,15 @@ public static class LoreSerializer
         PropertyNameCaseInsensitive = true
     };
 
+    private static readonly List<string> EmptyTagList =
+        new(0);
+
+    private static readonly Dictionary<string, EntityEmbeddedDocument> EmptyDocumentDict =
+        new(0, StringComparer.Ordinal);
+
+    private static readonly Dictionary<string, EntityPropertyDocument> EmptyPropertyDict =
+        new(0, StringComparer.Ordinal);
+
     public static string Serialize(SorophyGraph graph)
     {
         ArgumentNullException.ThrowIfNull(graph);
@@ -85,15 +94,15 @@ public static class LoreSerializer
         var document = new LoreDocument
         {
             FormatVersion = CurrentFormatVersion,
-            RelationshipHistories = new List<LoreRelationshipHistoryDocument>(),
-            RetiredRelationshipIds = new List<Guid>()
+            Entities = new List<LoreEntityDocument>(graph.Entities.Count),
+            Relationships = new List<LoreRelationshipDocument>(graph.Relationships.Count),
+            RelationshipHistories = new List<LoreRelationshipHistoryDocument>(graph.RelationshipHistories.Count),
+            RetiredRelationshipIds = new List<Guid>(graph.RetiredRelationshipIds.Count)
         };
 
         foreach (var entity in graph.Entities.Values
                      .OrderBy(e => e.Id))
         {
-            ValidateEntity(entity);
-
             document.Entities.Add(
                 new LoreEntityDocument
                 {
@@ -101,11 +110,16 @@ public static class LoreSerializer
                     Name = entity.Name,
                     Type = entity.Type,
                     Description = entity.Description,
-                    Tags = entity.Tags
-                        .OrderBy(
-                            tag => tag,
-                            StringComparer.Ordinal)
-                        .ToList(),
+                    Tags = entity.Tags.Count switch
+                    {
+                        0 => EmptyTagList,
+                        1 => new List<string>(1) { entity.Tags.First() },
+                        _ => entity.Tags
+                            .OrderBy(
+                                tag => tag,
+                                StringComparer.Ordinal)
+                            .ToList()
+                    },
                     Documents =
                         ConvertDocuments(
                             entity.Documents),
@@ -118,10 +132,6 @@ public static class LoreSerializer
         foreach (var relationship in graph.Relationships.Values
                      .OrderBy(r => r.Id))
         {
-            ValidateRelationship(
-                relationship,
-                graph);
-
             document.Relationships.Add(
                 new LoreRelationshipDocument
                 {
@@ -144,24 +154,15 @@ public static class LoreSerializer
         foreach (var history in graph.RelationshipHistories.Values
                      .OrderBy(h => h.RelationshipId))
         {
-            ValidateRelationshipHistory(
-                history,
-                graph);
-
             var historyDocument =
                 new LoreRelationshipHistoryDocument
                 {
                     RelationshipId = history.RelationshipId,
-                    Facts = new List<LoreRelationshipFactDocument>()
+                    Facts = new List<LoreRelationshipFactDocument>(history.Facts.Count)
                 };
 
             foreach (var fact in history.Facts)
             {
-                ValidateRelationshipFact(
-                    fact,
-                    history.RelationshipId,
-                    graph);
-
                 historyDocument.Facts.Add(
                     new LoreRelationshipFactDocument
                     {
@@ -208,6 +209,9 @@ public static class LoreSerializer
         LoreDocument document)
     {
         var graph = new SorophyGraph();
+        graph.EnsureCapacity(
+            document.Entities.Count,
+            document.Relationships.Count);
 
         foreach (var entityDocument in document.Entities)
         {
@@ -219,7 +223,7 @@ public static class LoreSerializer
                 Description = entityDocument.Description
             };
 
-            if (entityDocument.Tags is not null)
+            if (entityDocument.Tags is { Count: > 0 })
             {
                 foreach (var tag in entityDocument.Tags)
                 {
@@ -228,7 +232,7 @@ public static class LoreSerializer
                 }
             }
 
-            if (entityDocument.Documents is not null)
+            if (entityDocument.Documents is { Count: > 0 })
             {
                 foreach (var documentEntry in entityDocument.Documents)
                 {
@@ -244,9 +248,12 @@ public static class LoreSerializer
                 }
             }
 
-            RestoreProperties(
-                entity.Properties,
-                entityDocument.Properties);
+            if (entityDocument.Properties is { Count: > 0 })
+            {
+                RestoreProperties(
+                    entity.Properties,
+                    entityDocument.Properties);
+            }
 
             graph.AddEntity(entity);
         }
@@ -261,20 +268,6 @@ public static class LoreSerializer
 
         foreach (var relationshipDocument in document.Relationships)
         {
-            if (!graph.Entities.ContainsKey(
-                    relationshipDocument.SourceId))
-            {
-                throw new InvalidOperationException(
-                    $"Relationship '{relationshipDocument.Id}' references missing source entity '{relationshipDocument.SourceId}'.");
-            }
-
-            if (!graph.Entities.ContainsKey(
-                    relationshipDocument.TargetId))
-            {
-                throw new InvalidOperationException(
-                    $"Relationship '{relationshipDocument.Id}' references missing target entity '{relationshipDocument.TargetId}'.");
-            }
-
             SorophyRelationship relationship;
 
             try
@@ -302,9 +295,12 @@ public static class LoreSerializer
                     ex);
             }
 
-            RestoreProperties(
-                relationship.Properties,
-                relationshipDocument.Properties);
+            if (relationshipDocument.Properties is { Count: > 0 })
+            {
+                RestoreProperties(
+                    relationship.Properties,
+                    relationshipDocument.Properties);
+            }
 
             graph.AddRelationship(relationship);
         }
@@ -338,11 +334,15 @@ public static class LoreSerializer
 
                     var factProperties =
                         new Dictionary<string, SorophyProperty>(
+                            factDocument.Properties?.Count ?? 0,
                             StringComparer.Ordinal);
 
-                    RestoreProperties(
-                        factProperties,
-                        factDocument.Properties);
+                    if (factDocument.Properties is { Count: > 0 })
+                    {
+                        RestoreProperties(
+                            factProperties,
+                            factDocument.Properties);
+                    }
 
                     SorophyRelationshipFact fact;
 
@@ -584,9 +584,39 @@ public static class LoreSerializer
         ConvertProperties(
             IReadOnlyDictionary<string, SorophyProperty> properties)
     {
+        if (properties.Count == 0)
+        {
+            return EmptyPropertyDict;
+        }
+
         var result =
             new Dictionary<string, EntityPropertyDocument>(
+                properties.Count,
                 StringComparer.Ordinal);
+
+        if (properties.Count == 1)
+        {
+            using var enumerator = properties.GetEnumerator();
+            enumerator.MoveNext();
+            var property = enumerator.Current;
+
+            ValidateProperty(
+                property.Key,
+                property.Value);
+
+            result[property.Key] =
+                new EntityPropertyDocument
+                {
+                    Type =
+                        property.Value.Value.Type.ToString(),
+
+                    Value =
+                        SorophyValueCodec.Serialize(
+                            property.Value.Value)
+                };
+
+            return result;
+        }
 
         foreach (var property in properties
                      .OrderBy(
@@ -622,6 +652,13 @@ public static class LoreSerializer
                 "Properties cannot be null.");
         }
 
+        if (source.Count == 0)
+        {
+            return;
+        }
+
+        target.EnsureCapacity(target.Count + source.Count);
+
         foreach (var property in source)
         {
             if (property.Value is null)
@@ -647,10 +684,6 @@ public static class LoreSerializer
             var type =
                 ParseValueType(
                     property.Value.Type);
-
-            ValidateSerializedValue(
-                property.Value.Type,
-                property.Value.Value);
 
             target[property.Key] =
                 new SorophyProperty
@@ -712,10 +745,10 @@ public static class LoreSerializer
         }
 
         var entityIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(document.Entities.Count);
 
         var entityTypes =
-            new Dictionary<Guid, string?>();
+            new Dictionary<Guid, string?>(document.Entities.Count);
 
         foreach (var entity in document.Entities)
         {
@@ -774,17 +807,38 @@ public static class LoreSerializer
 
             if (entity.Tags is not null)
             {
-                var seenTags =
-                    new HashSet<string>(StringComparer.Ordinal);
-
-                foreach (var tag in entity.Tags)
+                var tagCount = entity.Tags.Count;
+                if (tagCount == 1)
                 {
-                    ValidateTag(tag);
+                    ValidateTag(entity.Tags[0]);
+                }
+                else if (tagCount == 2)
+                {
+                    var tag0 = entity.Tags[0];
+                    var tag1 = entity.Tags[1];
+                    ValidateTag(tag0);
+                    ValidateTag(tag1);
 
-                    if (!seenTags.Add(tag))
+                    if (string.Equals(tag0, tag1, StringComparison.Ordinal))
                     {
                         throw new InvalidOperationException(
-                            $"Lore entity '{entity.Id}' contains duplicate tag '{tag}'.");
+                            $"Lore entity '{entity.Id}' contains duplicate tag '{tag0}'.");
+                    }
+                }
+                else if (tagCount > 2)
+                {
+                    var seenTags =
+                        new HashSet<string>(tagCount, StringComparer.Ordinal);
+
+                    foreach (var tag in entity.Tags)
+                    {
+                        ValidateTag(tag);
+
+                        if (!seenTags.Add(tag))
+                        {
+                            throw new InvalidOperationException(
+                                $"Lore entity '{entity.Id}' contains duplicate tag '{tag}'.");
+                        }
                     }
                 }
             }
@@ -801,7 +855,7 @@ public static class LoreSerializer
         }
 
         var relationshipIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(document.Relationships.Count);
 
         foreach (var relationship in
                  document.Relationships)
@@ -902,7 +956,7 @@ public static class LoreSerializer
         }
 
         var retiredIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(document.RetiredRelationshipIds?.Count ?? 0);
 
         if (document.RetiredRelationshipIds is not null)
         {
@@ -931,7 +985,7 @@ public static class LoreSerializer
         if (document.RelationshipHistories is not null)
         {
             var historyIds =
-                new HashSet<Guid>();
+                new HashSet<Guid>(document.RelationshipHistories.Count);
 
             foreach (var history in document.RelationshipHistories)
             {
@@ -1234,7 +1288,7 @@ public static class LoreSerializer
         }
 
         var entityIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(graph.Entities.Count);
 
         foreach (var entity in graph.Entities.Values)
         {
@@ -1248,7 +1302,7 @@ public static class LoreSerializer
         }
 
         var relationshipIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(graph.Relationships.Count);
 
         foreach (var relationship in
                  graph.Relationships.Values)
@@ -1265,7 +1319,7 @@ public static class LoreSerializer
         }
 
         var retiredIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(graph.RetiredRelationshipIds.Count);
 
         foreach (var retiredId in graph.RetiredRelationshipIds)
         {
@@ -1289,7 +1343,7 @@ public static class LoreSerializer
         }
 
         var historyIds =
-            new HashSet<Guid>();
+            new HashSet<Guid>(graph.RelationshipHistories.Count);
 
         foreach (var pair in graph.RelationshipHistories)
         {
@@ -1692,9 +1746,37 @@ public static class LoreSerializer
         ConvertDocuments(
             Dictionary<string, SorophyEntityDocument> documents)
     {
+        if (documents.Count == 0)
+        {
+            return EmptyDocumentDict;
+        }
+
         var result =
             new Dictionary<string, EntityEmbeddedDocument>(
+                documents.Count,
                 StringComparer.Ordinal);
+
+        if (documents.Count == 1)
+        {
+            using var enumerator = documents.GetEnumerator();
+            enumerator.MoveNext();
+            var entry = enumerator.Current;
+
+            ValidateDocumentEntry(
+                entry.Key,
+                entry.Value);
+
+            result[entry.Key] =
+                new EntityEmbeddedDocument
+                {
+                    ContentType =
+                        entry.Value.ContentType,
+                    Content =
+                        entry.Value.Content
+                };
+
+            return result;
+        }
 
         foreach (var entry in documents
                      .OrderBy(

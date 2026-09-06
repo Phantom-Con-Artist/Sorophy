@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 1:18:32 PM -07:00
+Finished:    9/6/2026 1:19:37 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  1000000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        7/7      Mutation Performance               64.924s
+          Pure entity and relationship mutation performance benchmarks passed.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    7/7
+Status:    PASS
+

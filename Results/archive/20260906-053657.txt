@@ -1,0 +1,45 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 5:36:57 AM -07:00
+Finished:    9/6/2026 5:37:21 AM -07:00
+Seed:        12345
+Profile:     full
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        4/4      Mutation Chaos                      0.262s
+          Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
+Passed        4/4      Krono Temporal Scope                1.569s
+          Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.
+Passed        4/4      Deterministic Replay                0.579s
+          Journal determinism, reference model, replay equivalence, and graph invariants passed.
+Passed        7/7      Mutation Performance                0.936s
+          Pure entity and relationship mutation performance benchmarks passed.
+Passed        1/1      Pool Reuse                          0.138s
+          Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.
+Passed        1/1      High-Degree Topology                0.461s
+          High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
+Passed       10/10     Performance Benchmark               0.453s
+          Fastest: Entities / Contains (10,000) at 19,782,394 ops/s. Slowest: Graph / Validate (10,000) at 21 ops/s. Peak working set: 95.3 MB.
+Passed        8/8      Relationship Scaling                1.954s
+          Measured 4 graph sizes. Outgoing query throughput changed 1.53x from 1,000 to 100,000 entities. Peak working set: 177.5 MB.
+Passed       10/10     Memory Benchmark                    2.478s
+          Largest measured managed-memory footprint: Relationship churn (100,000) at 84.46 MB.
+Passed        1/1      Differential Fuzzing                0.324s
+          Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
+Passed        1/1      Serialization Torture               1.326s
+          Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
+Passed        1/1      Crash / Recovery Torture           11.683s
+          Crash/recovery contract checks and the requested endurance workload passed.
+Passed        1/1      Soak / Endurance                    1.582s
+          Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.
+
+SUMMARY
+-------
+Campaigns: 13/13
+Checks:    53/53
+Status:    PASS
+

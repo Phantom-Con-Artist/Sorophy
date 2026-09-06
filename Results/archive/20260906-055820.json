@@ -1,10 +1,10 @@
 ﻿{
-  "StartedAt": "2026-09-06T05:58:39.6915174-07:00",
-  "FinishedAt": "2026-09-06T05:59:01.7503733-07:00",
+  "StartedAt": "2026-09-06T05:58:20.6787294-07:00",
+  "FinishedAt": "2026-09-06T05:58:28.3441101-07:00",
   "Options": {
     "Command": "soak",
     "Seed": 12345,
-    "Operations": 50000,
+    "Operations": 25000,
     "AuditInterval": 1000,
     "Profile": "quick",
     "OutputDirectory": "Results",
@@ -17,7 +17,7 @@
       "Status": 1,
       "PassedChecks": 0,
       "TotalChecks": 1,
-      "Duration": "00:00:22.0433973",
+      "Duration": "00:00:07.6535345",
       "Message": "Soak / endurance campaign failed.",
       "ExceptionType": null,
       "Success": false

@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 5:58:07 AM -07:00
+Finished:    9/6/2026 5:58:11 AM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  10000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        1/1      Soak / Endurance                    3.085s
+          Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    1/1
+Status:    PASS
+

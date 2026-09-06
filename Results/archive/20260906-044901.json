@@ -1,6 +1,6 @@
 ﻿{
-  "StartedAt": "2026-09-06T04:51:56.9478588-07:00",
-  "FinishedAt": "2026-09-06T04:52:16.8745181-07:00",
+  "StartedAt": "2026-09-06T04:49:01.8796536-07:00",
+  "FinishedAt": "2026-09-06T04:49:24.1273046-07:00",
   "Options": {
     "Command": "all",
     "Seed": 12345,
@@ -17,7 +17,7 @@
       "Status": 0,
       "PassedChecks": 4,
       "TotalChecks": 4,
-      "Duration": "00:00:00.1691284",
+      "Duration": "00:00:00.1716356",
       "Message": "Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.",
       "ExceptionType": null,
       "Success": true
@@ -28,7 +28,7 @@
       "Status": 0,
       "PassedChecks": 4,
       "TotalChecks": 4,
-      "Duration": "00:00:00.8637430",
+      "Duration": "00:00:01.1432571",
       "Message": "Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.",
       "ExceptionType": null,
       "Success": true
@@ -39,7 +39,7 @@
       "Status": 0,
       "PassedChecks": 4,
       "TotalChecks": 4,
-      "Duration": "00:00:00.3884431",
+      "Duration": "00:00:00.5600773",
       "Message": "Journal determinism, reference model, replay equivalence, and graph invariants passed.",
       "ExceptionType": null,
       "Success": true
@@ -50,7 +50,7 @@
       "Status": 0,
       "PassedChecks": 7,
       "TotalChecks": 7,
-      "Duration": "00:00:00.6659750",
+      "Duration": "00:00:00.7438918",
       "Message": "Pure entity and relationship mutation performance benchmarks passed.",
       "ExceptionType": null,
       "Success": true
@@ -61,7 +61,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:00.1003006",
+      "Duration": "00:00:00.1041058",
       "Message": "Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.",
       "ExceptionType": null,
       "Success": true
@@ -72,7 +72,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:00.2124778",
+      "Duration": "00:00:00.3867203",
       "Message": "High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.",
       "ExceptionType": null,
       "Success": true
@@ -83,8 +83,8 @@
       "Status": 0,
       "PassedChecks": 10,
       "TotalChecks": 10,
-      "Duration": "00:00:00.2729715",
-      "Message": "Fastest: Entities / Contains (10,000) at 31,585,597 ops/s. Slowest: Graph / Validate (10,000) at 62 ops/s. Peak working set: 95.0 MB.",
+      "Duration": "00:00:00.3581573",
+      "Message": "Fastest: Entities / Contains (10,000) at 22,281,640 ops/s. Slowest: Graph / Validate (10,000) at 32 ops/s. Peak working set: 99.6 MB.",
       "ExceptionType": null,
       "Success": true
     },
@@ -94,8 +94,8 @@
       "Status": 0,
       "PassedChecks": 8,
       "TotalChecks": 8,
-      "Duration": "00:00:01.4352650",
-      "Message": "Measured 4 graph sizes. Outgoing query throughput changed 0.96x from 1,000 to 100,000 entities. Peak working set: 190.1 MB.",
+      "Duration": "00:00:01.7439392",
+      "Message": "Measured 4 graph sizes. Outgoing query throughput changed 1.22x from 1,000 to 100,000 entities. Peak working set: 176.8 MB.",
       "ExceptionType": null,
       "Success": true
     },
@@ -105,8 +105,8 @@
       "Status": 0,
       "PassedChecks": 10,
       "TotalChecks": 10,
-      "Duration": "00:00:01.7550797",
-      "Message": "Largest measured managed-memory footprint: Relationship churn (100,000) at 84.46 MB.",
+      "Duration": "00:00:02.4434085",
+      "Message": "Largest measured managed-memory footprint: Relationship churn (100,000) at 84.45 MB.",
       "ExceptionType": null,
       "Success": true
     },
@@ -116,7 +116,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:00.2688803",
+      "Duration": "00:00:00.3940379",
       "Message": "Deterministic randomized graph workloads matched an independent reference model across all configured seed families.",
       "ExceptionType": null,
       "Success": true
@@ -127,7 +127,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:00.8617386",
+      "Duration": "00:00:01.1806883",
       "Message": "Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.",
       "ExceptionType": null,
       "Success": true
@@ -138,7 +138,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:11.3567458",
+      "Duration": "00:00:11.3743622",
       "Message": "Crash/recovery contract checks and the requested endurance workload passed.",
       "ExceptionType": null,
       "Success": true
@@ -149,7 +149,7 @@
       "Status": 0,
       "PassedChecks": 1,
       "TotalChecks": 1,
-      "Duration": "00:00:01.3891886",
+      "Duration": "00:00:01.4323813",
       "Message": "Repeated mutation, query, validation, in-memory persistence, disk persistence, pool reuse, canonical-state verification, and resource monitoring survived the requested soak workload.",
       "ExceptionType": null,
       "Success": true

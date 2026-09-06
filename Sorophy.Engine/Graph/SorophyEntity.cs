@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using Sorophy.Engine.Time;
 
 namespace Sorophy.Engine.Graph;
 
@@ -63,6 +64,12 @@ public sealed class SorophyEntity
             Type,
             "Event",
             StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Gets or sets the authoritative temporal coordinate of this entity
+    /// when it represents an Event.
+    /// </summary>
+    public SorophyTime? OccurredAt { get; set; }
 
     /// <summary>
     /// Optional human-readable description of the entity.

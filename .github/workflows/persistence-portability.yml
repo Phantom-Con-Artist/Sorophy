@@ -1,0 +1,163 @@
+name: Persistence Portability Chain
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # Stage 1: Windows Initial Export
+  windows-export:
+    name: 1. Windows Export
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build in Release configuration
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run portability test suite & export Windows .lore artifact
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName~CrossPlatformPersistencePortabilityTests
+        env:
+          SOROPHY_PORTABILITY_OUTPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage1.lore
+
+      - name: Upload Windows .lore artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: krono-stage1
+          path: artifacts/krono_stage1.lore
+          if-no-files-found: error
+          retention-days: 7
+
+  # Stage 2: Linux Ingestion, Verification, and Re-export
+  linux-roundtrip:
+    name: 2. Linux Ingest & Re-export
+    needs: windows-export
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build in Release configuration
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Download Windows .lore artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: krono-stage1
+          path: artifacts
+
+      - name: Verify Windows artifact & export Linux .lore artifact
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName~CrossPlatformPersistencePortabilityTests
+        env:
+          SOROPHY_PORTABILITY_INPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage1.lore
+          SOROPHY_PORTABILITY_OUTPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage2.lore
+
+      - name: Upload Linux .lore artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: krono-stage2
+          path: artifacts/krono_stage2.lore
+          if-no-files-found: error
+          retention-days: 7
+
+  # Stage 3: macOS Ingestion, Verification, and Re-export
+  macos-roundtrip:
+    name: 3. macOS Ingest & Re-export
+    needs: linux-roundtrip
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build in Release configuration
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Download Linux .lore artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: krono-stage2
+          path: artifacts
+
+      - name: Verify Linux artifact & export macOS .lore artifact
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName~CrossPlatformPersistencePortabilityTests
+        env:
+          SOROPHY_PORTABILITY_INPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage2.lore
+          SOROPHY_PORTABILITY_OUTPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage3.lore
+
+      - name: Upload macOS .lore artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: krono-stage3
+          path: artifacts/krono_stage3.lore
+          if-no-files-found: error
+          retention-days: 7
+
+  # Stage 4: Windows Ingestion and Final Roundtrip Verification
+  windows-verify:
+    name: 4. Windows Final Verification
+    needs: macos-roundtrip
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build in Release configuration
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Download macOS .lore artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: krono-stage3
+          path: artifacts
+
+      - name: Verify round-trip macOS artifact on Windows
+        run: dotnet test --configuration Release --no-build --verbosity normal --filter FullyQualifiedName~CrossPlatformPersistencePortabilityTests
+        env:
+          SOROPHY_PORTABILITY_INPUT_LORE: ${{ github.workspace }}/artifacts/krono_stage3.lore
+

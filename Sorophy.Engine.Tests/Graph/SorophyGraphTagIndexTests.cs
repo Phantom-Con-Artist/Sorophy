@@ -629,30 +629,27 @@ public class SorophyGraphTagIndexTests
 
         graph.RebuildTagIndex();
 
-        Assert.Equal(
-            1,
+        Assert.Single(
             graph.GetEntityIdsByTag(
-                "Location").Count);
+                "Location"));
 
         Assert.Contains(
             first.Id,
             graph.GetEntityIdsByTag(
                 "Location"));
 
-        Assert.Equal(
-            1,
+        Assert.Single(
             graph.GetEntityIdsByTag(
-                "Antagonist").Count);
+                "Antagonist"));
 
         Assert.Contains(
             second.Id,
             graph.GetEntityIdsByTag(
                 "Antagonist"));
 
-        Assert.Equal(
-            1,
+        Assert.Single(
             graph.GetEntityIdsByTag(
-                "Important").Count);
+                "Important"));
 
         Assert.Contains(
             third.Id,

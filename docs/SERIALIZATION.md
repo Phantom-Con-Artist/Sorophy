@@ -1,4 +1,4 @@
-# Serialization in V2
+# Serialization in V2 — Krono
 
 Serialization is one of the most important compatibility boundaries in Sorophy.Engine.
 
@@ -12,24 +12,46 @@ The engine continues to work with two major document concepts:
 
 ```text
 .entity
-    one independently identifiable entity
+    = one independently identifiable entity
 
 .lore
-    a connected graph-oriented body of entities and relationships
+    = a connected graph-oriented body of entities and relationships
 ```
+
+## `.lore` V2
+
+Krono v2 persists the temporal graph model explicitly.
+
+The top-level representation includes:
+
+```text
+formatVersion
+entities
+relationships
+relationshipHistories
+retiredRelationshipIds
+```
+
+The persisted graph therefore contains both current structural state and explicitly recorded historical state.
+
+The serializer does not manufacture historical facts from the absence of history or from ordinary deletion.
 
 ## V2 Model Expansion
 
-Krono expands the in-memory semantic model with:
+Krono expands the serialized semantic model with:
 
 - Entity 2.0 data
-- Relationship validity
-- Semantic temporal values
-- Relationship evolution
-- Historical facts
-- Relationship histories
+- typed `SorophyValue` data
+- Event Entity temporal anchoring
+- relationship validity
+- semantic temporal values
+- relationship Evolutions where represented by the persistence contract
+- historical facts
+- relationship histories
+- Event provenance
+- retired relationship identities
 
-These features increase the responsibility of serialization because a serialized document must not silently collapse richer semantic state into unrelated primitive values.
+These features increase the responsibility of serialization because a serialized document must preserve semantic structure rather than silently collapsing it into unrelated primitive values.
 
 ## Canonical Value Model
 
@@ -53,15 +75,15 @@ Nested lists and objects remain structured values rather than arbitrary blobs.
 
 ## Temporal Serialization
 
-Temporal values must retain their semantic information, including the temporal schema relationship required by the model.
+Temporal values retain their semantic information, including the schema relationship required by the temporal model.
 
-A serializer should not turn a meaningful `SorophyTime` into an unexplained string and call that a successful round trip.
+A meaningful `SorophyTime` must not be reduced to an unexplained string and treated as a successful semantic round trip.
+
+Event Entities likewise preserve their temporal anchor through `OccurredAt`.
 
 ## History Serialization
 
-History persistence must preserve the immutable semantic shape of historical facts when history becomes part of a persisted document contract.
-
-The required conceptual fields are:
+Historical facts preserve their semantic shape:
 
 ```text
 At
@@ -72,17 +94,28 @@ Type
 Properties
 ValidFrom
 ValidTill
+EventEntityId?
 ```
 
-Any future on-disk representation should preserve these semantics rather than storing only an opaque implementation dump.
+Relationship histories and their recorded facts remain distinguishable from active relationship state.
 
-## Evolution Serialization
+## Relationship Retirement Serialization
 
-Evolution objects are declarative descriptions of requested transitions.
+Retired relationship identities are persisted explicitly.
 
-If persisted, they must deserialize as data and must **not execute automatically**.
+This prevents deserialization from accidentally allowing an identity that was previously retired to be reused.
 
-That means:
+```text
+retiredRelationshipIds
+```
+
+is part of the v2 persistence model.
+
+## Evolution and Execution Boundary
+
+Evolution objects are descriptions of structural transitions.
+
+If an Evolution representation is persisted or transported as data, deserialization reconstructs data only.
 
 ```text
 Deserialize
@@ -90,11 +123,66 @@ Deserialize
 Execute
 ```
 
-Execution must remain explicit through the evolution executor.
+Loading an Event Entity or Evolution description must never silently mutate the graph.
 
-## Backward Compatibility
+Execution remains explicit through `SorophyRelationshipEvolutionExecutor`.
 
-V2 should be developed with a clear distinction between:
+## Event Provenance
+
+Historical facts may preserve:
+
+```text
+eventEntityId
+```
+
+When present, this identifies the Event Entity that anchored the Evolution.
+
+Serialization preserves the provenance relationship as data. It does not execute or reinterpret the Event.
+
+## Validation on Read
+
+Malformed, incomplete, truncated, or semantically invalid documents should fail explicitly.
+
+Validation includes relevant graph, temporal, history, retirement, referential-integrity, and Event-provenance invariants.
+
+Silent repair is deliberately avoided because a structured-information engine must not continue operating on data whose intended meaning may have been changed during loading.
+
+## Deterministic Output
+
+Where deterministic serialization is part of the engine contract, semantically equivalent state should produce stable output.
+
+Determinism makes:
+
+- version control useful;
+- diffs useful;
+- tests reproducible;
+- corruption easier to diagnose.
+
+Deterministic serialization is therefore a verification property, not merely a cosmetic formatting preference.
+
+## Round-Trip Verification
+
+Krono persistence is tested through serialization/deserialization round trips and cross-platform portability workflows.
+
+The verification goal is preservation of semantic graph state across:
+
+```text
+Serialize
+    ↓
+Persist
+    ↓
+Deserialize
+    ↓
+Validate
+    ↓
+Re-serialize
+```
+
+Cross-platform persistence testing further exercises this path across supported operating systems.
+
+## Compatibility Boundary
+
+Compatibility must distinguish between:
 
 ```text
 Old file understood by new engine
@@ -104,40 +192,28 @@ and
 New file understood by old engine
 ```
 
-Those are different compatibility guarantees.
+These are different guarantees.
 
-A future release policy should declare which direction is supported for each document format.
+The `.lore` v2 format identifies its format version explicitly so compatibility policy can evolve without pretending that all versions are mutually interchangeable.
 
-## Deterministic Output
+## Design Principle
 
-Where deterministic serialization is part of the engine's test contract, the output should remain stable for semantically equivalent state.
-
-Determinism matters because it makes:
-
-- Version control useful
-- Diffing useful
-- Tests reproducible
-- Corruption easier to diagnose
-
-## Failure Philosophy
-
-Malformed, incomplete, truncated, or semantically invalid documents should fail explicitly.
-
-Silent repair is dangerous for a structured information engine because the application may continue operating on data that no longer means what the author intended.
-
-## V2 Serialization Roadmap
-
-The long-term serialization work includes:
+Serialization is a representation boundary, not an execution boundary.
 
 ```text
-Entity 2.0 persistence
-Temporal values
-Relationship validity
-History persistence
-Evolution persistence
-Migration / compatibility rules
-Large-document hardening
-Deterministic round-trip verification
+Canonical Graph State
+        │
+        ▼
+   Serializer
+        │
+        ▼
+    .lore v2
+        │
+        ▼
+   Deserializer
+        │
+        ▼
+Validated Graph State
 ```
 
-The exact persistence contract for each new v2 feature should be considered complete only when the corresponding serializer behavior is explicitly implemented and tested.
+The persistence layer preserves explicit state and semantic structure. It does not invent history, infer application meaning, or execute declarative objects while loading them.

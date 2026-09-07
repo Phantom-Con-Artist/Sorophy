@@ -4,23 +4,23 @@
 
 <p>introduces</p>
 
-<img src="assets/sorophy-v2-cover.png" alt="Sorophy v2.0.0-beta.1: Krono" width="900"/>
+<img src="assets/sorophy-v2-cover-stable.png" alt="Sorophy v2.0.0 Krono — Stable S" width="900"/>
 
-<h1>Sorophy v2.0.0-beta.1: Krono</h1>
+<h1>Sorophy v2.0.0 — Krono</h1>
 
 <p>
-<strong>A structured information and graph engine for building interconnected, temporal information.</strong>
+<strong>A Temporal Graph Evolution Core</strong>
 </p>
 
 <p>
-Entities · Relationships · Typed Values · Graphs · Time · History · Evolution · Serialization
+Entities · Relationships · Typed Values · Time · Events · Evolution · History · Snapshots · TQD · Graph Diff · Serialization
 </p>
 
 <br/>
 
 <p align="center">
   <a href="https://github.com/Phantom-Con-Artist/Sorophy"><img src="https://img.shields.io/badge/GitHub-Sorophy-181717?style=for-the-badge&logo=github" alt="GitHub"/></a>&nbsp;
-  <a href="https://github.com/Phantom-Con-Artist/Sorophy/releases"><img src="https://img.shields.io/badge/Version-2.0.0--Beta.1-7C3AED?style=for-the-badge" alt="Version 2.0.0-beta.1"/></a>&nbsp;
+  <a href="https://github.com/Phantom-Con-Artist/Sorophy/releases"><img src="https://img.shields.io/badge/Version-2.0.0--Stable-3157D5?style=for-the-badge" alt="Version 2.0.0 Stable"/></a>&nbsp;
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0--or--later-2E7D32?style=for-the-badge" alt="License: AGPL-3.0-or-later"/></a>
 </p>
 
@@ -30,14 +30,9 @@ Entities · Relationships · Typed Values · Graphs · Time · History · Evolut
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-E05735?style=for-the-badge" alt="Changelog"/></a>
 </p>
 
-<p align="center">
-  <a href="https://discord.com/invite/Em2ur4J8PF"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"/></a>&nbsp;
-  <a href="mailto:personalsarkar345@gmail.com"><img src="https://img.shields.io/badge/Email-personalsarkar345%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
-</p>
-
 <p>
-<strong>🚧 2.0.0-beta.1 · Beta · Krono</strong><br/>
-Krono is an active beta of the second-generation Sorophy architecture focused on temporal information, relationship evolution, historical state, and a stronger separation between information, behavior, and applications.
+<strong>✓ 2.0.0 · Stable S · Krono</strong><br/>
+Krono is the stable second-generation Sorophy architecture: a structural engine for temporal information, explicit graph evolution, historical state, point-in-time projection, temporal querying, and deterministic structural comparison.
 </p>
 
 </div>
@@ -46,52 +41,52 @@ Krono is an active beta of the second-generation Sorophy architecture focused on
 
 <div align="center">
 
-### Build information into structure.
+### Build information into structure.  
+### Give structure a memory.
 
 </div>
 
-Sorophy.Engine is the foundational engine of **The Saga**, a general-purpose structured information ecosystem designed to represent things, describe them, connect them, preserve their state, and reason about change without forcing every application to invent its own data model.
+Sorophy.Engine is the foundational engine of **The Saga**, a general-purpose structured information ecosystem designed to represent things, describe them, connect them, preserve their state, and provide applications with explicit temporal structure.
 
 Version 1.0 established the stable graph foundation.
 
-**Sorophy v2.0.0-beta.1: Krono** extends that foundation with a temporal and evolutionary model: relationships can carry explicit validity, evolve through declared operations, and preserve prior states as immutable history.
+**Sorophy v2.0.0 "Krono"** extends that foundation with semantic time, temporal relationship validity, passive Event Entities, explicit Evolution operations, immutable historical facts, point-in-time Snapshots, the Temporal Query Domain (TQD), and Graph Diff.
 
-The result is not merely a larger graph library. It is a step toward an information engine in which **time and change are part of the model itself**.
+> **Information should be structured with Time.**
 
-> **Information has structure. Relationships have meaning. State can change. Time matters. History should not be silently erased.**
+The central architectural boundary is simple:
+
+```text
+Applications understand meaning.
+Sorophy understands structure.
+```
+
+Applications decide what a domain event means and which structural changes represent it. Sorophy provides the primitives, invariants, temporal model, evolution machinery, history, and projections needed to represent those changes without silently erasing the past.
 
 ---
 
 # ✦ Table of Contents
 
 - [What Is Krono?](#-what-is-krono)
-- [Krono Status](#-krono-status)
+- [Stable Status](#-stable-status)
 - [From V1 to Krono](#-from-v1-to-krono)
-- [The Saga Vision](#-the-saga-vision)
+- [The Saga](#-the-saga)
 - [Core Concepts](#-core-concepts)
-- [Krono Entity Model](#-entity-model-20)
-- [Krono Lore Model](#-lore-model-20)
-- [The SorophyValue System](#-the-sorophyvalue-system)
-- [Temporal Model](#-temporal-model)
+- [Entity Model](#-entity-model)
 - [Event Entities](#-event-entities)
+- [Relationships](#-relationships)
+- [Temporal Model](#-temporal-model)
 - [Relationship Evolution](#-relationship-evolution)
 - [Historical State](#-historical-state)
-- [Current State vs Historical State](#-current-state-vs-historical-state)
-- [Relationship Identity](#-relationship-identity)
-- [Graph Operations](#-graph-operations)
-- [Relationship Cascade](#-relationship-cascade)
-- [Traversal and Reachability](#-traversal-and-reachability)
+- [Snapshots](#-snapshots)
+- [Temporal Query Domain](#-temporal-query-domain)
+- [Graph Diff](#-graph-diff)
+- [Canonical and Derived State](#-canonical-and-derived-state)
 - [Serialization](#-serialization)
-- [Storage](#-storage)
-- [Architecture](#-architecture)
-- [Canonical State and Derived State](#-canonical-state-and-derived-state)
-- [Public API Philosophy](#-public-api-philosophy)
 - [Validation and Reliability](#-validation-and-reliability)
 - [Testing & Verification](#-testing--verification)
-- [V1 Release Verification](#-v1-release-verification)
 - [Potential Applications](#-potential-applications)
 - [What Sorophy.Engine Is Not](#-what-sorophyengine-is-not)
-- [Intended Ecosystem](#-intended-ecosystem)
 - [Documentation](#-documentation)
 - [Development](#-development)
 - [Branch and Release Model](#-branch-and-release-model)
@@ -108,42 +103,48 @@ The result is not merely a larger graph library. It is a step toward an informat
 
 # ✦ What Is Krono?
 
-**Sorophy v2.0.0-beta.1: Krono** is the second major architectural stage of Sorophy.Engine.
+**Sorophy v2.0.0 "Krono"** is the second major architectural stage of Sorophy.Engine and the reference implementation of the temporal portion of **The Saga Architecture**.
 
-Krono keeps the small, explicit primitives that made the first engine useful:
+Krono retains the explicit primitives of V1:
 
 ```text
 SorophyValue
-    ↓
+      ↓
 SorophyProperty
-    ↓
+      ↓
 SorophyEntity
-    ↓
+      ↓
 SorophyRelationship
-    ↓
+      ↓
 SorophyGraph
 ```
 
-and extends them with another dimension:
+and adds temporal state and controlled evolution:
 
 ```text
-                        Time
-                         │
-                         ▼
-Entity ─────── Relationship ─────── Graph
-                         │
-                         ▼
-                     Evolution
-                         │
-                         ▼
-                      History
+                         Time
+                          │
+                          ▼
+Entity ───── Relationship ───── Graph
+                  │
+                  ▼
+              Evolution
+                  │
+                  ▼
+               History
+                  │
+                  ▼
+          Temporal Projections
+          ├── Snapshot
+          ├── TQD
+          └── Graph Diff
 ```
 
-The purpose is not to turn every object into a temporal database record.
+The purpose is not to turn every object into a database record.
 
 The purpose is to make **meaningful temporal change representable without destroying the state that came before it**.
 
-Krono therefore treats several concepts as distinct:
+Krono therefore keeps these concepts distinct:
 
 ```text
 Entity
@@ -153,56 +154,67 @@ Relationship
     = how things are connected
 
 Temporal Model
-    = when a state is valid
+    = where a state exists in time
 
-Event
-    = an entity that semantically represents an occurrence
+Event Entity
+    = a passive entity representing an occurrence
 
 Evolution
-    = a declared state transition
+    = a declared structural state transition
 
 Executor
     = the explicit mechanism that applies a transition
 
 History
-    = immutable record of prior relationship states
+    = immutable prior relationship state
+
+Snapshot
+    = point-in-time structural projection
+
+TQD
+    = read-only temporal query surface
+
+Graph Diff
+    = structural comparison between snapshots
 ```
 
 ---
 
-# ✦ Krono Status
+# ✦ Stable Status
 
-## Current Beta
-
-`2.0.0-beta.1` is a **development beta**, not a stable Grade A release.
-
-The current v2 checkpoint has:
+## Sorophy Engine v2.0.0 — Krono
 
 ```text
-469 / 469 deterministic unit tests passing
-0 failed
-0 skipped
+Version:          2.0.0
+Codename:         Krono
+Stability:        Stable S
+Standard:         Gold Standard
+Framework:        .NET 10
+License:          AGPL-3.0-or-later
 ```
 
-The Krono suite covers the implemented graph, entity, tag, temporal, history, relationship-evolution, and executor behavior represented by the current engine state.
+Krono's stable release verification includes:
 
-The dedicated stress/release-gate campaign is intentionally **deferred until the remaining Krono architecture is sufficiently complete**.
+```text
+769 / 769 unit test cases passing
+0 failed
+0 skipped
 
-This distinction matters.
+13 / 13 stress campaigns passing
+58 / 58 stress checks passing
+```
 
-A green unit suite means:
-> The implemented behavior is currently passing its deterministic tests.
+The release verification program includes deterministic unit coverage, adversarial testing, metamorphic testing, persistence and serialization checks, temporal reconstruction, Snapshot/TQD/Graph Diff coverage, cross-feature chaos, endurance testing, and cross-platform persistence verification.
 
-It does **not** mean:
-> Every future Krono subsystem has been validated at release-gate scale.
+The stability profile is intentionally separate from a raw quality score:
 
-That is why this release is `beta.1`.
+> **Stable S is a stability profile. It is not a claim that the engine is universally perfect or that every possible application domain has been validated.**
 
 ---
 
 # ✦ From V1 to Krono
 
-V1 established the durable graph foundation.
+V1 established the durable structural graph:
 
 ```text
 V1.0.0
@@ -218,182 +230,108 @@ V1.0.0
 └── Adversarial Verification
 ```
 
-Krono keeps those foundations and adds:
+Krono preserves that foundation and adds:
 
 ```text
 Krono
 │
-├── Krono Entity Model
-├── Krono Lore Model
+├── Expanded Entity Model
 ├── Semantic Time
 ├── Relationship Validity
-├── Event Entity Semantics
+├── Event Entities
 ├── Relationship Evolution
 ├── Historical Facts
 ├── Relationship History
-└── Explicit Evolution Execution
+├── Relationship Identity Retirement
+├── Point-in-Time Snapshots
+├── Temporal Query Domain
+├── Graph Diff
+├── .lore v2
+└── Cross-Platform Verification
 ```
 
 The conceptual shift is:
 
 ```text
 V1
+
 "What exists?"
 "How are things connected?"
 
+
 Krono
+
 "What exists?"
 "How are things connected?"
 "When is this state valid?"
 "What changed?"
 "When did it change?"
 "What was true before?"
+"What does the graph look like at T?"
+"What changed between T1 and T2?"
 ```
 
-V2 does not discard the graph model. It gives the graph a memory.
+**V2 does not replace the graph model. It gives the graph a memory and a temporal coordinate.**
 
 ---
 
-# ✦ The Saga Vision
+# ✦ The Saga
 
-The Saga is not intended to be just a graph library.
+<div align="center">
 
-**The Saga is an attempt to build a general-purpose structured information ecosystem.**
+<img src="assets/the-saga-cover.png" alt="The Saga — An Open Source Initiative" width="900"/>
+
+</div>
+
+**The Saga is an open-source initiative for building structured information systems whose underlying information can outlive any single application.**
 
 The fundamental idea is:
 
 > **Information should be represented as structured, interconnected objects rather than being trapped inside isolated documents.**
 
-Modern software gives us countless ways to create information, but much of that information remains fragmented across notes, files, databases, proprietary formats, applications, and prose.
-
 A person may exist in one record.  
 A location may exist in another.  
 The relationship between them may exist only as a sentence in a third document.
 
-The Saga approaches that problem from another direction.  
+The Saga approaches that problem from another direction.
+
 Instead of beginning with documents, it begins with **structure**.
 
----
-
-## The Core Idea
-
-At the foundation of The Saga is the concept of an **entity**: something an information system needs to represent.
-
-It could be:
-
 ```text
-Person
-Location
-Organization
-Project
-Concept
-Historical Event
-Scientific Object
-Fictional Character
-Machine
-Document
-Dataset
-```
-
-Entities can carry properties and connect to one another:
-
-```text
-┌───────────────┐
-│     Person    │
-│    Arannis    │
-└───────┬───────┘
-        │
-      rules
-        │
-        ▼
-┌───────────────┐
-│    Kingdom    │
-│    Asterra    │
-└───────────────┘
-```
-
-The important part is not merely that these objects exist. **Their relationships are data too.**
-
-Krono takes that one step further: the relationship itself may have a state at a particular point in time, and the system preserves what that state used to be.
-
----
-
-## From Documents to Structured Information
-
-Traditional documents are excellent for human-readable content.
-
-They are less suitable when an application needs to answer structural questions such as:
-
-```text
-Who is connected to this object?
-What type of relationship connects them?
-What properties does the relationship have?
-When did this relationship become valid?
-When did it stop being valid?
-What was the previous state?
-What changed?
-```
-
-The Saga separates the underlying information model from the application that presents it:
-
-```text
-                     THE SAGA
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-      Structured Model        Applications
-              │                   │
-              │         ┌─────────┼─────────┐
-              │         │         │         │
-              ▼         ▼         ▼         ▼
-          Entities   Orbpad    Editors   Other Tools
+                         THE SAGA
+                            │
+              ┌─────────────┴─────────────┐
+              │                           │
+      Structured Information         Applications
+              │                           │
+              │                ┌──────────┼──────────┐
+              │                │          │          │
+              ▼                ▼          ▼          ▼
+          Sorophy            Orbpad     Editors    Tools
               │
               ▼
-        Relationships
+        Entities + Relationships
               │
               ▼
-            Graph
+             Graph
 ```
 
-The engine becomes the foundation. Applications become interfaces and specialized experiences built on top of it.
+The application is replaceable.
 
----
-
-## The Long-Term Goal
-
-```text
-┌─────────────────────┐
-│     Application     │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│    Sorophy.Engine   │
-└──────────┬──────────┘
-           │
-           ▼
-   Structured Information
-           │
-     ┌─────┼─────┐
-     ▼     ▼     ▼
-  Orbpad  Tool A Tool B
-```
-
-The application is replaceable. **The information is not.**
-
-That is the direction The Saga is designed toward.
+**The information is not.**
 
 ---
 
 # ✦ Core Concepts
 
-Sorophy.Engine revolves around a deliberately small number of primitives.
+Sorophy.Engine is intentionally built from a small set of explicit primitives.
 
 ## `SorophyGraph`
 
 `SorophyGraph` is the canonical owner of active graph state.
 
 It maintains:
+
 - Entities
 - Relationships
 - Connectivity
@@ -401,6 +339,7 @@ It maintains:
 - Traversal structures
 - Supporting indexes
 - Relationship histories
+- Retired relationship identities
 
 Conceptually:
 
@@ -422,185 +361,15 @@ SorophyGraph
     └── Relationship Y
 ```
 
-The partial-class implementation is an organizational technique. The public conceptual object remains one `SorophyGraph`.
+The implementation uses partial classes to organize the code. Conceptually and publicly, it remains one graph.
 
 ---
 
-## `SorophyEntity`
+## `SorophyValue`
 
-An entity is an independently identifiable object.
+`SorophyValue` is the strongly typed value container.
 
-Its core identity is explicit, and its semantic classification is provided through its type.
-
-Conceptually:
-
-```text
-SorophyEntity
-├── Identity
-├── Name
-├── Type
-├── Description
-├── Properties
-├── Tags
-└── Embedded Structured Content
-```
-
-Entities do not need a graph to exist. An application can create, inspect, serialize, or prepare an entity before placing it into a graph.
-
----
-
-## `SorophyRelationship`
-
-A relationship connects two entities. It is a first-class object, not a sentence embedded inside another object.
-
-Conceptually:
-
-```text
-SorophyRelationship
-├── Id
-├── SourceId
-├── TargetId
-├── Type
-├── Properties
-├── ValidFrom
-└── ValidTill
-```
-
-This makes the relationship independently identifiable and independently evolvable.
-
----
-
-## `SorophyProperty`
-
-A property attaches structured information to an entity or relationship.
-
-It consists of:
-
-```text
-Name
-Value
-```
-
-The value is represented using `SorophyValue`, not an untyped string bag.
-
----
-
-# ✦ Krono Entity Model
-
-Krono Entity Model is an **expansion**, not a replacement, of the original entity concept.
-
-The entity remains the smallest meaningful independently identifiable object in the Saga model. See [`docs/ENTITY_MODEL.md`](docs/ENTITY_MODEL.md).
-
-## What Changed
-
-Krono Entity Model formalizes richer information around the entity:
-
-```text
-Identity
-Name
-Type
-Description
-Properties
-Tags
-Embedded Structured Content
-```
-
-The `Type` field remains a semantic classifier rather than a rigid inheritance tree:
-
-```text
-Character
-Location
-Organization
-Project
-Document
-Dataset
-Event
-```
-
-Applications can define their own vocabulary without requiring a new engine subclass for every domain object.
-
----
-
-## Event Entities
-
-An event is still a `SorophyEntity`. For example:
-
-```text
-Name = "The Fall of Aranth"
-Type = "Event"
-```
-
-The engine provides event classification through `IsEvent`.
-
-However:
-> **`Type = "Event"` does not automatically execute evolution operations.**
-
-That separation is intentional:
-
-```text
-Event Entity
-    ↓
-represents an occurrence
-
-Evolution Operation
-    ↓
-describes a state transition
-
-Evolution Executor
-    ↓
-explicitly applies the transition
-```
-
-There is deliberately no magical trigger where setting `Type = Event` immediately begins mutating the graph.
-
----
-
-# ✦ Krono Lore Model
-
-Krono Lore Model represents the connected information model represented by `.lore` concepts and `SorophyGraph`. See [`docs/LORE_MODEL.md`](docs/LORE_MODEL.md).
-
-The v1 lore model was primarily a connected body of entities and relationships. Krono retains that foundation but gives relationships a richer lifecycle:
-
-```text
-Entity
-   │
-   ▼
-Relationship
-   │
-   ├── Properties
-   ├── Validity
-   ├── Evolution
-   └── History
-```
-
-The conceptual distinction is:
-
-```text
-Entity
-"What is a thing?"
-
-Lore
-"How are things connected?"
-
-Temporal Model
-"When is a state valid?"
-
-Evolution
-"What changes the state?"
-
-History
-"What was true before?"
-```
-
-A lore document represents more than a collection of unrelated records: it represents a connected information structure whose relationships can carry semantic state.
-
----
-
-# ✦ The SorophyValue System
-
-`SorophyValue` provides the engine's explicit typed-value model.
-
-The existing value categories include:
+Supported value categories include:
 
 ```text
 Null
@@ -614,9 +383,7 @@ List
 Object
 ```
 
-The goal is to prevent meaningful data from collapsing into arbitrary strings.
-
-For example:
+The engine preserves the distinction between values such as:
 
 ```csharp
 new SorophyValue(
@@ -624,7 +391,7 @@ new SorophyValue(
     42L);
 ```
 
-is fundamentally different from:
+and:
 
 ```csharp
 new SorophyValue(
@@ -632,163 +399,303 @@ new SorophyValue(
     "42");
 ```
 
-One represents an integer; the other represents text. That distinction matters to applications, serialization, validation, and future query systems.
+Lists and objects are recursively cloned when required for isolation.
 
 ---
 
-# ✦ Nested Values
+## `SorophyProperty`
 
-The Saga supports structured values inside lists and objects.
+A property is structured information attached to an entity or relationship:
+
+```text
+Name
+Value
+```
+
+The value is represented by `SorophyValue`, rather than an arbitrary string bag.
+
+---
+
+# ✦ Entity Model
+
+An entity is an independently identifiable object.
 
 Conceptually:
 
 ```text
-Object
-├── name = "Arannis"
-├── age = 42
-└── active = true
+SorophyEntity
+├── Id
+├── Name
+├── Type
+├── Description
+├── Properties
+├── Tags
+├── Documents
+└── OccurredAt
 ```
 
-and:
+`Type` is a semantic classifier rather than a rigid inheritance hierarchy.
+
+Examples:
 
 ```text
-List
-├── value 1
-├── value 2
-└── value 3
+Character
+Location
+Organization
+Project
+Document
+Dataset
+Event
 ```
 
-Nested values are processed recursively by the serialization system.
+Applications can define their own vocabulary without requiring a new engine subclass for every domain object.
 
-The existing fidelity tests exercise nested values alongside important CLR types such as:
+### Entity lifecycle
+
+The frozen Krono lifecycle is:
 
 ```text
-Guid
-DateTime
-Integer primitives
-Floating-point CLR inputs
-Decimal values
-Nested Lists
-Nested Objects
+Creation
+   ↓
+Property / Tag / Document Mutation
+   ↓
+Termination / Removal
 ```
 
-The engine treats semantic preservation as more important than merely producing syntactically valid JSON.
+A direct:
 
----
-
-# ✦ Temporal Model
-
-Krono introduces an explicit temporal model centered around `SorophyTime`. See [`docs/TEMPORAL_MODEL.md`](docs/TEMPORAL_MODEL.md).
-
-The purpose is to avoid treating every world or domain timeline as if it were simply a wall-clock timestamp:
-
-```text
-SorophyTime
-    │
-    ├── Schema
-    ├── Temporal Unit
-    ├── Position
-    └── Precision
+```csharp
+graph.AddEntity(entity);
 ```
 
-A temporal value belongs to a defined temporal schema. This permits domains such as:
-
-```text
-Year / Month / Day
-Era / Age / Year
-Phase / Cycle / Tick
-Domain-specific temporal systems
-```
-
-without forcing every application into one universal calendar.
-
----
-
-## Relationship Validity
-
-Relationships can carry explicit validity:
-
-```text
-A ──[rules]──> B
-ValidFrom = T1
-ValidTill = T2
-```
-
-This separates:
-```text
-When the relationship state is valid
-```
-from:
-```text
-When the engine recorded a historical fact about that state
-```
-
----
-
-## Temporal Schema Consistency
-
-Temporal values used together must respect their schema boundaries. Krono does not assume that two independently defined timelines are automatically compatible just because both contain a value called `100`.
+creates a **baseline object**. Krono does not fabricate a creation timestamp or historical fact for it.
 
 ---
 
 # ✦ Event Entities
 
-Events are intentionally modeled through the entity system instead of a special inheritance hierarchy:
+An Event is an ordinary `SorophyEntity` whose type identifies it as an event:
 
 ```text
 SorophyEntity
 Type = "Event"
+OccurredAt = T
 ```
 
-This gives applications the freedom to represent battles, treaties, elections, corporate milestones, or simulation events without forcing all of those domains into a single rigid taxonomy.
+Events are **first-class, passive temporal anchors**.
 
-The actual state transition remains explicit.
+They:
+
+- carry descriptive information;
+- carry an authoritative `OccurredAt`;
+- may anchor one or many relationship evolutions;
+- may be used by TQD for provenance queries;
+- do not execute themselves;
+- are not workflow objects;
+- are not normal relationship endpoints.
+
+There is deliberately no:
+
+```text
+event.Execute()
+```
+
+The lifecycle is explicit:
+
+```text
+Event Entity
+     │
+     │ represents an occurrence
+     ▼
+Evolution Operation
+     │
+     │ declares structural change
+     ▼
+Evolution Executor
+     │
+     │ applies change
+     ▼
+SorophyGraph
+```
+
+Applications provide the domain semantics.
+
+Krono provides the structural operation.
+
+### Event time is authoritative
+
+When an evolution is anchored by an Event Entity:
+
+```text
+Event.OccurredAt
+        ↓
+Evolution temporal coordinate
+```
+
+The architecture does not invent a second conflicting temporal coordinate.
+
+Multiple Event Entities may share the same `OccurredAt`. They are temporally equivalent. Krono does **not** infer causal ordering or precedence between co-temporal events.
+
+---
+
+# ✦ Relationships
+
+A relationship is a first-class directed connection:
+
+```text
+Entity (Source)
+      │
+      ▼
+Relationship
+      │
+      ▼
+Entity (Target)
+```
+
+A relationship contains:
+
+```text
+Id
+SourceId
+TargetId
+Type
+Properties
+ValidFrom
+ValidTill
+```
+
+Normal relationships always connect normal entities.
+
+```text
+Entity → Relationship → Entity
+```
+
+An Event Entity is not automatically an edge endpoint.
+
+Referential integrity requires both endpoints to exist before a relationship is added.
+
+Self-links are permitted.
+
+---
+
+# ✦ Temporal Model
+
+Krono introduces first-class semantic time through `SorophyTime`.
+
+```text
+SorophyTime
+│
+├── Schema
+├── Temporal Unit
+├── Position
+└── Precision
+```
+
+A temporal schema can represent domains such as:
+
+```text
+Year / Month / Day
+Era / Age / Year
+Phase / Cycle / Tick
+Domain-specific timelines
+```
+
+The engine does not assume that every domain uses the same calendar.
+
+### Strict comparison
+
+Krono deliberately avoids guessed conversions.
+
+Temporal comparison requires:
+
+```text
+Same Schema
+     +
+Same Unit
+     +
+Numeric Position
+```
+
+Numeric positions use arbitrary-precision integers.
+
+Cross-schema or cross-unit comparison fails explicitly rather than guessing a conversion.
+
+Named, ordinal, and pattern-based positions are valid temporal structures but do not provide numeric ordering.
+
+---
+
+## Relationship Validity
+
+A relationship state may carry:
+
+```text
+ValidFrom = T1
+ValidTill = T2
+```
+
+This answers:
+
+> When is this relationship state semantically valid?
+
+That is different from:
+
+```text
+At
+```
+
+which answers:
+
+> At what temporal coordinate was this historical state recorded?
+
+Therefore:
+
+```text
+ValidFrom / ValidTill ≠ At
+```
+
+This distinction is fundamental to Krono.
 
 ---
 
 # ✦ Relationship Evolution
 
-Krono introduces explicit relationship evolution operations. See [`docs/EVENTS_AND_EVOLUTION.md`](docs/EVENTS_AND_EVOLUTION.md).
-
-The implemented operation family is:
+Krono provides five explicit relationship evolution operations:
 
 ```text
 Creation
-Type Change
 Property Modification
+Type Change
 Validity Change
 Termination
 ```
 
-The architecture separates **describing a transition** from **performing a transition**:
+The architecture separates describing a transition from applying it:
 
 ```text
 SorophyRelationshipEvolution
-            │
-            ▼
+             │
+             ▼
 SorophyRelationshipEvolutionExecutor
-            │
-            ▼
+             │
+             ▼
         SorophyGraph
 ```
 
----
+## Creation
 
-## Relationship Creation
+Introduces a new relationship identity.
 
-A creation operation introduces a new relationship identity:
+The initial state is captured as a historical fact at the evolution's temporal coordinate.
 
-```text
-A ──[new relation]──> B
-```
+## Property Modification
 
-The creation operation can define relationship ID, source, target, type, properties, validity, and effective time. There is no prior state to snapshot because the relationship did not previously exist.
+Sets, replaces, or removes relationship properties.
 
----
+The complete prior relationship state is captured before mutation.
 
 ## Type Change
 
-A type change modifies the active relationship's type while preserving identity:
+Changes the relationship type while preserving relationship identity.
 
 ```text
 Before:
@@ -800,70 +707,40 @@ After:
 A ──hates──> B
 ```
 
-Before mutation, the former state can be recorded as a historical fact:
-
-```text
-History @ T50
-    Type = knows
-Current
-    Type = hates
-```
-
----
-
-## Property Modification
-
-A property-modification operation can set, replace, or remove properties. The previous relationship state can be captured first:
-
-```text
-Before:
-Power = 100
-Status = Active
-
-Evolution
-
-After:
-Power = 250
-Status = Closed
-```
-
----
+The prior state remains in history.
 
 ## Validity Change
 
-A validity-change operation updates `ValidFrom` and `ValidTill`. Temporal compatibility is validated against the temporal model.
-
----
+Updates `ValidFrom` and/or `ValidTill` while enforcing temporal compatibility.
 
 ## Termination
 
-Termination removes an active relationship from the canonical graph while preserving its historical identity:
+Removes the relationship from the active graph and permanently retires its identity.
 
 ```text
 Active
-   ↓
-Terminate @ T100
-   ↓
-No longer active
-   ↓
-Relationship ID retired
+  ↓
+Termination @ T100
+  ↓
+Inactive
+  ↓
+Relationship ID Retired
 ```
 
-The prior state is captured before removal.
+The final state is captured before termination.
 
 ---
 
 # ✦ Historical State
 
-Krono introduces two distinct historical concepts:
-- `SorophyRelationshipFact`
-- `SorophyRelationshipHistory`
+Krono distinguishes:
 
-See [`docs/HISTORY.md`](docs/HISTORY.md).
+```text
+SorophyRelationshipFact
+SorophyRelationshipHistory
+```
 
-## `SorophyRelationshipFact`
-
-A fact is an immutable representation of a relationship state at a particular temporal point:
+A fact is an immutable representation of a relationship state:
 
 ```text
 SorophyRelationshipFact
@@ -874,33 +751,25 @@ SorophyRelationshipFact
 ├── Type
 ├── Properties
 ├── ValidFrom
-└── ValidTill
+├── ValidTill
+└── EventEntityId
 ```
 
-`At` answers: **At what temporal point was this historical state recorded?**  
-`ValidFrom` and `ValidTill` answer: **What validity interval belonged to that relationship state?**
-
----
-
-## `SorophyRelationshipHistory`
-
-A relationship history is an append-only sequence of facts belonging to one relationship identity:
+A history is the append-only collection belonging to one relationship identity:
 
 ```text
 Relationship X
-    │
-    └── History
-         ├── Fact @ T1
-         ├── Fact @ T2
-         ├── Fact @ T3
-         └── ...
+     │
+     └── History
+          ├── Fact @ T1
+          ├── Fact @ T2
+          ├── Fact @ T3
+          └── ...
 ```
 
-The history API deliberately does not provide replacement or deletion operations. A historical fact represents historical evidence.
+Historical facts cannot be edited, reordered, or deleted through the history API.
 
----
-
-# ✦ Current State vs Historical State
+### Current state vs historical state
 
 ```text
 Current State
@@ -913,13 +782,13 @@ Relationship Identity
     = persistent
 ```
 
-For example, if relationship `A ──[Alliance]──> B` evolves to `A ──[Hostility]──> B` at Year 50, the graph's active state becomes `Hostility`, but history retains `Fact @ Year 50: Alliance`. The mutation does not erase the past.
+History is relationship-centric rather than a global unstructured mutation log.
 
 ---
 
-# ✦ Relationship Identity
+# ✦ Relationship Identity Retirement
 
-The lifecycle of a relationship identity is:
+Relationship identities are never silently recycled.
 
 ```text
 Created
@@ -933,263 +802,486 @@ Terminated
 Retired
 ```
 
-Once a relationship identity is retired, the engine rejects attempts to reuse it as a new active relationship to preserve historical continuity.
-
----
-
-# ✦ Graph Operations
-
-The graph continues to provide explicit mutation and lookup operations.
-
-## Entity Operations
+Once an ID is retired:
 
 ```csharp
-graph.AddEntity(entity);
-graph.RemoveEntity(entity.Id);
-graph.ContainsEntity(entity.Id);
-graph.TryGetEntity(entity.Id, out var result);
+graph.AddRelationship(...)
 ```
 
-## Relationship Operations
+and relationship creation evolution cannot reuse that identity.
 
-```csharp
-graph.AddRelationship(relationship);
-graph.RemoveRelationship(relationship.Id);
-graph.ContainsRelationship(relationship.Id);
-graph.TryGetRelationship(relationship.Id, out var result);
-```
-
-The graph enforces referential integrity: a relationship cannot be inserted against a missing source or target entity.
-
----
-
-# ✦ Relationship Cascade
-
-Removing an entity removes connected active relationships:
+Ordinary removal and evolutionary termination remain distinct:
 
 ```text
-A ─────→ B
-│
-└──────→ C
+graph.RemoveRelationship(id)
+    → removes active state
+    → retires identity
+    → does not fabricate history
+
+SorophyRelationshipTermination
+    → records final fact
+    → removes active state
+    → retires identity
 ```
 
-Removing `A` removes active relationships pointing to or from it so that no dangling edges remain. Historical facts are preserved as an immutable ledger and are not active graph members.
+Historical facts remain available after retirement.
 
 ---
 
-# ✦ Traversal and Reachability
+# ✦ Snapshots
 
-Sorophy.Engine retains graph traversal capabilities for:
-- Relationship navigation
-- Dependency exploration
-- Connected structures
-- Worldbuilding queries
-- Graph-based application logic
+Snapshots are read-only, point-in-time structural projections of the graph.
 
-Reachability answers whether path `A → B → C → D` allows `A` to reach `D`.
+```csharp
+ISorophySnapshot snapshot =
+    graph.CreateSnapshot(targetTime);
+```
+
+An Event Entity can also provide the temporal coordinate:
+
+```csharp
+ISorophySnapshot snapshot =
+    graph.CreateSnapshot(eventEntity);
+```
+
+The Event overload validates that the entity is an Event with a non-null `OccurredAt`, then delegates to the temporal snapshot operation.
+
+### Materialization
+
+Snapshot materialization:
+
+1. clones entities;
+2. recursively clones nested properties, tags, and documents;
+3. reconstructs relationship state from canonical state and history;
+4. excludes relationships that did not yet exist;
+5. excludes terminated relationships after termination;
+6. prunes dangling edges;
+7. produces isolated read-only state.
+
+### Post-transition semantics
+
+Snapshots are **inclusive/post-transition** projections.
+
+If a transition occurs exactly at `T`:
+
+```text
+Snapshot(T)
+    =
+state after transitions effective at T
+```
+
+An Event at `T` therefore produces the same temporal projection as a direct snapshot at `T`:
+
+```text
+Snapshot(Event)
+    ==
+Snapshot(Event.OccurredAt)
+```
+
+Multiple events at the same temporal coordinate are temporally equivalent. Snapshotting does not invent causal order.
+
+---
+
+# ✦ Temporal Query Domain
+
+The **Temporal Query Domain (TQD)** is the read-only temporal query surface:
+
+```text
+graph.TemporalQuery
+        │
+        ▼
+ITemporalQueryDomain
+```
+
+TQD operates over graph state, temporal history, and provenance.
+
+### Point-in-time
+
+```text
+At(time)
+At(eventEntity)
+
+EntityExistsAt(...)
+GetEntityAt(...)
+
+RelationshipExistsAt(...)
+GetRelationshipAt(...)
+
+GetOutboundRelationshipsAt(...)
+GetInboundRelationshipsAt(...)
+```
+
+### Interval and history
+
+```text
+GetFactsInInterval(...)
+GetModifiedRelationshipIds(...)
+GetRelationshipFactsInInterval(...)
+GetRelationshipHistory(...)
+```
+
+### Provenance
+
+```text
+GetFactsByEvent(...)
+GetRelationshipsEvolvedByEvent(...)
+```
+
+### Deterministic result ordering
+
+TQD uses deterministic presentation ordering:
+
+```text
+Facts:
+    At ascending
+    → RelationshipId ascending
+    → insertion index ascending
+
+Relationship IDs:
+    Guid ascending
+```
+
+This is a presentation guarantee.
+
+It does **not** imply causal precedence between co-temporal transitions.
+
+TQD is intentionally not:
+
+- a mutation API;
+- an event-sourcing system;
+- a causal inference engine;
+- a natural-language query language;
+- a multi-hop reasoning framework.
+
+---
+
+# ✦ Graph Diff
+
+`SorophyGraphDiff` provides deterministic structural comparison between snapshots.
+
+```csharp
+var changes = SorophyGraphDiff.Compare(
+    before,
+    after);
+```
+
+There is also an extension form:
+
+```csharp
+var changes = before.Diff(after);
+```
+
+Graph Diff identifies:
+
+```text
+Entities
+├── Added
+├── Removed
+└── Modified
+
+Relationships
+├── Added
+├── Removed
+└── Modified
+```
+
+Entity modification considers:
+
+```text
+Name
+Type
+OccurredAt
+Description
+Tags
+Documents
+Properties
+```
+
+Relationship modification considers:
+
+```text
+Type
+ValidFrom
+ValidTill
+Properties
+```
+
+### State diff, not history diff
+
+Graph Diff compares endpoint states.
+
+It does **not** reconstruct every intermediate transition.
+
+For example:
+
+```text
+T1 ──────────────── T2
+
+Entity deleted
+Entity recreated identically
+```
+
+If the final states are structurally identical, Graph Diff reports no change.
+
+Intermediate transition analysis belongs to TQD and relationship history.
+
+### Deterministic output
+
+Change collections are ordered by canonical `Guid` ascending.
+
+Graph Diff does not infer:
+
+- causality;
+- semantic intent;
+- event ordering;
+- multi-hop effects;
+- patches;
+- merges;
+- undo operations.
+
+It is deliberately a foundation-level structural diff.
+
+---
+
+# ✦ Canonical and Derived State
+
+Krono maintains a strict distinction between canonical truth and derived acceleration structures.
+
+```text
+CANONICAL STATE
+│
+├── Entities
+├── Relationships
+├── Relationship Histories
+└── Retired Relationship IDs
+
+
+DERIVED / SUPPORTING STATE
+│
+├── Tag Index
+├── Relationship Index
+├── Adjacency Chains
+└── Adjacency Slab Pool
+```
+
+Canonical state is authoritative.
+
+Derived structures exist for efficient access and can be rebuilt from canonical state.
+
+```text
+Canonical State
+      │
+      ├──────────────► Derived Indexes
+      │
+      └──────────────► Projections
+                       ├── Snapshot
+                       ├── TQD
+                       └── Graph Diff
+```
+
+Derived state is never the source of truth.
 
 ---
 
 # ✦ Serialization
 
-Sorophy.Engine has dedicated serialization concepts:
+Sorophy uses dedicated structured representations:
 
-## `.entity`
-Represents an independently identifiable entity:
 ```text
-SorophyEntity → EntitySerializer → .entity representation
+.entity
+    = individual entity
+
+.lore
+    = connected graph
 ```
 
-## `.lore`
-Represents a connected body of entities and relationships:
-```text
-SorophyGraph → LoreSerializer → .lore representation
+Krono's `.lore` format is version 2.
+
+A v2 document contains the conceptual structures:
+
+```json
+{
+  "formatVersion": 2,
+  "entities": [],
+  "relationships": [],
+  "relationshipHistories": [],
+  "retiredRelationshipIds": []
+}
 ```
 
-See [`docs/SERIALIZATION.md`](docs/SERIALIZATION.md).
+Historical facts may contain:
 
-## Deserialization Does Not Execute Evolution
+```text
+At
+RelationshipId
+SourceId
+TargetId
+Type
+Properties
+ValidFrom
+ValidTill
+EventEntityId
+```
+
+### Persistence principles
+
+- Canonical state is serialized.
+- Derived indexes are rebuilt.
+- Historical facts are persisted explicitly.
+- Retired relationship IDs are persisted explicitly.
+- `EventEntityId` is persisted when present.
+- Existing history is serialized as-is.
+- Serialization never fabricates missing history.
+- Deserialization does not execute evolution.
+- Output is deterministic.
+- Numeric serialization is culture invariant.
+- Persistence is validated across supported platforms.
 
 ```text
 Deserialize ≠ Execute
 ```
 
-Loading persisted evolution data reconstructs the data; it does not silently mutate the graph as a side effect.
-
----
-
-# ✦ Storage
-
-The storage layer remains separated from graph logic and serialization:
-
-```text
-Application → Storage → Serialization → Structured Model
-```
-
-This permits persistence mechanics to evolve without redefining the information model.
-
----
-
-# ✦ Architecture
-
-```text
-┌─────────────────────────────────────────────┐
-│                 Applications                │
-│        Orbpad · Editors · Domain Tools      │
-└──────────────────────┬──────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────┐
-│                Sorophy.Engine               │
-│                                             │
-│ Entity · Graph · Relationship · Properties  │
-│ Typed Values · Tags · Time · Evolution      │
-│ History · Validation                        │
-└───────────────┬───────────────┬─────────────┘
-                │               │
-                ▼               ▼
-          Serialization       Storage
-                │               │
-                └───────┬───────┘
-                        ▼
-                 .entity / .lore
-```
-
----
-
-# ✦ Canonical State and Derived State
-
-## Canonical
-- Entities
-- Relationships
-- Relationship Histories
-
-## Derived / Supporting
-- Tag Index
-- Relationship Indexes
-- Adjacency Storage
-
-Derived structures exist to make access efficient and must agree with canonical state, but they are never the source of truth.
-
----
-
-# ✦ Public API Philosophy
-
-The public surface is kept minimal and focused on core abstractions:
-
-- `SorophyGraph`
-- `SorophyEntity`
-- `SorophyRelationship`
-- `SorophyProperty`
-- `SorophyValue`
-- `SorophyValueType`
-- `SorophyTime`
-- `SorophyTimeSchema`
-- `SorophyRelationshipFact`
-- `SorophyRelationshipHistory`
-- `SorophyRelationshipEvolution`
-- `SorophyRelationshipEvolutionExecutor`
-
 ---
 
 # ✦ Validation and Reliability
 
-Sorophy.Engine tests failure and edge scenarios:
-- Missing entities
-- Invalid relationships
-- Duplicate identifiers
-- Failed mutations
-- Stale references
-- Temporal incompatibility
-- Retired identity reuse
-- Malformed serialization
+Krono validates structural integrity both eagerly and through explicit graph validation.
+
+Important invariants include:
+
+- valid entity identifiers;
+- valid relationship identifiers;
+- referential integrity;
+- relationship endpoint existence;
+- temporal schema consistency;
+- historical fact integrity;
+- Event provenance validity;
+- retired identity separation;
+- tag-index consistency;
+- adjacency consistency;
+- persistence integrity.
+
+For Event provenance:
+
+```text
+EventEntityId
+      │
+      ├── must exist
+      ├── must not be empty
+      └── must identify an Event Entity
+```
+
+Corrupted canonical state is rejected rather than silently repaired.
 
 ---
 
 # ✦ Testing & Verification
 
+Krono is hardened with deterministic, adversarial, metamorphic, cross-feature, endurance, and persistence testing.
+
 <div align="center">
 
-### 🧪 469 / 469 tests passing
-**0 failed · 0 skipped**
+### 🧪 769 / 769 test cases passing
 
-<img src="https://img.shields.io/badge/tests-469%20passing-2E7D32?style=for-the-badge&logo=checkmarx&logoColor=white" alt="469 tests passing"/>&nbsp;<img src="https://img.shields.io/badge/failed-0-2E7D32?style=for-the-badge" alt="0 failed"/>&nbsp;<img src="https://img.shields.io/badge/skipped-0-2E7D32?style=for-the-badge" alt="0 skipped"/>
+**0 failed · 0 skipped**
 
 </div>
 
-The suite currently establishes deterministic behavior for all implemented Krono features. The large-scale stress test program is planned once remaining Krono subsystems stabilize.
-
----
-
-# ✦ V1 Release Verification
-
-Sorophy.Engine 1.0.0 historical status:
-
 ```text
-Version: 1.0.0
-Grade:   A — Silver Standard
-Status:  Stable
+Unit Test Cases
+    769 / 769 passed
+
+Stress Campaigns
+    13 / 13 passed
+
+Stress Checks
+    58 / 58 passed
 ```
 
-Verification suite summary:
+The verification program covers:
+
 ```text
-12 campaigns
-49 checks
-0 failures
+V1 Graph Foundation
+Entity Model
+Relationships
+Referential Integrity
+Indexing
+Adjacency
+Typed Values
+Temporal Core
+Relationship Validity
+Evolution
+History
+Provenance
+Identity Retirement
+Persistence
+Snapshots
+TQD
+Graph Diff
+Metamorphic Properties
+Determinism
+Corruption Rejection
+Cross-Feature Chaos
+Randomized Adversarial Workloads
+Large History / Endurance
+Cross-Platform Portability
 ```
 
-Workloads covered differential fuzzing, endurance, allocation reuse, crash/recovery, and topology scaling.
+The test strategy intentionally includes ugly cases:
+
+```text
+Missing entities
+Duplicate IDs
+Invalid temporal schemas
+Retired ID reuse
+Dangling provenance
+Malformed persistence
+Same-time transitions
+Boundary times
+Deep nested values
+Repeated reconstruction
+Large histories
+Repeated serialization
+Cross-platform artifacts
+```
 
 ---
 
 # ✦ Potential Applications
 
-- **Worldbuilding and Fiction:** Characters, kingdoms, lineages, treaties, and wars evolving over calendar eras.
-- **Knowledge Management:** Explicit typed relationships between concepts, documents, and references.
-- **Research & Scientific Information:** Datasets, instruments, samples, and observation sequences with temporal validity.
-- **Historical & Archival Systems:** Tracking how territories, alliances, and offices transformed over time.
-- **Project & Organizational Systems:** Dynamic team and resource structures preserved across reorganizations.
-- **Games and Simulations:** World states and dynamic relationships evolving across engine ticks.
-- **Structured Documentation:** Architectural dependencies and version shifts.
+Sorophy is deliberately domain-neutral.
+
+Potential applications include:
+
+- **Worldbuilding and Fiction** — characters, kingdoms, lineages, treaties, wars, and eras.
+- **Knowledge Management** — explicit typed relationships between concepts, documents, and references.
+- **Research and Scientific Information** — datasets, instruments, samples, and observations.
+- **Historical and Archival Systems** — territories, alliances, offices, and institutional change.
+- **Project and Organizational Systems** — teams, resources, dependencies, and reorganizations.
+- **Games and Simulations** — world state and evolving relationships.
+- **Structured Documentation** — dependencies, versions, architecture, and change.
+- **Domain-specific information systems** — any application requiring structured interconnected state.
 
 ---
 
 # ✦ What Sorophy.Engine Is Not
 
 Sorophy.Engine is intentionally **not**:
-- A graphical editor
-- A complete worldbuilding application
-- A database server
-- A cloud platform
-- A UI framework
-- A game engine
-- A general-purpose ORM
-- An AI assistant
 
-It is a **core structured-information and graph engine**.
+- a graphical editor;
+- a complete worldbuilding application;
+- a database server;
+- a cloud platform;
+- a UI framework;
+- a game engine;
+- a general-purpose ORM;
+- an AI assistant;
+- a workflow engine;
+- an event-sourcing framework.
 
----
+It is a:
 
-# ✦ Intended Ecosystem
-
-<div align="center">
-
-<img src="assets/myriad-ecosystem-cover.png" alt="The Saga" width="900"/>
-
-</div>
-
-```text
-                     THE SAGA
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-        Sorophy.Engine       Applications
-              │                   │
-              │          ┌────────┼────────┐
-              │          │        │        │
-              ▼          ▼        ▼        ▼
-       Structured Data  Orbpad  Tools  Future Apps
-```
+> **Temporal Graph Evolution Core for structured information.**
 
 ---
 
@@ -1198,48 +1290,63 @@ It is a **core structured-information and graph engine**.
 | Document | Purpose |
 |---|---|
 | [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Engine boundaries and major subsystems |
-| [`ENTITY_MODEL.md`](docs/ENTITY_MODEL.md) | Krono Entity Model |
-| [`LORE_MODEL.md`](docs/LORE_MODEL.md) | Krono Lore Model and relationship semantics |
-| [`TEMPORAL_MODEL.md`](docs/TEMPORAL_MODEL.md) | `SorophyTime`, schemas, validity, and temporal rules |
-| [`EVENTS_AND_EVOLUTION.md`](docs/EVENTS_AND_EVOLUTION.md) | Event semantics and relationship evolution |
-| [`HISTORY.md`](docs/HISTORY.md) | Historical facts and relationship history |
-| [`SERIALIZATION.md`](docs/SERIALIZATION.md) | Serialization direction and persistence semantics |
-| [`TESTING.md`](docs/TESTING.md) | Testing philosophy and verification status |
-| [`ROADMAP.md`](docs/ROADMAP.md) | Current roadmap, priorities, and deferred ideas |
+| [`ENTITY_MODEL.md`](docs/ENTITY_MODEL.md) | Entity architecture and lifecycle |
+| [`LORE_MODEL.md`](docs/LORE_MODEL.md) | `.lore` graph model and relationship semantics |
+| [`TEMPORAL_MODEL.md`](docs/TEMPORAL_MODEL.md) | `SorophyTime`, schemas, units, validity, and temporal rules |
+| [`EVENTS_AND_EVOLUTION.md`](docs/EVENTS_AND_EVOLUTION.md) | Event Entities and relationship evolution |
+| [`HISTORY.md`](docs/HISTORY.md) | Historical facts, history, and identity retirement |
+| [`SNAPSHOT.md`](docs/SNAPSHOT.md) | Point-in-time graph snapshots |
+| [`TQD.md`](docs/TQD.md) | Temporal Query Domain |
+| [`GRAPH_DIFF.md`](docs/GRAPH_DIFF.md) | Structural graph comparison |
+| [`SERIALIZATION.md`](docs/SERIALIZATION.md) | `.entity` / `.lore` persistence semantics |
+| [`TESTING.md`](docs/TESTING.md) | Testing and verification |
+| [`ROADMAP.md`](docs/ROADMAP.md) | Current roadmap and future directions |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history |
 
 ---
 
 # ✦ Development
 
 Clone the repository:
+
 ```bash
 git clone https://github.com/Phantom-Con-Artist/Sorophy.git
 cd Sorophy
 ```
 
-Switch to the Krono development line:
+Switch to the stable Krono line:
+
 ```bash
-git switch v2-beta
+git switch v2.0.0-Stable
 ```
 
 Build:
+
 ```bash
 dotnet build
 ```
 
 Run tests:
+
 ```bash
 dotnet test
 ```
 
-Inspect stress tests:
+Inspect stress campaigns:
+
 ```bash
 dotnet run --project Sorophy.Engine.StressTests -- list
 ```
 
-Build Release & Pack:
+Build Release:
+
 ```bash
 dotnet build -c Release
+```
+
+Pack:
+
+```bash
 dotnet pack -c Release
 ```
 
@@ -1248,67 +1355,78 @@ dotnet pack -c Release
 # ✦ Branch and Release Model
 
 ```text
-v1-stable
-    │
-    └── V1.0.0 stable line
+v1.0.0-stable
+      │
+      └── Sorophy V1 stable line
 
-v2-beta
-    │
-    └── Sorophy v2.0.0-beta.1: Krono
+v2.0.0-Stable
+      │
+      └── Sorophy v2.0.0 "Krono"
+           └── Stable S · Gold Standard
 ```
+
+V2 is a major architectural evolution rather than a minor extension of the V1 API.
 
 ---
 
 # ✦ Design Principles
 
-1. **Structure over convenience:** Preserve semantic data types.
-2. **Explicit invariants:** Disallow invalid states.
-3. **Temporal semantics are first-class:** Model time explicitly.
-4. **History is not mutation:** Historical facts are append-only.
-5. **Explicit execution:** Operations describe; executors apply.
-6. **Applications do not own the engine:** Remain cleanly decoupled.
-7. **Derived structures are not truth:** Canonical state governs indexes.
-8. **Round-trip fidelity:** Serialization preserves structure and typing.
-9. **Small public API:** Minimize leaky internal details.
-10. **Test the ugly cases:** Adversarial testing comes first.
+1. **Structure over convenience** — Preserve semantic data types.
+2. **Explicit invariants** — Invalid states should fail explicitly.
+3. **Time is first-class** — Temporal coordinates belong in the model.
+4. **Validity is not recording time** — Keep `ValidFrom`/`ValidTill` distinct from `At`.
+5. **Events are passive** — Events describe occurrences; they do not execute.
+6. **Explicit execution** — Evolutions describe; executors apply.
+7. **History is append-only** — Previous relationship states are not silently erased.
+8. **Identity is persistent** — Retired relationship identities cannot be recycled.
+9. **Canonical state is truth** — Derived indexes are accelerators, not authority.
+10. **Projections are read-only** — Snapshot, TQD, and Diff do not mutate the graph.
+11. **Applications own semantics** — The engine does not infer domain meaning or causality.
+12. **Round-trip fidelity matters** — Persistence preserves structure and typing.
+13. **Determinism matters** — Equivalent inputs should produce stable observable results.
+14. **Test the ugly cases** — Adversarial verification is part of the architecture.
 
 ---
 
 # ✦ Roadmap
 
-## ✅ Completed
+## ✅ Completed in Krono
+
 - Core graph with referential integrity, adjacency, and indexes
-- Krono Entity Model with descriptions, tags, and embedded content
-- Temporal model (`SorophyTime`, schemas, units, validity)
-- History (`SorophyRelationshipFact`, `SorophyRelationshipHistory`, retired identity handling)
-- Relationship evolution (Creation, Type Change, Property Modification, Validity Change, Termination)
-- 469/469 deterministic unit test coverage
+- Expanded Entity Model
+- Tags and embedded entity documents
+- Semantic temporal model
+- Relationship validity
+- Event Entities
+- Relationship Evolution
+- Historical Facts and Relationship History
+- Relationship identity retirement
+- Point-in-time Snapshots
+- Temporal Query Domain
+- Graph Diff
+- `.lore` v2 persistence
+- Validation hardening
+- Cross-platform persistence verification
+- Adversarial and metamorphic hardening
+- Endurance verification
 
-## 🚧 In Progress & Next
-- **Temporal Projection:** Materialized, immutable `SorophyGraphSnapshot` at time `T`
-- **Query Layer:** Entity, relationship, and temporal lookup helpers
-- **Temporal Queries:** Slice graph states across intervals
-- **Graph Diff / Change Sets:** Compare two temporal snapshots
-- **Validation & Serialization Hardening:** Extended checks across temporal schemas and state files
-- **Cross-Platform Verification**
-- **Dedicated Krono Stress Campaign**
+## Beyond the Current Foundation
 
----
-
-# ✦ Explicitly Deferred
-
-- **EventPkg:** Kept out of core v2 to avoid premature orchestration overhead.
-- **Whimsy / NLP:** Postponed until graph data structures achieve long-term stability.
-- **Application UI:** Kept in separate consumer repos (such as Orbpad).
-
----
-
-# ✦ Beyond Krono
+Possible directions include:
 
 - Event orchestration packages
-- Snapshot reconstruction and replay tools
-- Advanced temporal and graph analytics algorithms
-- Domain query adapters
+- State reconstruction and replay tooling
+- Advanced graph algorithms
+- Broader temporal analysis
+- Domain adapters
+- Whimsy / NLP
+- Additional Saga ecosystem services
+
+These are deliberately **directions rather than commitments**.
+
+Future capabilities will be evaluated against the existing Krono architecture, invariants, and design principles. The roadmap will be updated when principles and designs for those capabilities are sufficiently mature to integrate cleanly with the architecture.
+
+Until then, post-v2 items should be treated as **possibilities rather than promises**.
 
 ---
 
@@ -1316,19 +1434,25 @@ v2-beta
 
 ```text
 Represent structured information
-        ↓
+            ↓
 Connect that information
-        ↓
+            ↓
 Represent meaningful temporal state
-        ↓
+            ↓
 Apply explicit state transitions
-        ↓
+            ↓
 Preserve historical relationship state
-        ↓
-Allow applications to query the resulting model
+            ↓
+Project the graph at a point in time
+            ↓
+Query temporal structure
+            ↓
+Compare structural states
 ```
 
-A few strong primitives that work together form an engine; a collection of loose shortcuts does not.
+A few strong primitives that work together form an engine.
+
+A collection of loose shortcuts does not.
 
 ---
 
@@ -1337,12 +1461,20 @@ A few strong primitives that work together form an engine; a collection of loose
 Contributions, issues, and discussions are welcome.
 
 When reporting bugs, include:
-- Sorophy.Engine version
-- .NET version & OS
-- Minimal reproduction steps
-- Expected vs. actual behavior and stack traces
 
-For architectural proposals, outline the use case, affected invariants, and boundary constraints before submitting code.
+- Sorophy.Engine version;
+- .NET version and OS;
+- minimal reproduction steps;
+- expected vs. actual behavior;
+- relevant stack traces.
+
+For architectural proposals, describe:
+
+- the use case;
+- affected invariants;
+- architectural boundary;
+- expected interaction with canonical state;
+- expected persistence implications.
 
 ---
 
@@ -1360,7 +1492,9 @@ For architectural proposals, outline the use case, affected invariants, and boun
 
 # ✦ License
 
-Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**. See [`LICENSE`](LICENSE) for terms.
+Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)**.
+
+See [`LICENSE`](LICENSE) for the full license text.
 
 ---
 
@@ -1369,12 +1503,22 @@ Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or
 <div align="center">
 
 ### Don't build another place to store information.
+
 ### Build a system that understands what the information is.
 
 <br/>
 
 ### Don't let change destroy meaning.
-### Represent the state, represent the transition, preserve the history.
+
+### Represent the state.
+
+### Represent the transition.
+
+### Preserve the history.
+
+<br/>
+
+### Information should be structured with Time.
 
 </div>
 
@@ -1385,6 +1529,7 @@ Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or
 <div align="center">
 
 <h2>Subhradeep Sarkar</h2>
+
 <p>Creator and maintainer of Sorophy Engine</p>
 
 <p align="center">
@@ -1420,9 +1565,13 @@ Sorophy.Engine is licensed under the **GNU Affero General Public License v3.0 or
 
 <br/>
 
-<strong>Sorophy v2.0.0-beta.1: Krono</strong>
+<strong>Sorophy v2.0.0 — Krono</strong>
 
 <br/>
+
+A Temporal Graph Evolution Core
+
+<br/><br/>
 
 Structured information. Connected by design. Aware of change.
 
@@ -1430,7 +1579,4 @@ Structured information. Connected by design. Aware of change.
 
 © 2026 <strong>Subhradeep Sarkar</strong>. Sorophy.Engine is licensed under the GNU Affero General Public License v3.0 or later. See `LICENSE` for details.
 
-
-
 </div>
-```

@@ -1,10 +1,10 @@
 # Sorophy.Engine 2 Roadmap — Krono
 
-Krono is being developed as an incremental second-generation engine rather than a single giant rewrite.
+Krono is developed as an incremental second-generation engine rather than a single giant rewrite.
 
-The roadmap below distinguishes what is already implemented from what remains and what is deliberately deferred.
+The roadmap distinguishes the capabilities that are part of the current stable foundation from areas that may shape future versions. Post-v2 directions are intentionally kept broad: future features will be designed only when their principles and boundaries can be accommodated cleanly within the existing architecture.
 
-## Completed
+## V2.0.0 — Krono — Completed
 
 ### Core Graph
 
@@ -24,6 +24,7 @@ The roadmap below distinguishes what is already implemented from what remains an
 - Tags
 - Embedded structured content
 - Event classification through entity type
+- Event temporal anchoring through `OccurredAt`
 
 ### Temporal Model
 
@@ -33,7 +34,17 @@ The roadmap below distinguishes what is already implemented from what remains an
 - Position definitions
 - Precision
 - Relationship validity
-- Temporal schema consistency checks
+- Strict temporal schema consistency checks
+- Explicit distinction between `At`, `ValidFrom`, and `ValidTill`
+
+### Event Entities
+
+- First-class Event Entities
+- Passive/declarative temporal anchors
+- `OccurredAt`
+- Event provenance through `EventEntityId`
+- Event-anchored Evolution semantics
+- No automatic Event execution
 
 ### History
 
@@ -41,7 +52,8 @@ The roadmap below distinguishes what is already implemented from what remains an
 - `SorophyRelationshipHistory`
 - Graph-level relationship history storage
 - Append-only fact recording
-- Historical state capture before relationship mutations
+- Historical state capture around relationship Evolutions
+- Event provenance in historical facts
 - Permanent relationship identity retirement
 
 ### Relationship Evolution
@@ -53,134 +65,68 @@ The roadmap below distinguishes what is already implemented from what remains an
 - Termination
 - `SorophyRelationshipEvolutionExecutor`
 
-### Verification
+### Temporal Projection
 
-- 469 / 469 deterministic unit tests passing
+- Read-only graph snapshots
+- Event-based snapshot creation
+- Temporal Query Domain (TQD)
+- Point-in-time and interval/history queries
+- Event provenance queries
+- Structural Graph Diff
 
-## Next: Temporal Projection
+### Persistence
 
-### 1. Graph Snapshot
+- `.lore` v2
+- Temporal state persistence
+- Historical relationship persistence
+- Retired relationship identity persistence
+- Event provenance persistence
+- Validation during deserialization
+- Deterministic serialization behavior
+- Cross-platform persistence verification
 
-Build a read-only materialized representation of graph state at a selected temporal point.
+### Hardening and Verification
 
-Desired conceptual API:
+- Full v1 + v2 hardening suite
+- Adversarial temporal/evolution testing
+- Metamorphic verification
+- Determinism and repeatability testing
+- Corruption/invariant testing
+- Multi-scale soak/endurance verification
+- Cross-platform CI
+- Cross-platform persistence portability verification
 
-```text
-SorophyGraph
-   ↓
-CreateSnapshot(T)
-   ↓
-SorophyGraphSnapshot
-```
+### Release Verification
 
-The snapshot should be immutable from the consumer's perspective and independent of later mutations to the live graph.
+The Krono stable release is backed by the project's stability and verification standards, including deterministic unit verification, adversarial stress campaigns, persistence portability, and endurance testing.
 
-## 2. Query Layer
-
-Expose higher-level read operations over graph and snapshot state.
-
-Potential categories:
-
-```text
-Entity lookup
-Relationship lookup
-Tag lookup
-Type filtering
-Neighbor queries
-Relationship filtering
-```
-
-## 3. Temporal Queries
-
-Use the temporal model and history to answer questions such as:
-
-```text
-What relationships existed at T?
-What was the state of relationship X at T?
-What facts surround T?
-```
-
-## 4. Graph Diff / Change Sets
-
-Compare two snapshots or temporal projections.
-
-Conceptually:
-
-```text
-Snapshot(T1)
-     ↓
-    Diff
-     ↓
-Snapshot(T2)
-```
-
-Potential outputs include added, removed, and changed entities and relationships.
-
-## 5. Validation Hardening
-
-As the number of interacting subsystems grows, validation should cover:
-
-```text
-Graph invariants
-Index invariants
-Temporal invariants
-History invariants
-Evolution invariants
-Serialization invariants
-```
-
-The goal is to make the engine capable of detecting inconsistencies in itself, not merely relying on happy-path method behavior.
-
-## 6. Serialization Hardening
-
-Expand persistence and round-trip verification for the richer v2 semantic model.
-
-Particular attention should go to:
-
-- Temporal values
-- Relationship validity
-- Historical facts
-- Relationship history
-- Evolution data
-- Compatibility and migration
-- Deterministic output
-- Large documents
-
-## 7. Cross-Platform Hardening
-
-Maintain Sorophy.Engine as a platform-neutral .NET foundation.
-
-The engine should not absorb UI assumptions or platform-specific behavior that belongs to applications.
-
-## 8. Dedicated V2 Stress Program
-
-After the architecture is sufficiently complete, execute a dedicated v2 stress/release-gate campaign covering the new temporal and evolutionary semantics.
-
-The v1 stress arsenal remains a useful foundation but should not be treated as the final v2 release gate without reviewing its scope against the new features.
+The current stable verification record is maintained by the release documentation and verification reports. The roadmap records the completed verification scope rather than treating individual test counts as feature milestones.
 
 ## Explicitly Deferred
 
 ### EventPkg
 
-Not required for v2.
+Not required for the Krono core.
 
-The current evolution objects and executor provide enough structure without introducing another orchestration wrapper.
+The current Event Entity, Evolution objects, and Evolution Executor provide the required structural boundaries without introducing another orchestration wrapper.
+
+A higher-level orchestration abstraction may be considered later if a concrete ecosystem requirement justifies it.
 
 ### Whimsy / NLP
 
-Deferred until the semantic engine is mature enough to provide a stable substrate for language-driven queries.
+Deferred until the semantic and temporal substrate is mature enough to provide a stable foundation for language-driven interaction.
 
 ### Application-Specific UI
 
-Sorophy.Engine remains UI-agnostic. Orbpad and other applications own presentation and workflow concerns.
+Sorophy.Engine remains UI-agnostic. Orbpad and other applications own presentation, workflow, and user-experience concerns.
 
 ### Broad Domain-Specific Semantics
 
-The engine will not become a hard-coded worldbuilding, research, project-management, or game rules engine. Those domains should build vocabularies and policies on top of the core model.
+The engine will not become a hard-coded worldbuilding, research, project-management, or game-rules engine. Those domains should build vocabularies and policies on top of the core model.
 
 ## V2 Completion Philosophy
 
-V2 should be considered complete when the engine can reliably represent and query structured information through time without requiring applications to reinvent graph state, relationship lifecycle, and historical semantics themselves.
+Krono v2 is complete as a coherent Temporal Graph Evolution Core when its implemented capabilities reinforce one another without requiring applications to reinvent graph state, relationship lifecycle, temporal semantics, and historical state.
 
 The goal is not maximum feature count.
 
@@ -200,4 +146,8 @@ Whimsy / natural-language querying
 Additional Saga ecosystem services
 ```
 
-These remain possibilities, not promises.
+These are deliberately **directions rather than commitments**.
+
+Future features will be evaluated and designed against the existing Krono architecture, invariants, and design principles. The roadmap will be updated when the principles and designs for those capabilities are sufficiently mature to integrate cleanly with the architecture.
+
+Until then, post-v2 items should be treated as possibilities rather than promises.

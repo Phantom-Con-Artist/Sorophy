@@ -12,17 +12,29 @@ The engine currently centers on:
 
 - `SorophyGraph`
 - `SorophyEntity`
+- `SorophyEntityDocument`
 - `SorophyRelationship`
 - `SorophyProperty`
 - `SorophyValue`
 - `SorophyValueType`
-- Entity and lore serialization
+- `SorophyTagIndex`
+- `SorophyTime` and the temporal schema/unit system
+- Relationship validity (`ValidFrom` / `ValidTill`)
+- Event Entities and authoritative `OccurredAt`
+- Relationship Evolution operations
+- `SorophyRelationshipEvolutionExecutor`
+- Relationship history and immutable historical facts
+- Event Entity provenance (`EventEntityId`)
+- Permanent relationship identity retirement
+- Point-in-time Graph Snapshots
+- Temporal Query Domain (TQD)
+- Graph Diff
+- `.lore` v2 persistence and validation
 - Entity and lore storage
 - Graph traversal and reachability
 - Graph validation and mutation integrity
 
-The repository also contains unit tests and the Sorophy Engine StressTests arsenal.
-
+The repository also contains unit tests, the Sorophy Engine StressTests arsenal, and cross-platform persistence verification.
 ## 2. Before You Start
 
 For substantial architectural changes, open a GitHub issue or discussion before implementing the change.
@@ -119,6 +131,17 @@ The unit-test suite currently verifies areas including:
 - Storage behavior
 - Public API surface
 - Invalid-input and failure behavior
+- Temporal schemas, units, positions, precision, and strict comparison
+- Relationship validity boundaries
+- Event Entity classification and `OccurredAt`
+- Relationship Evolution operations and execution
+- Historical facts and append-only relationship history
+- Event Entity provenance validation
+- Relationship identity retirement
+- Point-in-time Snapshot materialization and isolation
+- Temporal Query Domain (TQD)
+- Structural Graph Diff
+- `.lore` v2 persistence, validation, and cross-platform portability
 
 The stress-test arsenal is designed to exercise failure modes that ordinary examples do not expose.
 
@@ -198,6 +221,26 @@ Before adding a public type or member, ask:
 
 Public API changes should be treated as architectural changes, not cosmetic changes.
 
+### Krono Architectural Boundaries
+
+Contributions to V2 should preserve the distinction between structural engine behavior and application semantics.
+
+- Event Entities are passive temporal anchors. They do not execute logic and must not gain an `Execute()` lifecycle.
+- Event Entities are not ordinary relationship endpoints.
+- Application code determines domain meaning; Sorophy provides structural graph and temporal operations.
+- Relationship Evolutions are explicit structural operations executed by `SorophyRelationshipEvolutionExecutor`.
+- Direct graph mutation must not fabricate historical facts.
+- `Event.OccurredAt` is the authoritative temporal coordinate for an Event-anchored evolution.
+- `At` records when a transition or historical state was captured; `ValidFrom` / `ValidTill` describe semantic validity.
+- Relationship history is append-only and immutable.
+- Retired relationship identities must never be reused.
+- Canonical graph state is authoritative; tag indexes, adjacency structures, pools, and other accelerators are derived.
+- Snapshot, TQD, and Graph Diff are read-only projection/query capabilities and must not silently mutate canonical state.
+- Graph Diff describes structural state differences; it must not infer causality or application semantics.
+- Deserialization restores persisted state; it does not execute Evolutions or Event behavior.
+
+Architectural changes affecting these boundaries should be discussed before implementation.
+
 ## 9. Performance Contributions
 
 Do not optimize solely from a single benchmark number.
@@ -258,11 +301,26 @@ When changing behavior, update the relevant documentation in the same change whe
 
 - `README.md`
 - `CHANGELOG.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ENTITY_MODEL.md`
+- `docs/EVENTS_AND_EVOLUTION.md`
+- `docs/HISTORY.md`
+- `docs/LORE_MODEL.md`
+- `docs/TEMPORAL_MODEL.md`
+- `docs/SERIALIZATION.md`
+- `docs/SNAPSHOT.md`
+- `docs/TQD.md`
+- `docs/GRAPH_DIFF.md`
+- `docs/TESTING.md`
+- `docs/ROADMAP.md`
 - API documentation
-- Test documentation
 - Release notes
 
+Update the smallest relevant set of documents rather than duplicating the same explanation across every file.
+
 Version references must remain consistent across documentation and package metadata.
+
+Do not describe Snapshot, TQD, Graph Diff, temporal evolution, history, or `.lore` v2 as future functionality when the documented release already provides those capabilities.
 
 Do not claim a capability, compatibility guarantee, or release-grade status that has not been verified.
 

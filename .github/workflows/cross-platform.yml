@@ -1,0 +1,39 @@
+name: Cross-Platform CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build in Release configuration
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run unit test suite
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+      - name: Run 10K stress test validation
+        run: dotnet run --project Sorophy.Engine.StressTests -c Release --no-build -- all --operations 10000 --seed 12345

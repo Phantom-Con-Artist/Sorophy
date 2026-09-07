@@ -8,15 +8,23 @@
 
     <!-- Package Identity -->
     <PackageId>Sorophy.Engine</PackageId>
-    <Version>2.0.0-beta.1</Version>
+    <Version>2.0.0</Version>
 
     <!-- Stable Release Grade -->
     <PackageReleaseNotes>
-      1.0.0 Stable — Grade A (Silver Standard).
+      Sorophy Engine v2.0.0 "Krono" — Stable - S (Gold Standard).
+
       Verified against the documented Sorophy Engine release scope,
-      including graph correctness, mutation integrity, serialization,
-      persistence, recovery, memory behavior, scaling, fuzzing,
-      pooling, and endurance testing.
+      including graph correctness, mutation integrity, temporal modeling,
+      evolution and history, provenance, snapshots, temporal queries,
+      graph diff, serialization, persistence, recovery, memory behavior,
+      scaling, fuzzing, adversarial testing, metamorphic testing,
+      cross-feature validation, endurance testing, and cross-platform
+      persistence portability.
+
+      Cross-platform persistence has been validated through an actual
+      Windows → Linux → macOS → Windows .lore artifact handoff using
+      GitHub Actions.
     </PackageReleaseNotes>
 
     <!-- Package Metadata -->
@@ -32,6 +40,9 @@
       sorophyis;sorophy;engine;dotnet;dotnet10;csharp;graph;knowledge-graph;structured-data;serialization;storage;worldbuilding
     </PackageTags>
 
+    <!-- NuGet Package Icon -->
+    <PackageIcon>package-icon.png</PackageIcon>
+
     <!-- License -->
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 
@@ -42,7 +53,6 @@
 
     <!-- Documentation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  
 
     <!-- NuGet -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -57,6 +67,11 @@
   <ItemGroup>
     <!-- Legal license text is included in the package. -->
     <None Include="LICENSE"
+          Pack="true"
+          PackagePath="\" />
+
+    <!-- NuGet package icon. -->
+    <None Include="..\package-icon.png"
           Pack="true"
           PackagePath="\" />
   </ItemGroup>

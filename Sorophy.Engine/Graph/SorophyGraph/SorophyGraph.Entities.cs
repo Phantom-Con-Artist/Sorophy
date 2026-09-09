@@ -162,6 +162,7 @@ public sealed partial class SorophyGraph
         {
             _entities.Remove(entity.Id);
             _tagIndex.RemoveEntity(entity.Id);
+            _entityHistories.Remove(entity.Id);
             throw;
         }
     }

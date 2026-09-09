@@ -250,9 +250,63 @@ public sealed partial class SorophyGraph
         }
         catch
         {
-            RemoveRelationship(relationship.Id);
+            RollbackFailedRelationshipCreation(relationship.Id);
             throw;
         }
+    }
+
+    /// <summary>
+    /// Creates a relationship in the graph at the specified temporal coordinate, executing Canon Check
+    /// validation and recording an authored <see cref="SorophyRelationshipFactKind.Created"/> fact.
+    /// </summary>
+    public void CreateRelationship(
+        Guid sourceId,
+        Guid targetId,
+        string type,
+        SorophyTime creationTime,
+        Guid? relationshipId = null,
+        IDictionary<string, SorophyProperty>? properties = null)
+    {
+        ArgumentNullException.ThrowIfNull(creationTime);
+        ArgumentException.ThrowIfNullOrWhiteSpace(type);
+
+        var relationship = new SorophyRelationship
+        {
+            Id = relationshipId ?? Guid.NewGuid(),
+            SourceId = sourceId,
+            TargetId = targetId,
+            Type = type
+        };
+
+        if (properties is not null)
+        {
+            foreach (var (k, v) in properties)
+            {
+                relationship.Properties[k] = v;
+            }
+        }
+
+        CreateRelationship(relationship, creationTime);
+    }
+
+    private void RollbackFailedRelationshipCreation(Guid relationshipId)
+    {
+        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        {
+            return;
+        }
+
+        if (_relationshipIndex.TryGetValue(relationshipId, out var index))
+        {
+            UnlinkOutgoing(relationship.SourceId, index.OutgoingNode);
+            UnlinkIncoming(relationship.TargetId, index.IncomingNode);
+            _adjacencyPool.Release(index.OutgoingNode);
+            _adjacencyPool.Release(index.IncomingNode);
+            _relationshipIndex.Remove(relationshipId);
+        }
+
+        _relationships.Remove(relationshipId);
+        _relationshipHistories.Remove(relationshipId);
     }
 
     /// <summary>

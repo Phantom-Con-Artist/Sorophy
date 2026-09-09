@@ -324,23 +324,80 @@ public sealed partial class SorophyGraph
     {
         ArgumentNullException.ThrowIfNull(time);
 
-        if (relationshipId == Guid.Empty || !_relationships.TryGetValue(relationshipId, out var rel))
+        if (relationshipId == Guid.Empty)
         {
             return false;
         }
 
-        if (!EntityExistsAt(rel.SourceId, time) || !EntityExistsAt(rel.TargetId, time))
+        if (_relationships.TryGetValue(relationshipId, out var rel))
         {
-            return false;
+            if (!EntityExistsAt(rel.SourceId, time) || !EntityExistsAt(rel.TargetId, time))
+            {
+                return false;
+            }
+
+            if (_relationshipHistories.TryGetValue(relationshipId, out var history) && history is not null)
+            {
+                if (history.CreatedAt is not null || history.RetiredAt is not null)
+                {
+                    return history.ExistsAt(time);
+                }
+
+                // Legacy pre-Krono evolution facts (Kind is null)
+                if (history.Facts.Count > 0 && history.Facts[0].Kind is null)
+                {
+                    var firstFact = history.Facts[0];
+                    bool isCreation = firstFact.ValidTill is null ||
+                                      SorophyTime.Compare(firstFact.ValidTill, firstFact.At) != 0;
+
+                    if (isCreation && SorophyTime.Compare(time, firstFact.At) < 0)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+
+            // Legacy / unversioned baseline relationship: exists across all coordinates where endpoints exist
+            return true;
         }
 
-        if (_relationshipHistories.TryGetValue(relationshipId, out var history) && history is not null)
+        // Legacy compatibility: pre-Krono evolution termination removed the relationship from _relationships,
+        // but preserved history with Kind == null and added to _retiredRelationshipIds.
+        if (_retiredRelationshipIds.Contains(relationshipId) &&
+            _relationshipHistories.TryGetValue(relationshipId, out var legacyHistory) &&
+            legacyHistory is not null &&
+            legacyHistory.Facts.Count > 0 &&
+            legacyHistory.Facts[0].Kind is null)
         {
-            return history.ExistsAt(time);
+            var facts = legacyHistory.Facts;
+            var firstFact = facts[0];
+            var lastFact = facts[^1];
+
+            if (!EntityExistsAt(firstFact.SourceId, time) || !EntityExistsAt(firstFact.TargetId, time))
+            {
+                return false;
+            }
+
+            bool isCreation = firstFact.ValidTill is null ||
+                              SorophyTime.Compare(firstFact.ValidTill, firstFact.At) != 0;
+
+            if (isCreation && SorophyTime.Compare(time, firstFact.At) < 0)
+            {
+                return false;
+            }
+
+            if (SorophyTime.Compare(time, lastFact.At) >= 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        // Legacy / unversioned baseline relationship: exists across all coordinates where endpoints exist
-        return true;
+        // Krono permanently deleted relationship (or non-existent): absent from all temporal coordinates
+        return false;
     }
 
     /// <summary>

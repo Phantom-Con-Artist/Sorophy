@@ -136,102 +136,49 @@ internal static class SorophySnapshotMaterializer
     {
         relationship = null;
 
-        graph.TryGetRelationship(relId, out var liveRel);
-
-        if (!graph.TryGetRelationshipHistory(relId, out var history) ||
-            history is null ||
-            history.Facts.Count == 0)
+        // Authoritative existence check:
+        if (!graph.RelationshipExistsAt(relId, targetTime))
         {
-            // Case 1: No history recorded.
-            if (liveRel is not null)
-            {
-                // Baseline un-evolved relationship.
-                relationship = CreateFromLive(liveRel);
-                return true;
-            }
-
-            // Direct removal without history, or nonexistent.
             return false;
         }
 
-        var facts = history.Facts;
+        graph.TryGetRelationship(relId, out var liveRel);
+        graph.TryGetRelationshipHistory(relId, out var history);
 
-        // Check if relationship has an authored creation coordinate
-        if (history.CreatedAt is not null)
+        // Check if legacy mutation facts (Kind == null) exist that modify state
+        if (history is not null && history.Facts.Count > 0)
         {
-            if (!SorophyTime.CanCompare(targetTime, history.CreatedAt) ||
-                SorophyTime.Compare(targetTime, history.CreatedAt) < 0)
+            var facts = history.Facts;
+            SorophyRelationshipFact? stateFact = null;
+            for (int i = 0; i < facts.Count; i++)
             {
-                return false;
+                if (facts[i].Kind is null && SorophyTime.Compare(facts[i].At, targetTime) > 0)
+                {
+                    stateFact = facts[i];
+                    break;
+                }
             }
-        }
-        else
-        {
-            var firstFact = facts[0];
-            // Check if first fact was an evolved creation.
-            bool isCreation = firstFact.ValidTill is null ||
-                              SorophyTime.Compare(firstFact.ValidTill, firstFact.At) != 0;
 
-            if (isCreation && SorophyTime.Compare(targetTime, firstFact.At) < 0)
+            if (stateFact is not null)
             {
-                // Requested targetTime is prior to creation of the relationship.
-                return false;
+                relationship = CreateFromFact(stateFact);
+                return true;
             }
-        }
 
-        // Check if relationship has an authored retirement coordinate
-        if (history.RetiredAt is not null)
-        {
-            if (SorophyTime.CanCompare(targetTime, history.RetiredAt) &&
-                SorophyTime.Compare(targetTime, history.RetiredAt) >= 0)
+            // If liveRel is null (legacy evolution termination), find fact active at targetTime
+            if (liveRel is null)
             {
-                return false;
-            }
-        }
-
-        // Check if relationship was terminated at or before targetTime (legacy evolution)
-        bool isRetired = graph.IsRelationshipIdRetired(relId) && liveRel is null;
-        if (isRetired)
-        {
-            var lastFact = facts[^1];
-            // Termination took effect at lastFact.At.
-            if (SorophyTime.Compare(targetTime, lastFact.At) >= 0)
-            {
-                // Post-transition semantics: terminated at or before targetTime => absent from Snapshot(targetTime).
-                return false;
+                for (int i = facts.Count - 1; i >= 0; i--)
+                {
+                    if (facts[i].Kind is null && SorophyTime.Compare(facts[i].At, targetTime) <= 0)
+                    {
+                        relationship = CreateFromFact(facts[i]);
+                        return true;
+                    }
+                }
             }
         }
 
-        if (liveRel is not null)
-        {
-            if (!graph.EntityExistsAt(liveRel.SourceId, targetTime) ||
-                !graph.EntityExistsAt(liveRel.TargetId, targetTime))
-            {
-                return false;
-            }
-        }
-
-        // Find state active at targetTime:
-        // Any legacy mutation fact F_next (Kind == null) whose F_next.At > targetTime captures the state immediately BEFORE F_next.At.
-        // Therefore, the first mutation fact with F_next.At > targetTime holds the historical mutated state active at targetTime.
-        SorophyRelationshipFact? stateFact = null;
-        for (int i = 0; i < facts.Count; i++)
-        {
-            if (facts[i].Kind is null && SorophyTime.Compare(facts[i].At, targetTime) > 0)
-            {
-                stateFact = facts[i];
-                break;
-            }
-        }
-
-        if (stateFact is not null)
-        {
-            relationship = CreateFromFact(stateFact);
-            return true;
-        }
-
-        // No facts occurred strictly after targetTime.
-        // If the relationship is currently active in the graph, its live state is active at targetTime.
         if (liveRel is not null)
         {
             relationship = CreateFromLive(liveRel);

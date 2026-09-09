@@ -103,9 +103,9 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
             return false;
         }
 
-        return _graph
-            .CreateSnapshot(time)
-            .ContainsEntity(entityId);
+        return _graph.EntityExistsAt(
+            entityId,
+            time);
     }
 
     /// <inheritdoc />
@@ -116,7 +116,7 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
         ArgumentNullException.ThrowIfNull(
             time);
 
-        if (entityId == Guid.Empty)
+        if (entityId == Guid.Empty || !_graph.EntityExistsAt(entityId, time))
         {
             return null;
         }
@@ -145,9 +145,9 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
             return false;
         }
 
-        return _graph
-            .CreateSnapshot(time)
-            .ContainsRelationship(relationshipId);
+        return _graph.RelationshipExistsAt(
+            relationshipId,
+            time);
     }
 
     /// <inheritdoc />
@@ -158,7 +158,7 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
         ArgumentNullException.ThrowIfNull(
             time);
 
-        if (relationshipId == Guid.Empty)
+        if (relationshipId == Guid.Empty || !_graph.RelationshipExistsAt(relationshipId, time))
         {
             return null;
         }
@@ -176,7 +176,7 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
         ArgumentNullException.ThrowIfNull(
             time);
 
-        if (entityId == Guid.Empty)
+        if (entityId == Guid.Empty || !_graph.EntityExistsAt(entityId, time))
         {
             return [];
         }
@@ -194,7 +194,7 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
         ArgumentNullException.ThrowIfNull(
             time);
 
-        if (entityId == Guid.Empty)
+        if (entityId == Guid.Empty || !_graph.EntityExistsAt(entityId, time))
         {
             return [];
         }

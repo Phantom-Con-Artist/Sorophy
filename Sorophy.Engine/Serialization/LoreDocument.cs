@@ -129,6 +129,14 @@ internal sealed class LoreRelationshipFactDocument
     [JsonPropertyName("eventEntityId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Guid? EventEntityId { get; set; }
+
+    [JsonPropertyName("kind")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Kind { get; set; }
+
+    [JsonPropertyName("description")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Description { get; set; }
 }
 
 internal sealed class LoreTimeDocument

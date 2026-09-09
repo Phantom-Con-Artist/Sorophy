@@ -183,7 +183,9 @@ public static class LoreSerializer
                             SerializeTime(
                                 fact.ValidTill),
                         EventEntityId =
-                            fact.EventEntityId
+                            fact.EventEntityId,
+                        Kind = fact.Kind?.ToString(),
+                        Description = fact.Description
                     });
             }
 
@@ -377,6 +379,21 @@ public static class LoreSerializer
                             factDocument.Properties);
                     }
 
+                    SorophyRelationshipFactKind? kind = null;
+                    if (!string.IsNullOrWhiteSpace(factDocument.Kind))
+                    {
+                        if (!Enum.TryParse<SorophyRelationshipFactKind>(
+                                factDocument.Kind,
+                                ignoreCase: true,
+                                out var parsedKind))
+                        {
+                            throw new InvalidOperationException(
+                                $"Relationship '{factDocument.RelationshipId}' fact contains unknown kind '{factDocument.Kind}'.");
+                        }
+
+                        kind = parsedKind;
+                    }
+
                     SorophyRelationshipFact fact;
 
                     try
@@ -390,7 +407,9 @@ public static class LoreSerializer
                             factProperties,
                             validFrom,
                             validTill,
-                            factDocument.EventEntityId);
+                            factDocument.EventEntityId,
+                            kind,
+                            factDocument.Description);
                     }
                     catch (ArgumentException ex)
                     {
@@ -1084,6 +1103,10 @@ public static class LoreSerializer
                         $"Relationship history '{history.RelationshipId}' facts cannot be null.");
                 }
 
+                int retirementCount = 0;
+                SorophyTime? createdAt = null;
+                SorophyTime? retiredAt = null;
+
                 foreach (var fact in history.Facts)
                 {
                     if (fact is null)
@@ -1140,6 +1163,33 @@ public static class LoreSerializer
                         fact.At,
                         $"Relationship '{history.RelationshipId}' fact At");
 
+                    var parsedTime =
+                        DeserializeTime(
+                            fact.At,
+                            $"Relationship '{history.RelationshipId}' fact At");
+
+                    if (!string.IsNullOrWhiteSpace(fact.Kind))
+                    {
+                        if (!Enum.TryParse<SorophyRelationshipFactKind>(
+                                fact.Kind,
+                                ignoreCase: true,
+                                out var factKind))
+                        {
+                            throw new InvalidOperationException(
+                                $"Fact for relationship '{history.RelationshipId}' contains unknown kind '{fact.Kind}'.");
+                        }
+
+                        if (factKind == SorophyRelationshipFactKind.Created)
+                        {
+                            createdAt = parsedTime;
+                        }
+                        else if (factKind == SorophyRelationshipFactKind.Retired)
+                        {
+                            retirementCount++;
+                            retiredAt = parsedTime;
+                        }
+                    }
+
                     ValidateSerializedTime(
                         fact.ValidFrom,
                         $"Relationship '{history.RelationshipId}' fact ValidFrom");
@@ -1176,6 +1226,27 @@ public static class LoreSerializer
                             throw new InvalidOperationException(
                                 $"Fact for relationship '{history.RelationshipId}' references entity '{fact.EventEntityId.Value}' with non-event type '{eventEntityType}'.");
                         }
+                    }
+                }
+
+                if (retirementCount > 1)
+                {
+                    throw new InvalidOperationException(
+                        $"Relationship '{history.RelationshipId}' history contains {retirementCount} retirement facts; at most one is permitted.");
+                }
+
+                if (createdAt is not null && retiredAt is not null)
+                {
+                    if (!SorophyTime.CanCompare(createdAt, retiredAt))
+                    {
+                        throw new InvalidOperationException(
+                            $"Relationship '{history.RelationshipId}' creation coordinate and retirement coordinate have incompatible schemas.");
+                    }
+
+                    if (SorophyTime.Compare(retiredAt, createdAt) < 0)
+                    {
+                        throw new InvalidOperationException(
+                            $"Relationship '{history.RelationshipId}' retirement coordinate precedes creation coordinate.");
                     }
                 }
             }

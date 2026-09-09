@@ -19,34 +19,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Sorophy.Engine.Time;
 
 namespace Sorophy.Engine.Graph.History;
 
 /// <summary>
-/// Maintains the append-only historical facts of a single relationship.
+/// Maintains the authoritative historical facts of a single relationship.
 /// </summary>
 /// <remarks>
 /// <para>
 /// An <see cref="SorophyRelationshipHistory"/> belongs to exactly one
 /// relationship identified by <see cref="RelationshipId"/>.
 /// </para>
-///
 /// <para>
-/// Historical facts are appended to the history but cannot be removed
-/// or replaced through this API. Each fact is expected to remain immutable
-/// once created.
-/// </para>
-///
-/// <para>
-/// This type stores historical information only. It does not execute
-/// events, apply evolution operations, mutate relationships, or determine
-/// when a historical fact should be created.
-/// </para>
-///
-/// <para>
-/// Historical ordering is the order in which facts are appended. This
-/// type does not attempt to interpret or compare time
-/// values. Temporal ordering and event semantics belong to higher layers.
+/// Historical facts are recorded as history is established, or explicitly
+/// removed/reverted when an authored change is undone by the author (for instance,
+/// reversing a retirement). It is not an audit log of author actions and contains
+/// no "Unretired" records.
 /// </para>
 /// </remarks>
 public sealed class SorophyRelationshipHistory
@@ -79,6 +69,33 @@ public sealed class SorophyRelationshipHistory
         _facts.Count;
 
     /// <summary>
+    /// Gets the established creation fact for this relationship, if any.
+    /// </summary>
+    public SorophyRelationshipFact? CreationFact =>
+        _facts.FirstOrDefault(f => f.Kind == SorophyRelationshipFactKind.Created);
+
+    /// <summary>
+    /// Gets the single established retirement fact for this relationship, if any.
+    /// </summary>
+    public SorophyRelationshipFact? RetirementFact =>
+        _facts.SingleOrDefault(f => f.Kind == SorophyRelationshipFactKind.Retired);
+
+    /// <summary>
+    /// Gets the temporal coordinate at which the relationship was created, if recorded.
+    /// </summary>
+    public SorophyTime? CreatedAt => CreationFact?.At;
+
+    /// <summary>
+    /// Gets the temporal coordinate at which the relationship was retired, if retired.
+    /// </summary>
+    public SorophyTime? RetiredAt => RetirementFact?.At;
+
+    /// <summary>
+    /// Gets whether the relationship has an established retirement fact.
+    /// </summary>
+    public bool IsRetired => RetirementFact is not null;
+
+    /// <summary>
     /// Initializes a new relationship history.
     /// </summary>
     /// <param name="relationshipId">
@@ -105,6 +122,89 @@ public sealed class SorophyRelationshipHistory
     }
 
     /// <summary>
+    /// Determines whether the relationship's own lifecycle exists at the specified temporal coordinate.
+    /// </summary>
+    /// <remarks>
+    /// Note: This checks relationship lifecycle only. For full existence including endpoint checks,
+    /// use <see cref="SorophyGraph.RelationshipExistsAt(Guid, SorophyTime)"/>.
+    /// </remarks>
+    /// <param name="time">The temporal coordinate to evaluate.</param>
+    /// <returns>
+    /// <see langword="true"/> when the coordinate is at or after creation and strictly prior to retirement;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    public bool ExistsAt(SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (CreatedAt is not null)
+        {
+            if (!SorophyTime.CanCompare(time, CreatedAt))
+            {
+                return false;
+            }
+
+            if (SorophyTime.Compare(time, CreatedAt) < 0)
+            {
+                return false;
+            }
+        }
+
+        if (RetiredAt is not null)
+        {
+            if (SorophyTime.CanCompare(time, RetiredAt) &&
+                SorophyTime.Compare(time, RetiredAt) >= 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Evaluates the relationship's own temporal lifecycle status at the specified coordinate.
+    /// </summary>
+    /// <remarks>
+    /// Note: This checks relationship lifecycle only. For endpoint-aware status,
+    /// use <see cref="SorophyGraph.GetRelationshipLifecycleStatus(Guid, SorophyTime)"/>.
+    /// </remarks>
+    /// <param name="time">The temporal coordinate to evaluate.</param>
+    /// <returns>
+    /// <see cref="SorophyRelationshipLifecycleStatus.Uncreated"/> if prior to creation or on an incomparable timeline;
+    /// <see cref="SorophyRelationshipLifecycleStatus.Retired"/> if at or after retirement;
+    /// otherwise, <see cref="SorophyRelationshipLifecycleStatus.Active"/>.
+    /// </returns>
+    public SorophyRelationshipLifecycleStatus GetStatusAt(SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (CreatedAt is not null)
+        {
+            if (!SorophyTime.CanCompare(time, CreatedAt))
+            {
+                return SorophyRelationshipLifecycleStatus.Uncreated;
+            }
+
+            if (SorophyTime.Compare(time, CreatedAt) < 0)
+            {
+                return SorophyRelationshipLifecycleStatus.Uncreated;
+            }
+        }
+
+        if (RetiredAt is not null)
+        {
+            if (SorophyTime.CanCompare(time, RetiredAt) &&
+                SorophyTime.Compare(time, RetiredAt) >= 0)
+            {
+                return SorophyRelationshipLifecycleStatus.Retired;
+            }
+        }
+
+        return SorophyRelationshipLifecycleStatus.Active;
+    }
+
+    /// <summary>
     /// Appends a historical fact to this relationship's history.
     /// </summary>
     /// <param name="fact">
@@ -117,7 +217,7 @@ public sealed class SorophyRelationshipHistory
     /// Thrown when the fact belongs to a different relationship.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the exact same fact instance has already been added.
+    /// Thrown when attempting to add duplicate creation/retirement facts or the exact same fact instance.
     /// </exception>
     public void Add(
         SorophyRelationshipFact fact)
@@ -135,12 +235,20 @@ public sealed class SorophyRelationshipHistory
                 nameof(fact));
         }
 
+        if (fact.Kind == SorophyRelationshipFactKind.Created && CreationFact is not null)
+        {
+            throw new InvalidOperationException(
+                $"Relationship '{RelationshipId}' already has an established creation fact at '{CreationFact.At}'.");
+        }
+
+        if (fact.Kind == SorophyRelationshipFactKind.Retired && RetirementFact is not null)
+        {
+            throw new InvalidOperationException(
+                $"Relationship '{RelationshipId}' already has an established retirement fact at '{RetirementFact.At}'.");
+        }
+
         /*
-         * History is append-only, but accidentally recording the very same
-         * fact object twice is still a programming error.
-         *
-         * ReferenceEquals is intentional here. The rule concerns the exact
-         * fact instance, not value equality between separate fact objects.
+         * Accidental recording of the very same fact object twice is a programming error.
          */
         foreach (var existing in
                  _facts)
@@ -157,6 +265,28 @@ public sealed class SorophyRelationshipHistory
 
         _facts.Add(
             fact);
+    }
+
+    /// <summary>
+    /// Removes a specific authored temporal fact from history.
+    /// </summary>
+    /// <param name="kind">The kind of fact to remove.</param>
+    /// <param name="at">The temporal coordinate of the fact to remove.</param>
+    /// <returns><see langword="true"/> if the fact was found and removed; otherwise, <see langword="false"/>.</returns>
+    internal bool RemoveFact(SorophyRelationshipFactKind kind, SorophyTime at)
+    {
+        ArgumentNullException.ThrowIfNull(at);
+
+        for (int i = 0; i < _facts.Count; i++)
+        {
+            if (_facts[i].Kind == kind && _facts[i].At.Equals(at))
+            {
+                _facts.RemoveAt(i);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

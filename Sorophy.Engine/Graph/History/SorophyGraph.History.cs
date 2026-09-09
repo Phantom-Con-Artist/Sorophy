@@ -249,6 +249,25 @@ public sealed partial class SorophyGraph
             relationshipId);
     }
 
+    internal bool RevertRelationshipRetirementFact(
+        Guid relationshipId,
+        SorophyTime retirementTime)
+    {
+        ArgumentNullException.ThrowIfNull(
+            retirementTime);
+
+        if (_relationshipHistories.TryGetValue(
+                relationshipId,
+                out var history))
+        {
+            return history.RemoveFact(
+                SorophyRelationshipFactKind.Retired,
+                retirementTime);
+        }
+
+        return false;
+    }
+
     /*
      * =============================================================
      * HISTORY VALIDATION
@@ -256,8 +275,7 @@ public sealed partial class SorophyGraph
      */
 
     /// <summary>
-    /// Validates the relationship-history store against its identity
-    /// invariants.
+    /// Validates the relationship-history store against its identity and single-retirement invariants.
     /// </summary>
     private void ValidateRelationshipHistoryStore(
         List<string> errors)
@@ -295,8 +313,15 @@ public sealed partial class SorophyGraph
                     $"'{history.RelationshipId}'.");
             }
 
+            // Invariant: At most one retirement fact per relationship
+            int retirementCount = 0;
             foreach (var fact in history.Facts)
             {
+                if (fact.Kind == SorophyRelationshipFactKind.Retired)
+                {
+                    retirementCount++;
+                }
+
                 if (fact.EventEntityId is not null)
                 {
                     if (fact.EventEntityId.Value == Guid.Empty)
@@ -319,6 +344,27 @@ public sealed partial class SorophyGraph
                         errors.Add(
                             $"Relationship '{relationshipId}' fact references entity '{fact.EventEntityId.Value}' with non-event type '{eventEntity.Type}'.");
                     }
+                }
+            }
+
+            if (retirementCount > 1)
+            {
+                errors.Add(
+                    $"Relationship '{relationshipId}' history contains {retirementCount} retirement facts; at most one is permitted.");
+            }
+
+            // Invariant: Retirement coordinate cannot precede creation coordinate
+            if (history.CreatedAt is not null && history.RetiredAt is not null)
+            {
+                if (!SorophyTime.CanCompare(history.CreatedAt, history.RetiredAt))
+                {
+                    errors.Add(
+                        $"Relationship '{relationshipId}' creation coordinate '{history.CreatedAt}' and retirement coordinate '{history.RetiredAt}' have incompatible schemas.");
+                }
+                else if (SorophyTime.Compare(history.RetiredAt, history.CreatedAt) < 0)
+                {
+                    errors.Add(
+                        $"Relationship '{relationshipId}' retirement coordinate '{history.RetiredAt}' precedes creation coordinate '{history.CreatedAt}'.");
                 }
             }
         }

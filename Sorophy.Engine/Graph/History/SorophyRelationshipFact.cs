@@ -98,6 +98,17 @@ public sealed class SorophyRelationshipFact
     public Guid? EventEntityId { get; }
 
     /// <summary>
+    /// Gets the lifecycle transition kind represented by this fact,
+    /// or null when the fact represents a legacy or mutation fact.
+    /// </summary>
+    public SorophyRelationshipFactKind? Kind { get; }
+
+    /// <summary>
+    /// Gets an optional authored description or rationale for this transition.
+    /// </summary>
+    public string? Description { get; }
+
+    /// <summary>
     /// Initializes a new historical relationship fact.
     /// </summary>
     /// <param name="at">
@@ -127,12 +138,18 @@ public sealed class SorophyRelationshipFact
     /// <param name="eventEntityId">
     /// Optional identity of the event entity that originated this fact.
     /// </param>
+    /// <param name="kind">
+    /// Optional lifecycle transition kind.
+    /// </param>
+    /// <param name="description">
+    /// Optional authored description.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="at"/> is null.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when an identity is empty, when the relationship type is
-    /// blank, or when temporal schemas are inconsistent.
+    /// blank, when temporal schemas are inconsistent, or when <paramref name="kind"/> is undefined.
     /// </exception>
     public SorophyRelationshipFact(
         SorophyTime at,
@@ -143,7 +160,9 @@ public sealed class SorophyRelationshipFact
         IReadOnlyDictionary<string, SorophyProperty>? properties = null,
         SorophyTime? validFrom = null,
         SorophyTime? validTill = null,
-        Guid? eventEntityId = null)
+        Guid? eventEntityId = null,
+        SorophyRelationshipFactKind? kind = null,
+        string? description = null)
     {
         ArgumentNullException.ThrowIfNull(
             at);
@@ -183,6 +202,13 @@ public sealed class SorophyRelationshipFact
                 nameof(type));
         }
 
+        if (kind is not null && !Enum.IsDefined(kind.Value))
+        {
+            throw new ArgumentException(
+                $"Undefined relationship fact kind '{kind.Value}'.",
+                nameof(kind));
+        }
+
         ValidateTemporalSchemas(
             at,
             validFrom,
@@ -217,7 +243,38 @@ public sealed class SorophyRelationshipFact
 
         EventEntityId =
             eventEntityId;
+
+        Kind =
+            kind;
+
+        Description =
+            description;
     }
+
+    /// <summary>
+    /// Factory method to create an authored lifecycle relationship fact.
+    /// </summary>
+    public static SorophyRelationshipFact CreateLifecycleFact(
+        SorophyTime at,
+        Guid relationshipId,
+        Guid sourceId,
+        Guid targetId,
+        string type,
+        SorophyRelationshipFactKind kind,
+        IReadOnlyDictionary<string, SorophyProperty>? properties = null,
+        string? description = null) =>
+        new(
+            at,
+            relationshipId,
+            sourceId,
+            targetId,
+            type,
+            properties: properties,
+            validFrom: null,
+            validTill: null,
+            eventEntityId: null,
+            kind: kind,
+            description: description);
 
     /// <summary>
     /// Ensures that all supplied temporal values belong to the same

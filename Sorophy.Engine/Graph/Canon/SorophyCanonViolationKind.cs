@@ -66,6 +66,26 @@ public enum SorophyCanonViolationKind
     /// <summary>
     /// The proposed operation contradicts an established future historical fact.
     /// </summary>
-    ContradictsFutureHistory = 8
+    ContradictsFutureHistory = 8,
+
+    /// <summary>
+    /// The target relationship does not exist in the canonical graph.
+    /// </summary>
+    RelationshipNotFound = 9,
+
+    /// <summary>
+    /// The relationship already exists in the canonical graph.
+    /// </summary>
+    RelationshipAlreadyExists = 10,
+
+    /// <summary>
+    /// One or both endpoints of the relationship are not active at the specified temporal coordinate.
+    /// </summary>
+    EndpointNotActiveAtCoordinate = 11,
+
+    /// <summary>
+    /// The proposed operation contradicts an established later active world state.
+    /// </summary>
+    ContradictsEstablishedLaterState = 12
 }
 

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.HistoricalFacts;
 using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
 
@@ -255,5 +256,47 @@ public interface ITemporalQueryDomain
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventEntity"/> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="eventEntity"/> is not classified as an Event.</exception>
     IReadOnlyCollection<Guid> GetRelationshipsEvolvedByEvent(SorophyEntity eventEntity);
+
+    /*
+     * =============================================================
+     * 6. EMERGENT HISTORICAL FACTS (EHG)
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Retrieves all emergent historical facts for a specific entity within an optional temporal range.
+    /// Derived directly from authoritative temporal history, optionally including incident relationship facts.
+    /// </summary>
+    IReadOnlyList<SorophyHistoricalFact> GetEntityHistoricalFacts(
+        Guid entityId,
+        SorophyTime? from = null,
+        SorophyTime? to = null,
+        bool includeRelationships = false);
+
+    /// <summary>
+    /// Retrieves an entity-centric timeline containing all direct emergent historical facts
+    /// for the specified entity as well as all relationship facts where the entity is source or target.
+    /// </summary>
+    IReadOnlyList<SorophyHistoricalFact> GetEntityTimelineFacts(
+        Guid entityId,
+        SorophyTime? from = null,
+        SorophyTime? to = null);
+
+    /// <summary>
+    /// Retrieves all emergent historical facts for a specific relationship within an optional temporal range.
+    /// Derived directly from authoritative temporal history.
+    /// </summary>
+    IReadOnlyList<SorophyHistoricalFact> GetRelationshipHistoricalFacts(
+        Guid relationshipId,
+        SorophyTime? from = null,
+        SorophyTime? to = null);
+
+    /// <summary>
+    /// Retrieves all emergent historical facts across the entire graph within an optional temporal range.
+    /// Derived directly from authoritative temporal history.
+    /// </summary>
+    IReadOnlyList<SorophyHistoricalFact> GetHistoricalFacts(
+        SorophyTime? from = null,
+        SorophyTime? to = null);
 }
 

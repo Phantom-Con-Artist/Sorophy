@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Time;
+using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.TemporalEdit;
 
@@ -88,5 +89,30 @@ public interface ISorophyTemporalEditor
     /// Reverts an established temporal retirement for a relationship at the specified retirement coordinate.
     /// </summary>
     bool RevertRelationshipRetirement(Guid relationshipId, SorophyTime retirementCoordinate);
+
+    /// <summary>
+    /// Sets an entity property at this editor's temporal coordinate.
+    /// </summary>
+    void SetEntityProperty(Guid entityId, string propertyName, SorophyValue value, string? description = null);
+
+    /// <summary>
+    /// Removes an entity property at this editor's temporal coordinate.
+    /// </summary>
+    bool RemoveEntityProperty(Guid entityId, string propertyName, string? description = null);
+
+    /// <summary>
+    /// Sets a relationship property at this editor's temporal coordinate.
+    /// </summary>
+    void SetRelationshipProperty(Guid relationshipId, string propertyName, SorophyValue value, string? description = null);
+
+    /// <summary>
+    /// Removes a relationship property at this editor's temporal coordinate.
+    /// </summary>
+    bool RemoveRelationshipProperty(Guid relationshipId, string propertyName, string? description = null);
+
+    /// <summary>
+    /// Changes the semantic type of a relationship at this editor's temporal coordinate.
+    /// </summary>
+    void ChangeRelationshipType(Guid relationshipId, string newType, string? description = null);
 }
 

@@ -178,6 +178,8 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
         return SorophyEntityLifecycleStatus.Active;
     }
 
+    private long _nextSequence = 1;
+
     /// <summary>
     /// Adds an authored temporal fact to this entity's history.
     /// </summary>
@@ -210,6 +212,15 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
                 $"Entity '{EntityId}' already has an established retirement fact at '{RetirementFact.At}'.");
         }
 
+        if (fact.Sequence == 0)
+        {
+            fact.Sequence = _nextSequence++;
+        }
+        else if (fact.Sequence >= _nextSequence)
+        {
+            _nextSequence = fact.Sequence + 1;
+        }
+
         _facts.Add(fact);
         SortFacts();
     }
@@ -229,11 +240,28 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
             if (_facts[i].Kind == kind && _facts[i].At.Equals(at))
             {
                 _facts.RemoveAt(i);
+                SortFacts();
                 return true;
             }
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Removes a specific authored temporal fact from history.
+    /// </summary>
+    internal bool Remove(SorophyEntityFact fact)
+    {
+        ArgumentNullException.ThrowIfNull(fact);
+
+        var removed = _facts.Remove(fact);
+        if (removed)
+        {
+            SortFacts();
+        }
+
+        return removed;
     }
 
     private void SortFacts()
@@ -248,8 +276,28 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
                     return cmp;
                 }
             }
+            else
+            {
+                var timelineCmp = string.Compare(a.At.Timeline, b.At.Timeline, StringComparison.Ordinal);
+                if (timelineCmp != 0)
+                {
+                    return timelineCmp;
+                }
+            }
 
-            return a.Kind.CompareTo(b.Kind);
+            var seqCmp = a.Sequence.CompareTo(b.Sequence);
+            if (seqCmp != 0)
+            {
+                return seqCmp;
+            }
+
+            var kindCmp = a.Kind.CompareTo(b.Kind);
+            if (kindCmp != 0)
+            {
+                return kindCmp;
+            }
+
+            return string.Compare(a.PropertyName, b.PropertyName, StringComparison.Ordinal);
         });
     }
 

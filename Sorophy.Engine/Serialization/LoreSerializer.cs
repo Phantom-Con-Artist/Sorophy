@@ -185,7 +185,20 @@ public static class LoreSerializer
                         EventEntityId =
                             fact.EventEntityId,
                         Kind = fact.Kind?.ToString(),
-                        Description = fact.Description
+                        Description = fact.Description,
+                        Sequence =
+                            (fact.Kind is SorophyRelationshipFactKind.PropertyChanged or SorophyRelationshipFactKind.RelationshipChanged)
+                                ? fact.Sequence
+                                : null,
+                        PropertyName = fact.PropertyName,
+                        PreviousValue =
+                            SerializePropertyDocument(
+                                fact.PreviousValue),
+                        NewValue =
+                            SerializePropertyDocument(
+                                fact.NewValue),
+                        PreviousType = fact.PreviousType,
+                        NewType = fact.NewType
                     });
             }
 
@@ -229,7 +242,18 @@ public static class LoreSerializer
                                     fact.At),
                             EntityId = fact.EntityId,
                             Kind = fact.Kind.ToString(),
-                            Description = fact.Description
+                            Description = fact.Description,
+                            Sequence =
+                                (fact.Kind == SorophyEntityFactKind.PropertyChanged)
+                                    ? fact.Sequence
+                                    : null,
+                            PropertyName = fact.PropertyName,
+                            PreviousValue =
+                                SerializePropertyDocument(
+                                    fact.PreviousValue),
+                            NewValue =
+                                SerializePropertyDocument(
+                                    fact.NewValue)
                         });
                 }
 
@@ -409,7 +433,13 @@ public static class LoreSerializer
                             validTill,
                             factDocument.EventEntityId,
                             kind,
-                            factDocument.Description);
+                            factDocument.Description,
+                            factDocument.Sequence ?? 0,
+                            factDocument.PropertyName,
+                            DeserializePropertyValue(factDocument.PreviousValue),
+                            DeserializePropertyValue(factDocument.NewValue),
+                            factDocument.PreviousType,
+                            factDocument.NewType);
                     }
                     catch (ArgumentException ex)
                     {
@@ -449,12 +479,15 @@ public static class LoreSerializer
                             $"Entity '{factDocument.EntityId}' fact contains unknown kind '{factDocument.Kind}'.");
                     }
 
-                    var fact =
-                        SorophyEntityFact.Create(
-                            at,
-                            factDocument.EntityId,
-                            kind,
-                            factDocument.Description);
+                    var fact = new SorophyEntityFact(
+                        at,
+                        factDocument.EntityId,
+                        kind,
+                        factDocument.Description,
+                        factDocument.Sequence ?? 0,
+                        factDocument.PropertyName,
+                        DeserializePropertyValue(factDocument.PreviousValue),
+                        DeserializePropertyValue(factDocument.NewValue));
 
                     history.Add(fact);
                 }
@@ -801,6 +834,39 @@ public static class LoreSerializer
         }
 
         return result;
+    }
+
+    private static EntityPropertyDocument? SerializePropertyDocument(
+        SorophyValue? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        return new EntityPropertyDocument
+        {
+            Type = value.Type.ToString(),
+            Value = SorophyValueCodec.Serialize(value)
+        };
+    }
+
+    private static SorophyValue? DeserializePropertyValue(
+        EntityPropertyDocument? document)
+    {
+        if (document is null)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(document.Type))
+        {
+            throw new InvalidOperationException(
+                "Property is missing its type.");
+        }
+
+        var type = ParseValueType(document.Type);
+        return SorophyValueCodec.Deserialize(type, document.Value);
     }
 
     private static void ValidateDocument(

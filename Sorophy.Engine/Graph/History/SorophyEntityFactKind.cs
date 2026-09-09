@@ -31,6 +31,11 @@ public enum SorophyEntityFactKind
     /// <summary>
     /// Represents the temporal retirement of an entity.
     /// </summary>
-    Retired = 2
+    Retired = 2,
+
+    /// <summary>
+    /// Represents an authored property mutation for an entity.
+    /// </summary>
+    PropertyChanged = 3
 }
 

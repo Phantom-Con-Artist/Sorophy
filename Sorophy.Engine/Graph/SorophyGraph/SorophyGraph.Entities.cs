@@ -18,9 +18,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sorophy.Engine.Graph.Canon;
 using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
+using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.Graph;
 
@@ -212,6 +215,338 @@ public sealed partial class SorophyGraph
         }
 
         return RevertEntityRetirementFact(entityId, retirementTime);
+    }
+
+    /* =============================================================
+     * TEMPORAL ENTITY PROPERTY MUTATION OPERATIONS
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Sets an entity property at the specified temporal coordinate, recording an authoritative
+    /// PropertyChanged fact, maintaining past/future continuity, and updating canonical storage if at or after latest time.
+    /// </summary>
+    public void SetEntityProperty(
+        Guid entityId,
+        string propertyName,
+        SorophyValue value,
+        SorophyTime time,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(time);
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
+        }
+
+        if (!_entities.TryGetValue(entityId, out var entity))
+        {
+            throw new InvalidOperationException($"Entity '{entityId}' does not exist in the graph.");
+        }
+
+        var status = GetEntityLifecycleStatus(entityId, time);
+        if (status == SorophyEntityLifecycleStatus.Uncreated)
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is uncreated at this coordinate.");
+        }
+        if (status == SorophyEntityLifecycleStatus.Retired)
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is retired at this coordinate.");
+        }
+
+        var history = GetOrCreateEntityHistory(entityId);
+
+        var previousValue = GetEffectiveEntityPropertyValue(entity, history, propertyName, time);
+        var immediateFutureFact = GetImmediateFutureEntityPropertyFact(history, propertyName, time);
+        var oldImmediateFuturePreviousValue = immediateFutureFact?.PreviousValue;
+        var isLatest = IsAtOrAfterLatestEntityPropertyMutation(history, propertyName, time);
+
+        var hadLiveProp = entity.Properties.TryGetValue(propertyName, out var oldLiveProp);
+
+        SorophyEntityFact newFact;
+        try
+        {
+            newFact = SorophyEntityFact.CreatePropertyChange(
+                time,
+                entityId,
+                propertyName,
+                previousValue,
+                value,
+                description: description);
+
+            history.Add(newFact);
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = SorophyValueCloner.CloneValue(value);
+            }
+
+            if (isLatest)
+            {
+                entity.Properties[propertyName] = new SorophyProperty
+                {
+                    Name = propertyName,
+                    Value = SorophyValueCloner.CloneValue(value)
+                };
+            }
+        }
+        catch
+        {
+            if (hadLiveProp)
+            {
+                entity.Properties[propertyName] = oldLiveProp!;
+            }
+            else
+            {
+                entity.Properties.Remove(propertyName);
+            }
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = oldImmediateFuturePreviousValue;
+            }
+
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Removes an entity property at the specified temporal coordinate, recording an authoritative
+    /// PropertyChanged fact (with NewValue = null), maintaining continuity, and removing from canonical store if latest.
+    /// </summary>
+    public bool RemoveEntityProperty(
+        Guid entityId,
+        string propertyName,
+        SorophyTime time,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
+        }
+
+        if (!_entities.TryGetValue(entityId, out var entity))
+        {
+            throw new InvalidOperationException($"Entity '{entityId}' does not exist in the graph.");
+        }
+
+        var status = GetEntityLifecycleStatus(entityId, time);
+        if (status == SorophyEntityLifecycleStatus.Uncreated)
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is uncreated at this coordinate.");
+        }
+        if (status == SorophyEntityLifecycleStatus.Retired)
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is retired at this coordinate.");
+        }
+
+        var history = GetOrCreateEntityHistory(entityId);
+
+        var previousValue = GetEffectiveEntityPropertyValue(entity, history, propertyName, time);
+        if (previousValue is null)
+        {
+            return false;
+        }
+
+        var immediateFutureFact = GetImmediateFutureEntityPropertyFact(history, propertyName, time);
+        var oldImmediateFuturePreviousValue = immediateFutureFact?.PreviousValue;
+        var isLatest = IsAtOrAfterLatestEntityPropertyMutation(history, propertyName, time);
+
+        var hadLiveProp = entity.Properties.TryGetValue(propertyName, out var oldLiveProp);
+
+        SorophyEntityFact newFact;
+        try
+        {
+            newFact = SorophyEntityFact.CreatePropertyChange(
+                time,
+                entityId,
+                propertyName,
+                previousValue,
+                newValue: null,
+                description: description);
+
+            history.Add(newFact);
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = null;
+            }
+
+            if (isLatest)
+            {
+                entity.Properties.Remove(propertyName);
+            }
+
+            return true;
+        }
+        catch
+        {
+            if (hadLiveProp)
+            {
+                entity.Properties[propertyName] = oldLiveProp!;
+            }
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = oldImmediateFuturePreviousValue;
+            }
+
+            throw;
+        }
+    }
+
+    internal static SorophyValue? GetEffectiveEntityPropertyValue(
+        SorophyEntity entity,
+        SorophyEntityHistory? history,
+        string propertyName,
+        SorophyTime time)
+    {
+        if (history is null || history.Facts.Count == 0)
+        {
+            return entity.Properties.TryGetValue(propertyName, out var prop)
+                ? prop.Value
+                : null;
+        }
+
+        var facts = history.Facts
+            .Where(f => f.Kind == SorophyEntityFactKind.PropertyChanged &&
+                        string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            .ToList();
+
+        if (facts.Count == 0)
+        {
+            return entity.Properties.TryGetValue(propertyName, out var prop)
+                ? prop.Value
+                : null;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        SorophyEntityFact? lastAtOrBefore = null;
+        for (int i = 0; i < facts.Count; i++)
+        {
+            var f = facts[i];
+            if (SorophyTime.CanCompare(f.At, time))
+            {
+                var cmp = SorophyTime.Compare(f.At, time);
+                if (cmp <= 0)
+                {
+                    lastAtOrBefore = f;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (lastAtOrBefore is not null)
+        {
+            return lastAtOrBefore.NewValue;
+        }
+
+        var earliestFuture = facts[0];
+        return earliestFuture.PreviousValue;
+    }
+
+    internal static SorophyEntityFact? GetImmediateFutureEntityPropertyFact(
+        SorophyEntityHistory history,
+        string propertyName,
+        SorophyTime time)
+    {
+        var futureFacts = new List<SorophyEntityFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyEntityFactKind.PropertyChanged &&
+                string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            {
+                if (SorophyTime.CanCompare(f.At, time) && SorophyTime.Compare(f.At, time) > 0)
+                {
+                    futureFacts.Add(f);
+                }
+            }
+        }
+
+        if (futureFacts.Count == 0)
+        {
+            return null;
+        }
+
+        futureFacts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        return futureFacts[0];
+    }
+
+    internal static bool IsAtOrAfterLatestEntityPropertyMutation(
+        SorophyEntityHistory history,
+        string propertyName,
+        SorophyTime time)
+    {
+        var facts = new List<SorophyEntityFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyEntityFactKind.PropertyChanged &&
+                string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            {
+                facts.Add(f);
+            }
+        }
+
+        if (facts.Count == 0)
+        {
+            return true;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        var latest = facts[^1];
+        if (SorophyTime.CanCompare(time, latest.At))
+        {
+            return SorophyTime.Compare(time, latest.At) >= 0;
+        }
+
+        return true;
     }
 
     /* =============================================================

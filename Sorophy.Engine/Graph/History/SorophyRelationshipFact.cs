@@ -18,35 +18,17 @@
 
 using System;
 using System.Collections.Generic;
+using Sorophy.Engine.Diff;
+using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
 using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.Graph.History;
 
 /// <summary>
-/// Represents an immutable historical state of a relationship at a
+/// Represents an immutable historical state or mutation of a relationship at a
 /// specific point in the temporal model.
 /// </summary>
-/// <remarks>
-/// <para>
-/// A relationship fact records what was true about a relationship
-/// at <see cref="At"/>, including its semantic type, properties,
-/// endpoints, and validity interval.
-/// </para>
-///
-/// <para>
-/// Historical facts are append-only semantic records. They are not
-/// backups or mutable snapshots of <see cref="SorophyRelationship"/>.
-/// </para>
-///
-/// <para>
-/// <see cref="At"/> identifies when this historical fact belongs in the
-/// relationship's history. <see cref="ValidFrom"/> and
-/// <see cref="ValidTill"/> describe the validity interval of the
-/// relationship state represented by the fact. These are separate
-/// temporal concepts and must not be conflated.
-/// </para>
-/// </remarks>
 public sealed class SorophyRelationshipFact
 {
     /// <summary>
@@ -74,6 +56,11 @@ public sealed class SorophyRelationshipFact
     /// by this fact.
     /// </summary>
     public string Type { get; }
+
+    /// <summary>
+    /// Gets the authored sequence order within this relationship's history.
+    /// </summary>
+    public long Sequence { get; internal set; }
 
     /// <summary>
     /// Gets the properties associated with the relationship at the time
@@ -104,6 +91,31 @@ public sealed class SorophyRelationshipFact
     public SorophyRelationshipFactKind? Kind { get; }
 
     /// <summary>
+    /// Gets the name of the property that changed, if this fact represents a property mutation.
+    /// </summary>
+    public string? PropertyName { get; }
+
+    /// <summary>
+    /// Gets the previous value of the property prior to this mutation, if applicable.
+    /// </summary>
+    public SorophyValue? PreviousValue { get; internal set; }
+
+    /// <summary>
+    /// Gets the new value of the property established by this mutation, if applicable.
+    /// </summary>
+    public SorophyValue? NewValue { get; }
+
+    /// <summary>
+    /// Gets the previous semantic type prior to this mutation, if applicable.
+    /// </summary>
+    public string? PreviousType { get; internal set; }
+
+    /// <summary>
+    /// Gets the new semantic type established by this mutation, if applicable.
+    /// </summary>
+    public string? NewType { get; }
+
+    /// <summary>
     /// Gets an optional authored description or rationale for this transition.
     /// </summary>
     public string? Description { get; }
@@ -111,46 +123,6 @@ public sealed class SorophyRelationshipFact
     /// <summary>
     /// Initializes a new historical relationship fact.
     /// </summary>
-    /// <param name="at">
-    /// The temporal point at which this fact is recorded.
-    /// </param>
-    /// <param name="relationshipId">
-    /// The identity of the relationship represented by this fact.
-    /// </param>
-    /// <param name="sourceId">
-    /// The source entity of the relationship.
-    /// </param>
-    /// <param name="targetId">
-    /// The target entity of the relationship.
-    /// </param>
-    /// <param name="type">
-    /// The semantic relationship type represented by the fact.
-    /// </param>
-    /// <param name="properties">
-    /// Optional relationship properties represented by the fact.
-    /// </param>
-    /// <param name="validFrom">
-    /// Optional validity start of the represented relationship state.
-    /// </param>
-    /// <param name="validTill">
-    /// Optional validity end of the represented relationship state.
-    /// </param>
-    /// <param name="eventEntityId">
-    /// Optional identity of the event entity that originated this fact.
-    /// </param>
-    /// <param name="kind">
-    /// Optional lifecycle transition kind.
-    /// </param>
-    /// <param name="description">
-    /// Optional authored description.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="at"/> is null.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when an identity is empty, when the relationship type is
-    /// blank, when temporal schemas are inconsistent, or when <paramref name="kind"/> is undefined.
-    /// </exception>
     public SorophyRelationshipFact(
         SorophyTime at,
         Guid relationshipId,
@@ -162,7 +134,13 @@ public sealed class SorophyRelationshipFact
         SorophyTime? validTill = null,
         Guid? eventEntityId = null,
         SorophyRelationshipFactKind? kind = null,
-        string? description = null)
+        string? description = null,
+        long sequence = 0,
+        string? propertyName = null,
+        SorophyValue? previousValue = null,
+        SorophyValue? newValue = null,
+        string? previousType = null,
+        string? newType = null)
     {
         ArgumentNullException.ThrowIfNull(
             at);
@@ -249,6 +227,24 @@ public sealed class SorophyRelationshipFact
 
         Description =
             description;
+
+        Sequence =
+            sequence;
+
+        PropertyName =
+            propertyName;
+
+        PreviousValue =
+            previousValue is not null ? SorophyValueCloner.CloneValue(previousValue) : null;
+
+        NewValue =
+            newValue is not null ? SorophyValueCloner.CloneValue(newValue) : null;
+
+        PreviousType =
+            previousType;
+
+        NewType =
+            newType;
     }
 
     /// <summary>
@@ -262,7 +258,8 @@ public sealed class SorophyRelationshipFact
         string type,
         SorophyRelationshipFactKind kind,
         IReadOnlyDictionary<string, SorophyProperty>? properties = null,
-        string? description = null) =>
+        string? description = null,
+        long sequence = 0) =>
         new(
             at,
             relationshipId,
@@ -274,7 +271,96 @@ public sealed class SorophyRelationshipFact
             validTill: null,
             eventEntityId: null,
             kind: kind,
-            description: description);
+            description: description,
+            sequence: sequence);
+
+    /// <summary>
+    /// Factory method to create an authored relationship property change fact.
+    /// </summary>
+    public static SorophyRelationshipFact CreatePropertyChangeFact(
+        SorophyTime at,
+        Guid relationshipId,
+        Guid sourceId,
+        Guid targetId,
+        string type,
+        string propertyName,
+        SorophyValue? previousValue,
+        SorophyValue? newValue,
+        long sequence = 0,
+        string? description = null)
+    {
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException(
+                "Property name cannot be null, empty, or whitespace.",
+                nameof(propertyName));
+        }
+
+        return new SorophyRelationshipFact(
+            at,
+            relationshipId,
+            sourceId,
+            targetId,
+            type,
+            properties: null,
+            validFrom: null,
+            validTill: null,
+            eventEntityId: null,
+            kind: SorophyRelationshipFactKind.PropertyChanged,
+            description: description,
+            sequence: sequence,
+            propertyName: propertyName,
+            previousValue: previousValue,
+            newValue: newValue);
+    }
+
+    /// <summary>
+    /// Factory method to create an authored relationship type change fact.
+    /// </summary>
+    public static SorophyRelationshipFact CreateTypeChangeFact(
+        SorophyTime at,
+        Guid relationshipId,
+        Guid sourceId,
+        Guid targetId,
+        string previousType,
+        string newType,
+        IReadOnlyDictionary<string, SorophyProperty>? properties = null,
+        long sequence = 0,
+        string? description = null)
+    {
+        if (string.IsNullOrWhiteSpace(previousType))
+        {
+            throw new ArgumentException(
+                "Previous type cannot be null, empty, or whitespace.",
+                nameof(previousType));
+        }
+
+        if (string.IsNullOrWhiteSpace(newType))
+        {
+            throw new ArgumentException(
+                "New type cannot be null, empty, or whitespace.",
+                nameof(newType));
+        }
+
+        return new SorophyRelationshipFact(
+            at,
+            relationshipId,
+            sourceId,
+            targetId,
+            type: newType,
+            properties: properties,
+            validFrom: null,
+            validTill: null,
+            eventEntityId: null,
+            kind: SorophyRelationshipFactKind.RelationshipChanged,
+            description: description,
+            sequence: sequence,
+            propertyName: "Type",
+            previousValue: new SorophyValue(SorophyValueType.String, previousType),
+            newValue: new SorophyValue(SorophyValueType.String, newType),
+            previousType: previousType,
+            newType: newType);
+    }
 
     /// <summary>
     /// Ensures that all supplied temporal values belong to the same

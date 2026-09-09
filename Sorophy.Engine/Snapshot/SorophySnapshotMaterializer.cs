@@ -50,7 +50,7 @@ internal static class SorophySnapshotMaterializer
                 continue;
             }
 
-            var clonedProperties = SorophyValueCloner.CloneProperties(entity.Properties);
+            var clonedProperties = MaterializeEntityProperties(graph, entity, targetTime);
             var clonedTags = new HashSet<string>(entity.Tags, StringComparer.Ordinal);
             var clonedDocs = new Dictionary<string, SorophyEntityDocument>(entity.Documents, StringComparer.Ordinal);
 
@@ -128,6 +128,44 @@ internal static class SorophySnapshotMaterializer
             inbound);
     }
 
+    private static IReadOnlyDictionary<string, SorophyProperty> MaterializeEntityProperties(
+        SorophyGraph graph,
+        SorophyEntity entity,
+        SorophyTime targetTime)
+    {
+        graph.TryGetEntityHistory(entity.Id, out var history);
+        if (history is null || history.Facts.Count == 0)
+        {
+            return SorophyValueCloner.CloneProperties(entity.Properties);
+        }
+
+        var candidateNames = new HashSet<string>(entity.Properties.Keys, StringComparer.Ordinal);
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyEntityFactKind.PropertyChanged && !string.IsNullOrEmpty(f.PropertyName))
+            {
+                candidateNames.Add(f.PropertyName);
+            }
+        }
+
+        var result = new Dictionary<string, SorophyProperty>(StringComparer.Ordinal);
+        foreach (var propName in candidateNames)
+        {
+            var val = SorophyGraph.GetEffectiveEntityPropertyValue(entity, history, propName, targetTime);
+            if (val is not null)
+            {
+                result[propName] = new SorophyProperty
+                {
+                    Name = propName,
+                    Value = SorophyValueCloner.CloneValue(val)
+                };
+            }
+        }
+
+        return result;
+    }
+
     private static bool TryMaterializeRelationship(
         SorophyGraph graph,
         Guid relId,
@@ -181,23 +219,60 @@ internal static class SorophySnapshotMaterializer
 
         if (liveRel is not null)
         {
-            relationship = CreateFromLive(liveRel);
+            var effectiveType = SorophyGraph.GetEffectiveRelationshipType(liveRel, history, targetTime);
+            var effectiveProperties = MaterializeRelationshipProperties(graph, liveRel, history, targetTime);
+
+            relationship = new SorophySnapshotRelationship(
+                liveRel.Id,
+                liveRel.SourceId,
+                liveRel.TargetId,
+                effectiveType,
+                liveRel.ValidFrom,
+                liveRel.ValidTill,
+                effectiveProperties);
+
             return true;
         }
 
         return false;
     }
 
-    private static ISorophySnapshotRelationship CreateFromLive(SorophyRelationship live)
+    private static IReadOnlyDictionary<string, SorophyProperty> MaterializeRelationshipProperties(
+        SorophyGraph graph,
+        SorophyRelationship relationship,
+        SorophyRelationshipHistory? history,
+        SorophyTime targetTime)
     {
-        return new SorophySnapshotRelationship(
-            live.Id,
-            live.SourceId,
-            live.TargetId,
-            live.Type,
-            live.ValidFrom,
-            live.ValidTill,
-            SorophyValueCloner.CloneProperties(live.Properties));
+        if (history is null || history.Facts.Count == 0)
+        {
+            return SorophyValueCloner.CloneProperties(relationship.Properties);
+        }
+
+        var candidateNames = new HashSet<string>(relationship.Properties.Keys, StringComparer.Ordinal);
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyRelationshipFactKind.PropertyChanged && !string.IsNullOrEmpty(f.PropertyName))
+            {
+                candidateNames.Add(f.PropertyName);
+            }
+        }
+
+        var result = new Dictionary<string, SorophyProperty>(StringComparer.Ordinal);
+        foreach (var propName in candidateNames)
+        {
+            var val = SorophyGraph.GetEffectiveRelationshipPropertyValue(relationship, history, propName, targetTime);
+            if (val is not null)
+            {
+                result[propName] = new SorophyProperty
+                {
+                    Name = propName,
+                    Value = SorophyValueCloner.CloneValue(val)
+                };
+            }
+        }
+
+        return result;
     }
 
     private static ISorophySnapshotRelationship CreateFromFact(SorophyRelationshipFact fact)

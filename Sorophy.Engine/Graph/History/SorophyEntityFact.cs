@@ -17,19 +17,16 @@
  */
 
 using System;
+using Sorophy.Engine.Diff;
+using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
+using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.Graph.History;
 
 /// <summary>
-/// Represents an authored temporal lifecycle fact for an entity within a Sorophy graph.
+/// Represents an authored temporal lifecycle or mutation fact for an entity within a Sorophy graph.
 /// </summary>
-/// <remarks>
-/// An entity fact records an immutable temporal transition (such as creation or retirement)
-/// at a specific <see cref="SorophyTime"/> coordinate. It does not clone full property
-/// snapshots, keeping temporal history lightweight, deterministic, and accurate across
-/// arbitrary-time edits.
-/// </remarks>
 public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
 {
     /// <summary>
@@ -43,9 +40,29 @@ public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
     public Guid EntityId { get; }
 
     /// <summary>
-    /// Gets the lifecycle transition kind represented by this fact.
+    /// Gets the lifecycle transition or mutation kind represented by this fact.
     /// </summary>
     public SorophyEntityFactKind Kind { get; }
+
+    /// <summary>
+    /// Gets the authored sequence order within this entity's history.
+    /// </summary>
+    public long Sequence { get; internal set; }
+
+    /// <summary>
+    /// Gets the name of the property that changed, if this fact represents a property mutation.
+    /// </summary>
+    public string? PropertyName { get; }
+
+    /// <summary>
+    /// Gets the previous value of the property prior to this mutation, if applicable.
+    /// </summary>
+    public SorophyValue? PreviousValue { get; internal set; }
+
+    /// <summary>
+    /// Gets the new value of the property established by this mutation, if applicable.
+    /// </summary>
+    public SorophyValue? NewValue { get; }
 
     /// <summary>
     /// Gets an optional authored description or rationale for this transition.
@@ -55,17 +72,15 @@ public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
     /// <summary>
     /// Initializes a new temporal entity fact.
     /// </summary>
-    /// <param name="at">The temporal coordinate at which this fact takes effect.</param>
-    /// <param name="entityId">The identity of the entity this fact describes.</param>
-    /// <param name="kind">The lifecycle transition kind.</param>
-    /// <param name="description">Optional description or authored context.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="at"/> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="entityId"/> is empty or <paramref name="kind"/> is undefined.</exception>
     public SorophyEntityFact(
         SorophyTime at,
         Guid entityId,
         SorophyEntityFactKind kind,
-        string? description = null)
+        string? description = null,
+        long sequence = 0,
+        string? propertyName = null,
+        SorophyValue? previousValue = null,
+        SorophyValue? newValue = null)
     {
         ArgumentNullException.ThrowIfNull(at);
 
@@ -87,17 +102,52 @@ public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
         EntityId = entityId;
         Kind = kind;
         Description = description;
+        Sequence = sequence;
+        PropertyName = propertyName;
+        PreviousValue = previousValue is not null ? SorophyValueCloner.CloneValue(previousValue) : null;
+        NewValue = newValue is not null ? SorophyValueCloner.CloneValue(newValue) : null;
     }
 
     /// <summary>
-    /// Factory method to create a new temporal entity fact.
+    /// Factory method to create a new temporal entity lifecycle fact.
     /// </summary>
     public static SorophyEntityFact Create(
         SorophyTime at,
         Guid entityId,
         SorophyEntityFactKind kind,
-        string? description = null) =>
-        new(at, entityId, kind, description);
+        string? description = null,
+        long sequence = 0) =>
+        new(at, entityId, kind, description, sequence);
+
+    /// <summary>
+    /// Factory method to create a new temporal entity property change fact.
+    /// </summary>
+    public static SorophyEntityFact CreatePropertyChange(
+        SorophyTime at,
+        Guid entityId,
+        string propertyName,
+        SorophyValue? previousValue,
+        SorophyValue? newValue,
+        long sequence = 0,
+        string? description = null)
+    {
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException(
+                "Property name cannot be null, empty, or whitespace.",
+                nameof(propertyName));
+        }
+
+        return new SorophyEntityFact(
+            at,
+            entityId,
+            SorophyEntityFactKind.PropertyChanged,
+            description,
+            sequence,
+            propertyName,
+            previousValue,
+            newValue);
+    }
 
     /// <inheritdoc />
     public bool Equals(SorophyEntityFact? other)
@@ -115,6 +165,10 @@ public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
         return EntityId == other.EntityId &&
                Kind == other.Kind &&
                At.Equals(other.At) &&
+               Sequence == other.Sequence &&
+               string.Equals(PropertyName, other.PropertyName, StringComparison.Ordinal) &&
+               SorophyStructuralEquality.ValueEquals(PreviousValue, other.PreviousValue) &&
+               SorophyStructuralEquality.ValueEquals(NewValue, other.NewValue) &&
                string.Equals(Description, other.Description, StringComparison.Ordinal);
     }
 
@@ -123,10 +177,21 @@ public sealed class SorophyEntityFact : IEquatable<SorophyEntityFact>
         obj is SorophyEntityFact other && Equals(other);
 
     /// <inheritdoc />
-    public override int GetHashCode() =>
-        HashCode.Combine(EntityId, Kind, At, Description);
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+        hash.Add(EntityId);
+        hash.Add(Kind);
+        hash.Add(At);
+        hash.Add(Sequence);
+        hash.Add(PropertyName, StringComparer.Ordinal);
+        hash.Add(Description, StringComparer.Ordinal);
+        return hash.ToHashCode();
+    }
 
     /// <inheritdoc />
     public override string ToString() =>
-        $"{EntityId} {Kind} @ {At}";
+        Kind == SorophyEntityFactKind.PropertyChanged
+            ? $"{EntityId} PropertyChanged '{PropertyName}' @ {At} (Seq={Sequence})"
+            : $"{EntityId} {Kind} @ {At} (Seq={Sequence})";
 }

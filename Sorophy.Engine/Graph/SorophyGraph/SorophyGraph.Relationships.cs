@@ -18,9 +18,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sorophy.Engine.Graph.Canon;
 using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
+using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.Graph;
 
@@ -360,6 +363,545 @@ public sealed partial class SorophyGraph
         }
 
         return RevertRelationshipRetirementFact(relationshipId, retirementTime);
+    }
+
+    /* =============================================================
+     * TEMPORAL RELATIONSHIP MUTATION OPERATIONS
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Changes the semantic type of a relationship at the specified temporal coordinate,
+    /// recording an authoritative RelationshipChanged fact with PreviousType and NewType,
+    /// maintaining continuity, and updating canonical storage if at or after latest time.
+    /// </summary>
+    public void ChangeRelationshipType(
+        Guid relationshipId,
+        string newType,
+        SorophyTime time,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+        if (string.IsNullOrWhiteSpace(newType))
+        {
+            throw new ArgumentException("New relationship type cannot be null, empty, or whitespace.", nameof(newType));
+        }
+
+        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        {
+            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+        }
+
+        if (!RelationshipExistsAt(relationshipId, time))
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
+        }
+
+        var history = GetOrCreateRelationshipHistory(relationshipId);
+
+        var previousType = GetEffectiveRelationshipType(relationship, history, time);
+        var immediateFutureFact = GetImmediateFutureRelationshipTypeFact(history, time);
+        var oldImmediateFuturePreviousType = immediateFutureFact?.PreviousType;
+        var isLatest = IsAtOrAfterLatestRelationshipTypeMutation(history, time);
+
+        var oldLiveType = relationship.Type;
+
+        SorophyRelationshipFact newFact;
+        try
+        {
+            newFact = SorophyRelationshipFact.CreateTypeChangeFact(
+                time,
+                relationshipId,
+                relationship.SourceId,
+                relationship.TargetId,
+                previousType,
+                newType,
+                properties: relationship.Properties,
+                description: description);
+
+            history.Add(newFact);
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousType = newType;
+            }
+
+            if (isLatest)
+            {
+                relationship.Type = newType;
+            }
+        }
+        catch
+        {
+            relationship.Type = oldLiveType;
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousType = oldImmediateFuturePreviousType;
+            }
+
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sets a relationship property at the specified temporal coordinate, recording an authoritative
+    /// PropertyChanged fact, maintaining continuity, and updating canonical storage if at or after latest time.
+    /// </summary>
+    public void SetRelationshipProperty(
+        Guid relationshipId,
+        string propertyName,
+        SorophyValue value,
+        SorophyTime time,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(time);
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
+        }
+
+        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        {
+            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+        }
+
+        if (!RelationshipExistsAt(relationshipId, time))
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
+        }
+
+        var history = GetOrCreateRelationshipHistory(relationshipId);
+
+        var previousValue = GetEffectiveRelationshipPropertyValue(relationship, history, propertyName, time);
+        var immediateFutureFact = GetImmediateFutureRelationshipPropertyFact(history, propertyName, time);
+        var oldImmediateFuturePreviousValue = immediateFutureFact?.PreviousValue;
+        var isLatest = IsAtOrAfterLatestRelationshipPropertyMutation(history, propertyName, time);
+
+        var hadLiveProp = relationship.Properties.TryGetValue(propertyName, out var oldLiveProp);
+
+        SorophyRelationshipFact newFact;
+        try
+        {
+            newFact = SorophyRelationshipFact.CreatePropertyChangeFact(
+                time,
+                relationshipId,
+                relationship.SourceId,
+                relationship.TargetId,
+                relationship.Type,
+                propertyName,
+                previousValue,
+                value,
+                description: description);
+
+            history.Add(newFact);
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = SorophyValueCloner.CloneValue(value);
+            }
+
+            if (isLatest)
+            {
+                relationship.Properties[propertyName] = new SorophyProperty
+                {
+                    Name = propertyName,
+                    Value = SorophyValueCloner.CloneValue(value)
+                };
+            }
+        }
+        catch
+        {
+            if (hadLiveProp)
+            {
+                relationship.Properties[propertyName] = oldLiveProp!;
+            }
+            else
+            {
+                relationship.Properties.Remove(propertyName);
+            }
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = oldImmediateFuturePreviousValue;
+            }
+
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Removes a relationship property at the specified temporal coordinate, recording an authoritative
+    /// PropertyChanged fact (with NewValue = null), maintaining continuity, and removing from canonical store if latest.
+    /// </summary>
+    public bool RemoveRelationshipProperty(
+        Guid relationshipId,
+        string propertyName,
+        SorophyTime time,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
+        }
+
+        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        {
+            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+        }
+
+        if (!RelationshipExistsAt(relationshipId, time))
+        {
+            throw new InvalidOperationException(
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
+        }
+
+        var history = GetOrCreateRelationshipHistory(relationshipId);
+
+        var previousValue = GetEffectiveRelationshipPropertyValue(relationship, history, propertyName, time);
+        if (previousValue is null)
+        {
+            return false;
+        }
+
+        var immediateFutureFact = GetImmediateFutureRelationshipPropertyFact(history, propertyName, time);
+        var oldImmediateFuturePreviousValue = immediateFutureFact?.PreviousValue;
+        var isLatest = IsAtOrAfterLatestRelationshipPropertyMutation(history, propertyName, time);
+
+        var hadLiveProp = relationship.Properties.TryGetValue(propertyName, out var oldLiveProp);
+
+        SorophyRelationshipFact newFact;
+        try
+        {
+            newFact = SorophyRelationshipFact.CreatePropertyChangeFact(
+                time,
+                relationshipId,
+                relationship.SourceId,
+                relationship.TargetId,
+                relationship.Type,
+                propertyName,
+                previousValue,
+                newValue: null,
+                description: description);
+
+            history.Add(newFact);
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = null;
+            }
+
+            if (isLatest)
+            {
+                relationship.Properties.Remove(propertyName);
+            }
+
+            return true;
+        }
+        catch
+        {
+            if (hadLiveProp)
+            {
+                relationship.Properties[propertyName] = oldLiveProp!;
+            }
+
+            if (immediateFutureFact is not null)
+            {
+                immediateFutureFact.PreviousValue = oldImmediateFuturePreviousValue;
+            }
+
+            throw;
+        }
+    }
+
+    internal static string GetEffectiveRelationshipType(
+        SorophyRelationship relationship,
+        SorophyRelationshipHistory? history,
+        SorophyTime time)
+    {
+        if (history is null || history.Facts.Count == 0)
+        {
+            return relationship.Type;
+        }
+
+        var facts = history.Facts
+            .Where(f => f.Kind == SorophyRelationshipFactKind.RelationshipChanged)
+            .ToList();
+
+        if (facts.Count == 0)
+        {
+            return relationship.Type;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        SorophyRelationshipFact? lastAtOrBefore = null;
+        for (int i = 0; i < facts.Count; i++)
+        {
+            var f = facts[i];
+            if (SorophyTime.CanCompare(f.At, time))
+            {
+                var cmp = SorophyTime.Compare(f.At, time);
+                if (cmp <= 0)
+                {
+                    lastAtOrBefore = f;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (lastAtOrBefore is not null)
+        {
+            return lastAtOrBefore.NewType ?? lastAtOrBefore.Type;
+        }
+
+        var earliestFuture = facts[0];
+        return earliestFuture.PreviousType ?? relationship.Type;
+    }
+
+    internal static SorophyRelationshipFact? GetImmediateFutureRelationshipTypeFact(
+        SorophyRelationshipHistory history,
+        SorophyTime time)
+    {
+        var futureFacts = new List<SorophyRelationshipFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyRelationshipFactKind.RelationshipChanged)
+            {
+                if (SorophyTime.CanCompare(f.At, time) && SorophyTime.Compare(f.At, time) > 0)
+                {
+                    futureFacts.Add(f);
+                }
+            }
+        }
+
+        if (futureFacts.Count == 0)
+        {
+            return null;
+        }
+
+        futureFacts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        return futureFacts[0];
+    }
+
+    internal static bool IsAtOrAfterLatestRelationshipTypeMutation(
+        SorophyRelationshipHistory history,
+        SorophyTime time)
+    {
+        var facts = new List<SorophyRelationshipFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyRelationshipFactKind.RelationshipChanged)
+            {
+                facts.Add(f);
+            }
+        }
+
+        if (facts.Count == 0)
+        {
+            return true;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        var latest = facts[^1];
+        if (SorophyTime.CanCompare(time, latest.At))
+        {
+            return SorophyTime.Compare(time, latest.At) >= 0;
+        }
+
+        return true;
+    }
+
+    internal static SorophyValue? GetEffectiveRelationshipPropertyValue(
+        SorophyRelationship relationship,
+        SorophyRelationshipHistory? history,
+        string propertyName,
+        SorophyTime time)
+    {
+        if (history is null || history.Facts.Count == 0)
+        {
+            return relationship.Properties.TryGetValue(propertyName, out var prop)
+                ? prop.Value
+                : null;
+        }
+
+        var facts = history.Facts
+            .Where(f => f.Kind == SorophyRelationshipFactKind.PropertyChanged &&
+                        string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            .ToList();
+
+        if (facts.Count == 0)
+        {
+            return relationship.Properties.TryGetValue(propertyName, out var prop)
+                ? prop.Value
+                : null;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        SorophyRelationshipFact? lastAtOrBefore = null;
+        for (int i = 0; i < facts.Count; i++)
+        {
+            var f = facts[i];
+            if (SorophyTime.CanCompare(f.At, time))
+            {
+                var cmp = SorophyTime.Compare(f.At, time);
+                if (cmp <= 0)
+                {
+                    lastAtOrBefore = f;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (lastAtOrBefore is not null)
+        {
+            return lastAtOrBefore.NewValue;
+        }
+
+        var earliestFuture = facts[0];
+        return earliestFuture.PreviousValue;
+    }
+
+    internal static SorophyRelationshipFact? GetImmediateFutureRelationshipPropertyFact(
+        SorophyRelationshipHistory history,
+        string propertyName,
+        SorophyTime time)
+    {
+        var futureFacts = new List<SorophyRelationshipFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyRelationshipFactKind.PropertyChanged &&
+                string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            {
+                if (SorophyTime.CanCompare(f.At, time) && SorophyTime.Compare(f.At, time) > 0)
+                {
+                    futureFacts.Add(f);
+                }
+            }
+        }
+
+        if (futureFacts.Count == 0)
+        {
+            return null;
+        }
+
+        futureFacts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        return futureFacts[0];
+    }
+
+    internal static bool IsAtOrAfterLatestRelationshipPropertyMutation(
+        SorophyRelationshipHistory history,
+        string propertyName,
+        SorophyTime time)
+    {
+        var facts = new List<SorophyRelationshipFact>();
+        for (int i = 0; i < history.Facts.Count; i++)
+        {
+            var f = history.Facts[i];
+            if (f.Kind == SorophyRelationshipFactKind.PropertyChanged &&
+                string.Equals(f.PropertyName, propertyName, StringComparison.Ordinal))
+            {
+                facts.Add(f);
+            }
+        }
+
+        if (facts.Count == 0)
+        {
+            return true;
+        }
+
+        facts.Sort((a, b) =>
+        {
+            if (SorophyTime.CanCompare(a.At, b.At))
+            {
+                var cmp = SorophyTime.Compare(a.At, b.At);
+                if (cmp != 0)
+                {
+                    return cmp;
+                }
+            }
+            return a.Sequence.CompareTo(b.Sequence);
+        });
+
+        var latest = facts[^1];
+        if (SorophyTime.CanCompare(time, latest.At))
+        {
+            return SorophyTime.Compare(time, latest.At) >= 0;
+        }
+
+        return true;
     }
 
     /* =============================================================

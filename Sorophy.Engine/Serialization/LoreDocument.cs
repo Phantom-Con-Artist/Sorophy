@@ -137,6 +137,30 @@ internal sealed class LoreRelationshipFactDocument
     [JsonPropertyName("description")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Description { get; set; }
+
+    [JsonPropertyName("sequence")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public long? Sequence { get; set; }
+
+    [JsonPropertyName("propertyName")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PropertyName { get; set; }
+
+    [JsonPropertyName("previousValue")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public EntityPropertyDocument? PreviousValue { get; set; }
+
+    [JsonPropertyName("newValue")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public EntityPropertyDocument? NewValue { get; set; }
+
+    [JsonPropertyName("previousType")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PreviousType { get; set; }
+
+    [JsonPropertyName("newType")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? NewType { get; set; }
 }
 
 internal sealed class LoreTimeDocument
@@ -207,4 +231,20 @@ internal sealed class LoreEntityFactDocument
     [JsonPropertyName("description")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Description { get; set; }
+
+    [JsonPropertyName("sequence")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public long? Sequence { get; set; }
+
+    [JsonPropertyName("propertyName")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PropertyName { get; set; }
+
+    [JsonPropertyName("previousValue")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public EntityPropertyDocument? PreviousValue { get; set; }
+
+    [JsonPropertyName("newValue")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public EntityPropertyDocument? NewValue { get; set; }
 }

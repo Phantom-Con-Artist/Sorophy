@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.HistoricalFacts;
 using Sorophy.Engine.Snapshot;
 using Sorophy.Engine.Time;
 
@@ -529,5 +530,47 @@ public sealed class SorophyTemporalQueryDomain : ITemporalQueryDomain
     private readonly record struct IndexedFact(
         SorophyRelationshipFact Fact,
         int FactIndex);
+
+    /*
+     * =============================================================
+     * 6. EMERGENT HISTORICAL FACTS (EHG)
+     * =============================================================
+     */
+
+    /// <inheritdoc />
+    public IReadOnlyList<SorophyHistoricalFact> GetEntityHistoricalFacts(
+        Guid entityId,
+        SorophyTime? from = null,
+        SorophyTime? to = null,
+        bool includeRelationships = false)
+    {
+        return _graph.GetEntityHistoricalFacts(entityId, from, to, includeRelationships);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<SorophyHistoricalFact> GetEntityTimelineFacts(
+        Guid entityId,
+        SorophyTime? from = null,
+        SorophyTime? to = null)
+    {
+        return _graph.GetEntityTimelineFacts(entityId, from, to);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<SorophyHistoricalFact> GetRelationshipHistoricalFacts(
+        Guid relationshipId,
+        SorophyTime? from = null,
+        SorophyTime? to = null)
+    {
+        return _graph.GetRelationshipHistoricalFacts(relationshipId, from, to);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<SorophyHistoricalFact> GetHistoricalFacts(
+        SorophyTime? from = null,
+        SorophyTime? to = null)
+    {
+        return _graph.GetHistoricalFacts(from, to);
+    }
 }
 

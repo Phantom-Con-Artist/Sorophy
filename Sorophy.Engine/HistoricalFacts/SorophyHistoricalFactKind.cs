@@ -16,30 +16,31 @@
  * along with the Sorophyis Project. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Sorophy.Engine.Graph.History;
+namespace Sorophy.Engine.HistoricalFacts;
 
 /// <summary>
-/// Identifies the kind of authored temporal transition represented by an <see cref="SorophyRelationshipFact"/>.
+/// Machine-level classification of an emergent historical fact in The Saga Architecture.
+/// Presentation labels (e.g. "Ended", "Changed", "Died", "Destroyed") are defined downstream by applications.
 /// </summary>
-public enum SorophyRelationshipFactKind
+public enum SorophyHistoricalFactKind
 {
     /// <summary>
-    /// Represents the temporal creation of a relationship.
+    /// Represents the temporal creation of an entity or relationship.
     /// </summary>
     Created = 1,
 
     /// <summary>
-    /// Represents the temporal retirement of a relationship.
+    /// Represents the temporal retirement of an entity or relationship.
     /// </summary>
     Retired = 2,
 
     /// <summary>
-    /// Represents an authored property mutation for a relationship.
+    /// Represents the temporal mutation of a property on an entity or relationship.
     /// </summary>
     PropertyChanged = 3,
 
     /// <summary>
-    /// Represents an authored structural mutation (such as type change) for a relationship.
+    /// Represents the temporal mutation of the semantic type of a relationship.
     /// </summary>
     RelationshipChanged = 4
 }

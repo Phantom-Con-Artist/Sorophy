@@ -1,8 +1,8 @@
 ﻿SOROPHY ENGINE TEST ARSENAL REPORT
 ================================
 
-Started:     9/9/2026 8:18:02 AM -07:00
-Finished:    9/9/2026 8:18:26 AM -07:00
+Started:     9/9/2026 8:12:47 AM -07:00
+Finished:    9/9/2026 8:13:09 AM -07:00
 Seed:        12345
 Profile:     quick
 Operations:  10000
@@ -10,31 +10,31 @@ Audit:       1000
 
 CAMPAIGNS
 ---------
-Passed        4/4      Mutation Chaos                      0.279s
+Passed        4/4      Mutation Chaos                      0.215s
           Entity lifecycle, relationship integrity, mutation invariants, and graph queries passed.
-Passed        4/4      Krono Temporal Scope                1.198s
+Passed        4/4      Krono Temporal Scope                1.384s
           Temporal comparison, creation history, relationship retirement, and lifecycle round-trip passed.
-Passed        4/4      Deterministic Replay                0.555s
+Passed        4/4      Deterministic Replay                0.677s
           Journal determinism, reference model, replay equivalence, and graph invariants passed.
-Passed        7/7      Mutation Performance                0.831s
+Passed        7/7      Mutation Performance                0.838s
           Pure entity and relationship mutation performance benchmarks passed.
-Passed        1/1      Pool Reuse                          0.139s
+Passed        1/1      Pool Reuse                          0.155s
           Adjacency slab storage survived repeated allocation/removal cycles with reuse evidence and final graph validation.
-Passed        1/1      High-Degree Topology                0.411s
+Passed        1/1      High-Degree Topology                0.503s
           High-degree hub, parallel relationships, self-links, queries, removal, and final validation passed.
-Passed       10/10     Performance Benchmark               0.402s
-          Fastest: Relationships / Contains (10,000) at 25,237,254 ops/s. Slowest: Graph / Validate (10,000) at 49 ops/s. Peak working set: 103.3 MB.
-Passed        8/8      Relationship Scaling                0.277s
-          Measured 2 graph sizes. Outgoing query throughput changed 1.60x from 1,000 to 10,000 entities. Peak working set: 103.3 MB.
-Passed       10/10     Memory Benchmark                    0.424s
+Passed       10/10     Performance Benchmark               0.469s
+          Fastest: Relationships / Contains (10,000) at 22,949,277 ops/s. Slowest: Graph / Validate (1,000) at 41 ops/s. Peak working set: 105.9 MB.
+Passed        8/8      Relationship Scaling                0.411s
+          Measured 2 graph sizes. Outgoing query throughput changed 1.48x from 1,000 to 10,000 entities. Peak working set: 105.9 MB.
+Passed       10/10     Memory Benchmark                    0.434s
           Largest measured managed-memory footprint: Relationship churn (10,000) at 9.31 MB.
-Passed        1/1      Differential Fuzzing                0.325s
+Passed        1/1      Differential Fuzzing                0.328s
           Deterministic randomized graph workloads matched an independent reference model across all configured seed families.
-Passed        1/1      Serialization Torture               1.613s
+Passed        1/1      Serialization Torture               1.438s
           Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
-Passed        1/1      Crash / Recovery Torture           15.291s
+Passed        1/1      Crash / Recovery Torture           13.379s
           Crash/recovery contract checks and the requested endurance workload passed.
-Passed        6/6      Soak / Endurance                    1.568s
+Passed        6/6      Soak / Endurance                    1.720s
           Bounded active-state soak, retirement scale endurance, retirement scaling analysis, and memory retention verification succeeded.
 
 SUMMARY

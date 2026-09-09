@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph;
 using Sorophy.Engine.Time;
+using Sorophy.Engine.Types;
 
 namespace Sorophy.Engine.TemporalEdit;
 
@@ -128,6 +129,36 @@ public sealed class SorophyTemporalEditor : ISorophyTemporalEditor
     {
         ArgumentNullException.ThrowIfNull(retirementCoordinate);
         return Graph.RevertRelationshipRetirement(relationshipId, retirementCoordinate);
+    }
+
+    /// <inheritdoc />
+    public void SetEntityProperty(Guid entityId, string propertyName, SorophyValue value, string? description = null)
+    {
+        Graph.SetEntityProperty(entityId, propertyName, value, Time, description);
+    }
+
+    /// <inheritdoc />
+    public bool RemoveEntityProperty(Guid entityId, string propertyName, string? description = null)
+    {
+        return Graph.RemoveEntityProperty(entityId, propertyName, Time, description);
+    }
+
+    /// <inheritdoc />
+    public void SetRelationshipProperty(Guid relationshipId, string propertyName, SorophyValue value, string? description = null)
+    {
+        Graph.SetRelationshipProperty(relationshipId, propertyName, value, Time, description);
+    }
+
+    /// <inheritdoc />
+    public bool RemoveRelationshipProperty(Guid relationshipId, string propertyName, string? description = null)
+    {
+        return Graph.RemoveRelationshipProperty(relationshipId, propertyName, Time, description);
+    }
+
+    /// <inheritdoc />
+    public void ChangeRelationshipType(Guid relationshipId, string newType, string? description = null)
+    {
+        Graph.ChangeRelationshipType(relationshipId, newType, Time, description);
     }
 }
 

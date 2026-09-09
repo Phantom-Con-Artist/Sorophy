@@ -16,31 +16,21 @@
  * along with the Sorophyis Project. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Sorophy.Engine.Graph.History;
+namespace Sorophy.Engine.HistoricalFacts;
 
 /// <summary>
-/// Identifies the kind of authored temporal transition represented by an <see cref="SorophyRelationshipFact"/>.
+/// Identifies the structural target kind of an emergent historical fact.
 /// </summary>
-public enum SorophyRelationshipFactKind
+public enum SorophyHistoricalFactTarget
 {
     /// <summary>
-    /// Represents the temporal creation of a relationship.
+    /// The historical fact applies to an entity.
     /// </summary>
-    Created = 1,
+    Entity = 1,
 
     /// <summary>
-    /// Represents the temporal retirement of a relationship.
+    /// The historical fact applies to a relationship.
     /// </summary>
-    Retired = 2,
-
-    /// <summary>
-    /// Represents an authored property mutation for a relationship.
-    /// </summary>
-    PropertyChanged = 3,
-
-    /// <summary>
-    /// Represents an authored structural mutation (such as type change) for a relationship.
-    /// </summary>
-    RelationshipChanged = 4
+    Relationship = 2
 }
 

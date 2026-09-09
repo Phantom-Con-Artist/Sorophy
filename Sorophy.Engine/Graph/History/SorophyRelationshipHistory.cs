@@ -204,6 +204,8 @@ public sealed class SorophyRelationshipHistory
         return SorophyRelationshipLifecycleStatus.Active;
     }
 
+    private long _nextSequence = 1;
+
     /// <summary>
     /// Appends a historical fact to this relationship's history.
     /// </summary>
@@ -263,8 +265,27 @@ public sealed class SorophyRelationshipHistory
             }
         }
 
+        if (fact.Sequence == 0)
+        {
+            fact.Sequence = _nextSequence++;
+        }
+        else if (fact.Sequence >= _nextSequence)
+        {
+            _nextSequence = fact.Sequence + 1;
+        }
+
         _facts.Add(
             fact);
+    }
+
+    /// <summary>
+    /// Removes a specific authored temporal fact from history.
+    /// </summary>
+    internal bool Remove(SorophyRelationshipFact fact)
+    {
+        ArgumentNullException.ThrowIfNull(fact);
+
+        return _facts.Remove(fact);
     }
 
     /// <summary>

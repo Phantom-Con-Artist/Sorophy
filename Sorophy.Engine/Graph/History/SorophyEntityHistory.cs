@@ -240,6 +240,15 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
             if (_facts[i].Kind == kind && _facts[i].At.Equals(at))
             {
                 _facts.RemoveAt(i);
+                long maxSeq = 0;
+                for (int j = 0; j < _facts.Count; j++)
+                {
+                    if (_facts[j].Sequence > maxSeq)
+                    {
+                        maxSeq = _facts[j].Sequence;
+                    }
+                }
+                _nextSequence = maxSeq + 1;
                 SortFacts();
                 return true;
             }
@@ -258,6 +267,15 @@ public sealed class SorophyEntityHistory : IReadOnlyCollection<SorophyEntityFact
         var removed = _facts.Remove(fact);
         if (removed)
         {
+            long maxSeq = 0;
+            for (int i = 0; i < _facts.Count; i++)
+            {
+                if (_facts[i].Sequence > maxSeq)
+                {
+                    maxSeq = _facts[i].Sequence;
+                }
+            }
+            _nextSequence = maxSeq + 1;
             SortFacts();
         }
 

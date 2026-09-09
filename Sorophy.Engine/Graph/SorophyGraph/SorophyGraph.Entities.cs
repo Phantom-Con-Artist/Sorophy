@@ -301,7 +301,7 @@ public sealed partial class SorophyGraph
 
         var hadLiveProp = entity.Properties.TryGetValue(propertyName, out var oldLiveProp);
 
-        SorophyEntityFact newFact;
+        SorophyEntityFact? newFact = null;
         try
         {
             newFact = SorophyEntityFact.CreatePropertyChange(
@@ -330,6 +330,11 @@ public sealed partial class SorophyGraph
         }
         catch
         {
+            if (newFact is not null)
+            {
+                history.Remove(newFact);
+            }
+
             if (hadLiveProp)
             {
                 entity.Properties[propertyName] = oldLiveProp!;
@@ -385,7 +390,7 @@ public sealed partial class SorophyGraph
 
         var hadLiveProp = entity.Properties.TryGetValue(propertyName, out var oldLiveProp);
 
-        SorophyEntityFact newFact;
+        SorophyEntityFact? newFact = null;
         try
         {
             newFact = SorophyEntityFact.CreatePropertyChange(
@@ -412,6 +417,11 @@ public sealed partial class SorophyGraph
         }
         catch
         {
+            if (newFact is not null)
+            {
+                history.Remove(newFact);
+            }
+
             if (hadLiveProp)
             {
                 entity.Properties[propertyName] = oldLiveProp!;

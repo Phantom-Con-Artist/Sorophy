@@ -187,7 +187,7 @@ public static class LoreSerializer
                         Kind = fact.Kind?.ToString(),
                         Description = fact.Description,
                         Sequence =
-                            (fact.Kind is SorophyRelationshipFactKind.PropertyChanged or SorophyRelationshipFactKind.RelationshipChanged)
+                            (fact.Kind is not null && fact.Sequence > 0)
                                 ? fact.Sequence
                                 : null,
                         PropertyName = fact.PropertyName,
@@ -244,7 +244,7 @@ public static class LoreSerializer
                             Kind = fact.Kind.ToString(),
                             Description = fact.Description,
                             Sequence =
-                                (fact.Kind == SorophyEntityFactKind.PropertyChanged)
+                                (fact.Sequence > 0)
                                     ? fact.Sequence
                                     : null,
                             PropertyName = fact.PropertyName,

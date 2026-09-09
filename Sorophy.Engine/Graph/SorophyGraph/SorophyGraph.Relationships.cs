@@ -453,7 +453,7 @@ public sealed partial class SorophyGraph
 
         var oldLiveType = relationship.Type;
 
-        SorophyRelationshipFact newFact;
+        SorophyRelationshipFact? newFact = null;
         try
         {
             newFact = SorophyRelationshipFact.CreateTypeChangeFact(
@@ -480,6 +480,11 @@ public sealed partial class SorophyGraph
         }
         catch
         {
+            if (newFact is not null)
+            {
+                history.Remove(newFact);
+            }
+
             relationship.Type = oldLiveType;
 
             if (immediateFutureFact is not null)
@@ -525,7 +530,7 @@ public sealed partial class SorophyGraph
 
         var hadLiveProp = relationship.Properties.TryGetValue(propertyName, out var oldLiveProp);
 
-        SorophyRelationshipFact newFact;
+        SorophyRelationshipFact? newFact = null;
         try
         {
             newFact = SorophyRelationshipFact.CreatePropertyChangeFact(
@@ -557,6 +562,11 @@ public sealed partial class SorophyGraph
         }
         catch
         {
+            if (newFact is not null)
+            {
+                history.Remove(newFact);
+            }
+
             if (hadLiveProp)
             {
                 relationship.Properties[propertyName] = oldLiveProp!;
@@ -612,7 +622,7 @@ public sealed partial class SorophyGraph
 
         var hadLiveProp = relationship.Properties.TryGetValue(propertyName, out var oldLiveProp);
 
-        SorophyRelationshipFact newFact;
+        SorophyRelationshipFact? newFact = null;
         try
         {
             newFact = SorophyRelationshipFact.CreatePropertyChangeFact(
@@ -642,6 +652,11 @@ public sealed partial class SorophyGraph
         }
         catch
         {
+            if (newFact is not null)
+            {
+                history.Remove(newFact);
+            }
+
             if (hadLiveProp)
             {
                 relationship.Properties[propertyName] = oldLiveProp!;

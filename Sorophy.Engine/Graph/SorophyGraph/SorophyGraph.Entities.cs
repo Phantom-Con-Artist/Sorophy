@@ -18,25 +18,95 @@
 
 using System;
 using System.Collections.Generic;
+using Sorophy.Engine.Graph.Canon;
+using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.Time;
 
 namespace Sorophy.Engine.Graph;
 
 public sealed partial class SorophyGraph
 {
     /* =============================================================
-     * ENTITY OPERATIONS
+     * CANON CHECK INSPECTION
      * =============================================================
      */
 
-    public void AddEntity(
+    /// <summary>
+    /// Validates whether an entity can be canonically created at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanCreateEntity(
+        SorophyEntity entity,
+        SorophyTime creationTime)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        ArgumentNullException.ThrowIfNull(creationTime);
+
+        return SorophyCanonValidator.ValidateEntityCreation(
+            this,
+            entity.Id,
+            creationTime);
+    }
+
+    /// <summary>
+    /// Validates whether an entity with the specified ID can be canonically created at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanCreateEntity(
+        Guid entityId,
+        SorophyTime creationTime)
+    {
+        ArgumentNullException.ThrowIfNull(creationTime);
+
+        return SorophyCanonValidator.ValidateEntityCreation(
+            this,
+            entityId,
+            creationTime);
+    }
+
+    /// <summary>
+    /// Validates whether an entity can be canonically retired at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanRetireEntity(
+        Guid entityId,
+        SorophyTime retirementTime)
+    {
+        ArgumentNullException.ThrowIfNull(retirementTime);
+
+        return SorophyCanonValidator.ValidateEntityRetirement(
+            this,
+            entityId,
+            retirementTime);
+    }
+
+    /// <summary>
+    /// Validates whether an established retirement fact for an entity can be canonically reverted.
+    /// </summary>
+    public SorophyCanonResult CanRevertRetirement(
+        Guid entityId,
+        SorophyTime retirementTime)
+    {
+        ArgumentNullException.ThrowIfNull(retirementTime);
+
+        return SorophyCanonValidator.ValidateRetirementReversal(
+            this,
+            entityId,
+            retirementTime);
+    }
+
+    /* =============================================================
+     * ENTITY LIFECYCLE OPERATIONS
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Restores an entity directly into canonical storage and the tag index without authoring a lifecycle fact.
+    /// Used by deserialization and test fixtures to restore entities (including legacy timeless entities).
+    /// </summary>
+    internal void RestoreEntity(
         SorophyEntity entity)
     {
-        ArgumentNullException.ThrowIfNull(
-            entity);
+        ArgumentNullException.ThrowIfNull(entity);
 
-        if (!_entities.TryAdd(
-                entity.Id,
-                entity))
+        if (!_entities.TryAdd(entity.Id, entity))
         {
             throw new InvalidOperationException(
                 $"An entity with ID '{entity.Id}' already exists.");
@@ -47,23 +117,176 @@ public sealed partial class SorophyGraph
             /*
              * The Entity becomes visible to the tag index only after the
              * canonical store accepts it. If tag indexing fails, roll the
-             * canonical insertion back so AddEntity remains atomic.
+             * canonical insertion back so RestoreEntity remains atomic.
              */
-            _tagIndex.IndexEntity(
-                entity);
+            _tagIndex.IndexEntity(entity);
         }
         catch
         {
-            _entities.Remove(
-                entity.Id);
-
-            _tagIndex.RemoveEntity(
-                entity.Id);
-
+            _entities.Remove(entity.Id);
+            _tagIndex.RemoveEntity(entity.Id);
             throw;
         }
     }
 
+    /// <summary>
+    /// Creates an entity in the graph at the specified temporal coordinate, executing Canon Check
+    /// validation and recording an authored <see cref="SorophyEntityFactKind.Created"/> fact.
+    /// </summary>
+    public void CreateEntity(
+        SorophyEntity entity,
+        SorophyTime creationTime)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        ArgumentNullException.ThrowIfNull(creationTime);
+
+        var canonResult = CanCreateEntity(entity, creationTime);
+        if (!canonResult.IsValid)
+        {
+            throw new InvalidOperationException(
+                $"Cannot create entity '{entity.Id}': {canonResult.ErrorMessage}");
+        }
+
+        RestoreEntity(entity);
+
+        try
+        {
+            RecordEntityFact(
+                SorophyEntityFact.Create(
+                    creationTime,
+                    entity.Id,
+                    SorophyEntityFactKind.Created,
+                    $"Entity '{entity.Name}' created at {creationTime}"));
+        }
+        catch
+        {
+            _entities.Remove(entity.Id);
+            _tagIndex.RemoveEntity(entity.Id);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Temporally retires an entity at the specified temporal coordinate without mutating canonical entity or relationship storage.
+    /// </summary>
+    public bool RetireEntity(
+        Guid entityId,
+        SorophyTime retirementTime,
+        string? description = null)
+    {
+        ArgumentNullException.ThrowIfNull(retirementTime);
+
+        var canonResult = CanRetireEntity(entityId, retirementTime);
+        if (!canonResult.IsValid)
+        {
+            throw new InvalidOperationException(
+                $"Cannot retire entity '{entityId}': {canonResult.ErrorMessage}");
+        }
+
+        RecordEntityFact(
+            SorophyEntityFact.Create(
+                retirementTime,
+                entityId,
+                SorophyEntityFactKind.Retired,
+                description ?? $"Entity '{entityId}' retired at {retirementTime}"));
+
+        return true;
+    }
+
+    /// <summary>
+    /// Reverts an established temporal retirement for an entity, removing the retirement fact
+    /// from the authoritative temporal history.
+    /// </summary>
+    public bool RevertRetirement(
+        Guid entityId,
+        SorophyTime retirementTime)
+    {
+        ArgumentNullException.ThrowIfNull(retirementTime);
+
+        var canonResult = CanRevertRetirement(entityId, retirementTime);
+        if (!canonResult.IsValid)
+        {
+            throw new InvalidOperationException(
+                $"Cannot revert retirement for entity '{entityId}': {canonResult.ErrorMessage}");
+        }
+
+        return RevertEntityRetirementFact(entityId, retirementTime);
+    }
+
+    /* =============================================================
+     * TEMPORAL EXISTENCE & LIFECYCLE QUERIES
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Determines whether an entity exists at the specified temporal coordinate.
+    /// </summary>
+    public bool EntityExistsAt(
+        Guid entityId,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (entityId == Guid.Empty || !_entities.ContainsKey(entityId))
+        {
+            return false;
+        }
+
+        if (_entityHistories.TryGetValue(entityId, out var history) && history is not null)
+        {
+            return history.ExistsAt(time);
+        }
+
+        // Legacy / unversioned baseline entity: exists across all coordinates
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the lifecycle status of an entity at the specified temporal coordinate.
+    /// </summary>
+    public SorophyEntityLifecycleStatus GetEntityLifecycleStatus(
+        Guid entityId,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (entityId == Guid.Empty || !_entities.ContainsKey(entityId))
+        {
+            return SorophyEntityLifecycleStatus.Uncreated;
+        }
+
+        if (_entityHistories.TryGetValue(entityId, out var history) && history is not null)
+        {
+            return history.GetStatusAt(time);
+        }
+
+        // Legacy / unversioned baseline entity: Active across all coordinates
+        return SorophyEntityLifecycleStatus.Active;
+    }
+
+    /// <summary>
+    /// Determines whether an entity is currently retired in its authoritative temporal history.
+    /// </summary>
+    public bool IsEntityRetired(
+        Guid entityId)
+    {
+        if (_entityHistories.TryGetValue(entityId, out var history) && history is not null)
+        {
+            return history.IsRetired;
+        }
+
+        return false;
+    }
+
+    /* =============================================================
+     * PERMANENT ENTITY DELETION
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Permanently deletes an entity from the graph, removing all incident relationships,
+    /// tag index entries, and authoritative temporal history.
+    /// </summary>
     public bool RemoveEntity(
         Guid entityId)
     {
@@ -140,6 +363,22 @@ public sealed partial class SorophyGraph
         _tagIndex.RemoveEntity(
             entityId);
 
+        /*
+         * Permanent deletion purges the entity's temporal history.
+         */
+        _entityHistories.Remove(
+            entityId);
+
         return true;
+    }
+
+    /// <summary>
+    /// Permanently deletes an entity from the graph, removing all incident relationships,
+    /// tag index entries, and authoritative temporal history.
+    /// </summary>
+    public bool DeleteEntity(
+        Guid entityId)
+    {
+        return RemoveEntity(entityId);
     }
 }

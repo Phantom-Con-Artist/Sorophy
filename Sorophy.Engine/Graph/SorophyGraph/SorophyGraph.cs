@@ -112,6 +112,9 @@ public sealed partial class SorophyGraph
     private readonly ReadOnlyDictionary<Guid, SorophyRelationshipHistory>
         _readOnlyRelationshipHistories;
 
+    private readonly ReadOnlyDictionary<Guid, SorophyEntityHistory>
+        _readOnlyEntityHistories;
+
     /*
      * =============================================================
      * CONSTRUCTOR
@@ -131,6 +134,10 @@ public sealed partial class SorophyGraph
         _readOnlyRelationshipHistories =
             new ReadOnlyDictionary<Guid, SorophyRelationshipHistory>(
                 _relationshipHistories);
+
+        _readOnlyEntityHistories =
+            new ReadOnlyDictionary<Guid, SorophyEntityHistory>(
+                _entityHistories);
     }
 
     /*

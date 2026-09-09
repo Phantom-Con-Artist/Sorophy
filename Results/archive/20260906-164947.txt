@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 4:49:47 PM -07:00
+Finished:    9/6/2026 4:50:45 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  100000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Failed        0/6      Soak / Endurance                   57.548s
+          Unexplained residual memory (16.13 MB) exceeded tolerance (8.00 MB).
+
+SUMMARY
+-------
+Campaigns: 0/1
+Checks:    0/6
+Status:    FAIL
+

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph.History;
+using Sorophy.Engine.Time;
 
 namespace Sorophy.Engine.Graph;
 
@@ -46,6 +47,19 @@ public sealed partial class SorophyGraph
 
     /*
      * =============================================================
+     * ENTITY HISTORY
+     * =============================================================
+     *
+     * Authoritative temporal history store for entities.
+     * Single source of truth for entity lifecycle state.
+     */
+
+    private readonly Dictionary<Guid, SorophyEntityHistory>
+        _entityHistories =
+            new();
+
+    /*
+     * =============================================================
      * PUBLIC HISTORY ACCESS
      * =============================================================
      */
@@ -67,6 +81,28 @@ public sealed partial class SorophyGraph
     public IReadOnlyDictionary<Guid, SorophyRelationshipHistory>
         RelationshipHistories =>
         _readOnlyRelationshipHistories;
+
+    /// <summary>
+    /// Gets the authoritative temporal entity histories currently retained by the graph.
+    /// </summary>
+    public IReadOnlyDictionary<Guid, SorophyEntityHistory>
+        EntityHistories =>
+        _readOnlyEntityHistories;
+
+    /// <summary>
+    /// Attempts to retrieve the temporal history of an entity.
+    /// </summary>
+    /// <param name="entityId">The entity identity to look up.</param>
+    /// <param name="history">The retained temporal history when one exists.</param>
+    /// <returns><see langword="true"/> when temporal facts exist for the specified entity; otherwise, <see langword="false"/>.</returns>
+    public bool TryGetEntityHistory(
+        Guid entityId,
+        out SorophyEntityHistory? history)
+    {
+        return _entityHistories.TryGetValue(
+            entityId,
+            out history);
+    }
 
     /// <summary>
     /// Attempts to retrieve the historical history of a relationship.
@@ -294,6 +330,140 @@ public sealed partial class SorophyGraph
             {
                 errors.Add(
                     "Relationship retirement store contains an empty relationship ID.");
+            }
+        }
+    }
+
+    /*
+     * =============================================================
+     * INTERNAL ENTITY HISTORY OPERATIONS
+     * =============================================================
+     */
+
+    internal SorophyEntityHistory GetOrCreateEntityHistory(
+        Guid entityId)
+    {
+        if (entityId == Guid.Empty)
+        {
+            throw new ArgumentException(
+                "Entity ID cannot be empty.",
+                nameof(entityId));
+        }
+
+        if (_entityHistories.TryGetValue(
+                entityId,
+                out var existingHistory))
+        {
+            return existingHistory;
+        }
+
+        var history =
+            new SorophyEntityHistory(
+                entityId);
+
+        _entityHistories.Add(
+            entityId,
+            history);
+
+        return history;
+    }
+
+    internal void RecordEntityFact(
+        SorophyEntityFact fact)
+    {
+        ArgumentNullException.ThrowIfNull(
+            fact);
+
+        var history =
+            GetOrCreateEntityHistory(
+                fact.EntityId);
+
+        history.Add(
+            fact);
+    }
+
+    internal bool RevertEntityRetirementFact(
+        Guid entityId,
+        SorophyTime retirementTime)
+    {
+        ArgumentNullException.ThrowIfNull(
+            retirementTime);
+
+        if (_entityHistories.TryGetValue(
+                entityId,
+                out var history))
+        {
+            return history.RemoveFact(
+                SorophyEntityFactKind.Retired,
+                retirementTime);
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Validates the entity-history store against its identity and single-retirement invariants.
+    /// </summary>
+    private void ValidateEntityHistoryStore(
+        List<string> errors)
+    {
+        foreach (var pair in _entityHistories)
+        {
+            var entityId = pair.Key;
+            var history = pair.Value;
+
+            if (entityId == Guid.Empty)
+            {
+                errors.Add("Entity history store contains an empty entity ID.");
+            }
+
+            if (history is null)
+            {
+                errors.Add($"Entity history store contains a null history for entity '{entityId}'.");
+                continue;
+            }
+
+            if (history.EntityId != entityId)
+            {
+                errors.Add(
+                    $"Entity history dictionary key '{entityId}' does not match history entity ID '{history.EntityId}'.");
+            }
+
+            if (!_entities.ContainsKey(entityId))
+            {
+                errors.Add(
+                    $"Entity history store references entity '{entityId}', which does not exist in the canonical entity store.");
+            }
+
+            // Invariant: At most one retirement fact per entity
+            int retirementCount = 0;
+            foreach (var fact in history.Facts)
+            {
+                if (fact.Kind == SorophyEntityFactKind.Retired)
+                {
+                    retirementCount++;
+                }
+            }
+
+            if (retirementCount > 1)
+            {
+                errors.Add(
+                    $"Entity '{entityId}' history contains {retirementCount} retirement facts; at most one is permitted.");
+            }
+
+            // Invariant: Retirement coordinate cannot precede creation coordinate
+            if (history.CreatedAt is not null && history.RetiredAt is not null)
+            {
+                if (!SorophyTime.CanCompare(history.CreatedAt, history.RetiredAt))
+                {
+                    errors.Add(
+                        $"Entity '{entityId}' creation coordinate '{history.CreatedAt}' and retirement coordinate '{history.RetiredAt}' have incompatible schemas.");
+                }
+                else if (SorophyTime.Compare(history.RetiredAt, history.CreatedAt) < 0)
+                {
+                    errors.Add(
+                        $"Entity '{entityId}' retirement coordinate '{history.RetiredAt}' precedes creation coordinate '{history.CreatedAt}'.");
+                }
             }
         }
     }

@@ -45,6 +45,11 @@ internal static class SorophySnapshotMaterializer
 
         foreach (var (id, entity) in graph.Entities)
         {
+            if (!graph.EntityExistsAt(id, targetTime))
+            {
+                continue;
+            }
+
             var clonedProperties = SorophyValueCloner.CloneProperties(entity.Properties);
             var clonedTags = new HashSet<string>(entity.Tags, StringComparer.Ordinal);
             var clonedDocs = new Dictionary<string, SorophyEntityDocument>(entity.Documents, StringComparer.Ordinal);

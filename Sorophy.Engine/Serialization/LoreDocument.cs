@@ -37,6 +37,10 @@ internal sealed class LoreDocument
 
     [JsonPropertyName("retiredRelationshipIds")]
     public List<Guid>? RetiredRelationshipIds { get; set; }
+
+    [JsonPropertyName("entityHistories")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<LoreEntityHistoryDocument>? EntityHistories { get; set; }
 }
 
 internal sealed class LoreEntityDocument
@@ -170,4 +174,29 @@ internal sealed class LoreTimePositionDefinitionDocument
 
     [JsonPropertyName("pattern")]
     public string? Pattern { get; set; }
+}
+
+internal sealed class LoreEntityHistoryDocument
+{
+    [JsonPropertyName("entityId")]
+    public Guid EntityId { get; set; }
+
+    [JsonPropertyName("facts")]
+    public List<LoreEntityFactDocument> Facts { get; set; } = null!;
+}
+
+internal sealed class LoreEntityFactDocument
+{
+    [JsonPropertyName("at")]
+    public LoreTimeDocument? At { get; set; }
+
+    [JsonPropertyName("entityId")]
+    public Guid EntityId { get; set; }
+
+    [JsonPropertyName("kind")]
+    public string Kind { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Description { get; set; }
 }

@@ -1,0 +1,21 @@
+﻿SOROPHY ENGINE TEST ARSENAL REPORT
+================================
+
+Started:     9/6/2026 4:58:19 PM -07:00
+Finished:    9/6/2026 4:59:47 PM -07:00
+Seed:        12345
+Profile:     quick
+Operations:  1000000
+Audit:       1000
+
+CAMPAIGNS
+---------
+Passed        1/1      Serialization Torture              88.211s
+          Entity and graph serialization survived round trips, deterministic output checks, filesystem I/O, large graph scales, and malformed-input attacks.
+
+SUMMARY
+-------
+Campaigns: 1/1
+Checks:    1/1
+Status:    PASS
+

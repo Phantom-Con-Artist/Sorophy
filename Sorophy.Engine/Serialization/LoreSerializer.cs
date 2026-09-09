@@ -202,6 +202,39 @@ public static class LoreSerializer
             document.RetiredRelationshipIds.Add(retiredId);
         }
 
+        if (graph.EntityHistories.Count > 0)
+        {
+            document.EntityHistories =
+                new List<LoreEntityHistoryDocument>(graph.EntityHistories.Count);
+
+            foreach (var history in graph.EntityHistories.Values
+                         .OrderBy(h => h.EntityId))
+            {
+                var historyDocument =
+                    new LoreEntityHistoryDocument
+                    {
+                        EntityId = history.EntityId,
+                        Facts = new List<LoreEntityFactDocument>(history.Facts.Count)
+                    };
+
+                foreach (var fact in history.Facts)
+                {
+                    historyDocument.Facts.Add(
+                        new LoreEntityFactDocument
+                        {
+                            At =
+                                SerializeTime(
+                                    fact.At),
+                            EntityId = fact.EntityId,
+                            Kind = fact.Kind.ToString(),
+                            Description = fact.Description
+                        });
+                }
+
+                document.EntityHistories.Add(historyDocument);
+            }
+        }
+
         return document;
     }
 
@@ -255,7 +288,7 @@ public static class LoreSerializer
                     entityDocument.Properties);
             }
 
-            graph.AddEntity(entity);
+            graph.RestoreEntity(entity);
         }
 
         if (document.RetiredRelationshipIds is not null)
@@ -365,6 +398,44 @@ public static class LoreSerializer
                             $"Relationship '{factDocument.RelationshipId}' fact contains invalid temporal or identity data.",
                             ex);
                     }
+
+                    history.Add(fact);
+                }
+            }
+        }
+
+        if (document.EntityHistories is not null)
+        {
+            foreach (var historyDocument in document.EntityHistories)
+            {
+                var history =
+                    graph.GetOrCreateEntityHistory(
+                        historyDocument.EntityId);
+
+                foreach (var factDocument in historyDocument.Facts)
+                {
+                    var at =
+                        DeserializeTime(
+                            factDocument.At,
+                            $"Entity '{factDocument.EntityId}' fact At")
+                        ?? throw new InvalidOperationException(
+                            $"Entity '{factDocument.EntityId}' fact is missing At temporal point.");
+
+                    if (!Enum.TryParse<SorophyEntityFactKind>(
+                            factDocument.Kind,
+                            ignoreCase: true,
+                            out var kind))
+                    {
+                        throw new InvalidOperationException(
+                            $"Entity '{factDocument.EntityId}' fact contains unknown kind '{factDocument.Kind}'.");
+                    }
+
+                    var fact =
+                        SorophyEntityFact.Create(
+                            at,
+                            factDocument.EntityId,
+                            kind,
+                            factDocument.Description);
 
                     history.Add(fact);
                 }
@@ -1109,6 +1180,131 @@ public static class LoreSerializer
                 }
             }
         }
+
+        if (document.EntityHistories is not null)
+        {
+            var historyIds =
+                new HashSet<Guid>(document.EntityHistories.Count);
+
+            foreach (var history in document.EntityHistories)
+            {
+                if (history is null)
+                {
+                    throw new InvalidOperationException(
+                        "Lore document cannot contain a null entity history.");
+                }
+
+                if (history.EntityId == Guid.Empty)
+                {
+                    throw new InvalidOperationException(
+                        "Entity history must have a non-empty entity id.");
+                }
+
+                if (!entityIds.Contains(history.EntityId))
+                {
+                    throw new InvalidOperationException(
+                        $"Entity history references missing entity '{history.EntityId}'.");
+                }
+
+                if (!historyIds.Add(history.EntityId))
+                {
+                    throw new InvalidOperationException(
+                        $"Duplicate entity history for entity id '{history.EntityId}'.");
+                }
+
+                if (history.Facts is null)
+                {
+                    throw new InvalidOperationException(
+                        $"Entity history '{history.EntityId}' facts cannot be null.");
+                }
+
+                int retirementCount = 0;
+                SorophyTime? createdAt = null;
+                SorophyTime? retiredAt = null;
+
+                foreach (var fact in history.Facts)
+                {
+                    if (fact is null)
+                    {
+                        throw new InvalidOperationException(
+                            $"Entity history '{history.EntityId}' cannot contain a null fact.");
+                    }
+
+                    if (fact.EntityId == Guid.Empty)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact in history '{history.EntityId}' must have a non-empty entity id.");
+                    }
+
+                    if (fact.EntityId != history.EntityId)
+                    {
+                        throw new InvalidOperationException(
+                            $"Historical fact belongs to entity '{fact.EntityId}', but this history belongs to entity '{history.EntityId}'.");
+                    }
+
+                    if (string.IsNullOrWhiteSpace(fact.Kind))
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for entity '{history.EntityId}' must have a kind.");
+                    }
+
+                    if (!Enum.TryParse<SorophyEntityFactKind>(
+                            fact.Kind,
+                            ignoreCase: true,
+                            out var factKind))
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for entity '{history.EntityId}' contains unknown kind '{fact.Kind}'.");
+                    }
+
+                    if (fact.At is null)
+                    {
+                        throw new InvalidOperationException(
+                            $"Fact for entity '{history.EntityId}' must have an At temporal point.");
+                    }
+
+                    ValidateSerializedTime(
+                        fact.At,
+                        $"Entity '{history.EntityId}' fact At");
+
+                    var parsedTime =
+                        DeserializeTime(
+                            fact.At,
+                            $"Entity '{history.EntityId}' fact At");
+
+                    if (factKind == SorophyEntityFactKind.Created)
+                    {
+                        createdAt = parsedTime;
+                    }
+                    else if (factKind == SorophyEntityFactKind.Retired)
+                    {
+                        retirementCount++;
+                        retiredAt = parsedTime;
+                    }
+                }
+
+                if (retirementCount > 1)
+                {
+                    throw new InvalidOperationException(
+                        $"Entity '{history.EntityId}' history contains {retirementCount} retirement facts; at most one is permitted.");
+                }
+
+                if (createdAt is not null && retiredAt is not null)
+                {
+                    if (!SorophyTime.CanCompare(createdAt, retiredAt))
+                    {
+                        throw new InvalidOperationException(
+                            $"Entity '{history.EntityId}' creation coordinate and retirement coordinate have incompatible schemas.");
+                    }
+
+                    if (SorophyTime.Compare(retiredAt, createdAt) < 0)
+                    {
+                        throw new InvalidOperationException(
+                            $"Entity '{history.EntityId}' retirement coordinate precedes creation coordinate.");
+                    }
+                }
+            }
+        }
     }
 
     private static void ValidateProperties(
@@ -1287,6 +1483,12 @@ public static class LoreSerializer
                 "Graph retired relationship IDs cannot be null.");
         }
 
+        if (graph.EntityHistories is null)
+        {
+            throw new InvalidOperationException(
+                "Graph entity histories cannot be null.");
+        }
+
         var entityIds =
             new HashSet<Guid>(graph.Entities.Count);
 
@@ -1377,6 +1579,102 @@ public static class LoreSerializer
             ValidateRelationshipHistory(
                 history,
                 graph);
+        }
+
+        var entityHistoryIds =
+            new HashSet<Guid>(graph.EntityHistories.Count);
+
+        foreach (var pair in graph.EntityHistories)
+        {
+            var entityId = pair.Key;
+            var history = pair.Value;
+
+            if (entityId == Guid.Empty)
+            {
+                throw new InvalidOperationException(
+                    "Entity history store contains an empty entity ID.");
+            }
+
+            if (history is null)
+            {
+                throw new InvalidOperationException(
+                    $"Entity history store contains a null history for entity '{entityId}'.");
+            }
+
+            if (history.EntityId != entityId)
+            {
+                throw new InvalidOperationException(
+                    $"Entity history dictionary key '{entityId}' does not match history entity ID '{history.EntityId}'.");
+            }
+
+            if (!entityIds.Contains(entityId))
+            {
+                throw new InvalidOperationException(
+                    $"Entity history references entity '{entityId}', which does not exist in canonical entity store.");
+            }
+
+            if (!entityHistoryIds.Add(history.EntityId))
+            {
+                throw new InvalidOperationException(
+                    $"Duplicate entity history for entity id '{history.EntityId}'.");
+            }
+
+            ValidateEntityHistory(
+                history,
+                graph);
+        }
+    }
+
+    private static void ValidateEntityHistory(
+        SorophyEntityHistory history,
+        SorophyGraph graph)
+    {
+        if (history.Facts is null)
+        {
+            throw new InvalidOperationException(
+                $"Entity history '{history.EntityId}' facts cannot be null.");
+        }
+
+        int retirementCount = 0;
+        foreach (var fact in history.Facts)
+        {
+            if (fact is null)
+            {
+                throw new InvalidOperationException(
+                    $"Entity history '{history.EntityId}' cannot contain a null fact.");
+            }
+
+            if (fact.EntityId != history.EntityId)
+            {
+                throw new InvalidOperationException(
+                    $"Fact belongs to entity '{fact.EntityId}', but history belongs to entity '{history.EntityId}'.");
+            }
+
+            if (fact.Kind == SorophyEntityFactKind.Retired)
+            {
+                retirementCount++;
+            }
+        }
+
+        if (retirementCount > 1)
+        {
+            throw new InvalidOperationException(
+                $"Entity '{history.EntityId}' history contains {retirementCount} retirement facts; at most one is permitted.");
+        }
+
+        if (history.CreatedAt is not null && history.RetiredAt is not null)
+        {
+            if (!SorophyTime.CanCompare(history.CreatedAt, history.RetiredAt))
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{history.EntityId}' creation coordinate and retirement coordinate have incompatible schemas.");
+            }
+
+            if (SorophyTime.Compare(history.RetiredAt, history.CreatedAt) < 0)
+            {
+                throw new InvalidOperationException(
+                    $"Entity '{history.EntityId}' retirement coordinate precedes creation coordinate.");
+            }
         }
     }
 

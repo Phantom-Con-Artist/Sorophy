@@ -19,3 +19,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Sorophy.Engine.Tests")]
+[assembly: InternalsVisibleTo("Sorophy.Engine.StressTests")]

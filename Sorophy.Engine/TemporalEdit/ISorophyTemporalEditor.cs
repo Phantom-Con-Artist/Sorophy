@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using Sorophy.Engine.Graph;
+using Sorophy.Engine.Graph.Canon;
 using Sorophy.Engine.Time;
 using Sorophy.Engine.Types;
 
@@ -114,5 +115,75 @@ public interface ISorophyTemporalEditor
     /// Changes the semantic type of a relationship at this editor's temporal coordinate.
     /// </summary>
     void ChangeRelationshipType(Guid relationshipId, string newType, string? description = null);
+
+    /* =============================================================
+     * SCOPED CANON CHECK CONVENIENCE INSPECTION
+     * =============================================================
+     */
+
+    /// <summary>
+    /// Validates whether an entity can be canonically created at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanCreateEntity(SorophyEntity entity);
+
+    /// <summary>
+    /// Validates whether an entity with the specified ID can be canonically created at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanCreateEntity(Guid entityId);
+
+    /// <summary>
+    /// Validates whether an entity can be canonically retired at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRetireEntity(Guid entityId);
+
+    /// <summary>
+    /// Validates whether an established retirement fact for an entity can be canonically reverted at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRevertEntityRetirement(Guid entityId);
+
+    /// <summary>
+    /// Validates whether a property can be mutated on an entity at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanSetEntityProperty(Guid entityId, string propertyName, SorophyValue value);
+
+    /// <summary>
+    /// Validates whether a property can be removed from an entity at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRemoveEntityProperty(Guid entityId, string propertyName);
+
+    /// <summary>
+    /// Validates whether a relationship can be canonically created at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanCreateRelationship(SorophyRelationship relationship);
+
+    /// <summary>
+    /// Validates whether a relationship can be canonically created at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanCreateRelationship(Guid relationshipId, Guid sourceId, Guid targetId);
+
+    /// <summary>
+    /// Validates whether a relationship can be canonically retired at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRetireRelationship(Guid relationshipId);
+
+    /// <summary>
+    /// Validates whether an established retirement fact for a relationship can be canonically reverted at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRevertRelationshipRetirement(Guid relationshipId);
+
+    /// <summary>
+    /// Validates whether the semantic type of a relationship can be changed at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanChangeRelationshipType(Guid relationshipId, string newType);
+
+    /// <summary>
+    /// Validates whether a property can be mutated on a relationship at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanSetRelationshipProperty(Guid relationshipId, string propertyName, SorophyValue value);
+
+    /// <summary>
+    /// Validates whether a property can be removed from a relationship at this editor's temporal coordinate.
+    /// </summary>
+    SorophyCanonValidationResult CanRemoveRelationshipProperty(Guid relationshipId, string propertyName);
 }
 

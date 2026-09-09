@@ -86,6 +86,16 @@ public enum SorophyCanonViolationKind
     /// <summary>
     /// The proposed operation contradicts an established later active world state.
     /// </summary>
-    ContradictsEstablishedLaterState = 12
+    ContradictsEstablishedLaterState = 12,
+
+    /// <summary>
+    /// The target entity is not active at the specified temporal coordinate (e.g., uncreated or already retired).
+    /// </summary>
+    EntityNotActiveAtCoordinate = 13,
+
+    /// <summary>
+    /// The target relationship is not active at the specified temporal coordinate (e.g., uncreated or already retired).
+    /// </summary>
+    RelationshipNotActiveAtCoordinate = 14
 }
 

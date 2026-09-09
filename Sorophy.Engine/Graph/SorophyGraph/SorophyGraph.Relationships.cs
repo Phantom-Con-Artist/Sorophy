@@ -93,10 +93,60 @@ public sealed partial class SorophyGraph
     {
         ArgumentNullException.ThrowIfNull(retirementTime);
 
-        return SorophyCanonValidator.ValidateRelationshipRetirementReversal(
-            this,
+        return CanonCheck.CanRevertRelationshipRetirement(
             relationshipId,
             retirementTime);
+    }
+
+    /// <summary>
+    /// Validates whether the semantic type of a relationship can be changed at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanChangeRelationshipType(
+        Guid relationshipId,
+        string newType,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        return CanonCheck.CanChangeRelationshipType(
+            relationshipId,
+            newType,
+            time);
+    }
+
+    /// <summary>
+    /// Validates whether a property can be mutated on a relationship at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanSetRelationshipProperty(
+        Guid relationshipId,
+        string propertyName,
+        SorophyValue value,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(time);
+
+        return CanonCheck.CanSetRelationshipProperty(
+            relationshipId,
+            propertyName,
+            value,
+            time);
+    }
+
+    /// <summary>
+    /// Validates whether a property can be removed from a relationship at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanRemoveRelationshipProperty(
+        Guid relationshipId,
+        string propertyName,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        return CanonCheck.CanRemoveRelationshipProperty(
+            relationshipId,
+            propertyName,
+            time);
     }
 
     /* =============================================================
@@ -387,17 +437,13 @@ public sealed partial class SorophyGraph
             throw new ArgumentException("New relationship type cannot be null, empty, or whitespace.", nameof(newType));
         }
 
-        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        var canonResult = CanChangeRelationshipType(relationshipId, newType, time);
+        if (!canonResult.IsValid)
         {
-            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+            throw new InvalidOperationException(canonResult.ErrorMessage);
         }
 
-        if (!RelationshipExistsAt(relationshipId, time))
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
-        }
-
+        var relationship = _relationships[relationshipId];
         var history = GetOrCreateRelationshipHistory(relationshipId);
 
         var previousType = GetEffectiveRelationshipType(relationship, history, time);
@@ -463,17 +509,13 @@ public sealed partial class SorophyGraph
             throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
         }
 
-        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        var canonResult = CanSetRelationshipProperty(relationshipId, propertyName, value, time);
+        if (!canonResult.IsValid)
         {
-            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+            throw new InvalidOperationException(canonResult.ErrorMessage);
         }
 
-        if (!RelationshipExistsAt(relationshipId, time))
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
-        }
-
+        var relationship = _relationships[relationshipId];
         var history = GetOrCreateRelationshipHistory(relationshipId);
 
         var previousValue = GetEffectiveRelationshipPropertyValue(relationship, history, propertyName, time);
@@ -549,17 +591,13 @@ public sealed partial class SorophyGraph
             throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
         }
 
-        if (!_relationships.TryGetValue(relationshipId, out var relationship))
+        var canonResult = CanRemoveRelationshipProperty(relationshipId, propertyName, time);
+        if (!canonResult.IsValid)
         {
-            throw new InvalidOperationException($"Relationship '{relationshipId}' does not exist in the graph.");
+            throw new InvalidOperationException(canonResult.ErrorMessage);
         }
 
-        if (!RelationshipExistsAt(relationshipId, time))
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
-        }
-
+        var relationship = _relationships[relationshipId];
         var history = GetOrCreateRelationshipHistory(relationshipId);
 
         var previousValue = GetEffectiveRelationshipPropertyValue(relationship, history, propertyName, time);

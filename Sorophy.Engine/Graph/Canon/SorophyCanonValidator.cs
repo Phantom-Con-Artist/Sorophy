@@ -420,6 +420,144 @@ internal static class SorophyCanonValidator
     }
 
     /// <summary>
+    /// Validates whether a property can be mutated on an entity at the specified temporal coordinate.
+    /// </summary>
+    public static SorophyCanonResult ValidateEntityPropertyMutation(
+        SorophyGraph graph,
+        Guid entityId,
+        string propertyName,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(graph);
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (entityId == Guid.Empty)
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EntityNotFound,
+                "Entity ID cannot be empty.");
+        }
+
+        if (!graph.ContainsEntity(entityId))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EntityNotFound,
+                $"Entity '{entityId}' does not exist in the canonical graph.");
+        }
+
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EntityNotFound,
+                "Property name cannot be null, empty, or whitespace.");
+        }
+
+        var status = graph.GetEntityLifecycleStatus(entityId, time);
+        if (status == SorophyEntityLifecycleStatus.Uncreated)
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EntityNotActiveAtCoordinate,
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is uncreated at this coordinate.");
+        }
+
+        if (status == SorophyEntityLifecycleStatus.Retired)
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EntityNotActiveAtCoordinate,
+                $"Cannot mutate entity '{entityId}' at '{time}': entity is retired at this coordinate.");
+        }
+
+        return SorophyCanonResult.Success();
+    }
+
+    /// <summary>
+    /// Validates whether a relationship can be mutated (property or type change) at the specified temporal coordinate.
+    /// </summary>
+    public static SorophyCanonResult ValidateRelationshipMutation(
+        SorophyGraph graph,
+        Guid relationshipId,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(graph);
+        ArgumentNullException.ThrowIfNull(time);
+
+        if (relationshipId == Guid.Empty)
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.RelationshipNotFound,
+                "Relationship ID cannot be empty.");
+        }
+
+        if (!graph.Relationships.TryGetValue(relationshipId, out var rel))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.RelationshipNotFound,
+                $"Relationship '{relationshipId}' does not exist in the canonical graph.");
+        }
+
+        if (!graph.EntityExistsAt(rel.SourceId, time))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EndpointNotActiveAtCoordinate,
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': source entity '{rel.SourceId}' is not active at this coordinate (relationship does not exist at this coordinate).");
+        }
+
+        if (!graph.EntityExistsAt(rel.TargetId, time))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.EndpointNotActiveAtCoordinate,
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': target entity '{rel.TargetId}' is not active at this coordinate (relationship does not exist at this coordinate).");
+        }
+
+        if (!graph.RelationshipExistsAt(relationshipId, time))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.RelationshipNotActiveAtCoordinate,
+                $"Cannot mutate relationship '{relationshipId}' at '{time}': relationship does not exist at this coordinate.");
+        }
+
+        return SorophyCanonResult.Success();
+    }
+
+    /// <summary>
+    /// Validates whether the semantic type of a relationship can be changed at the specified temporal coordinate.
+    /// </summary>
+    public static SorophyCanonResult ValidateRelationshipTypeChange(
+        SorophyGraph graph,
+        Guid relationshipId,
+        string newType,
+        SorophyTime time)
+    {
+        if (string.IsNullOrWhiteSpace(newType))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.RelationshipNotFound,
+                "New relationship type cannot be null, empty, or whitespace.");
+        }
+
+        return ValidateRelationshipMutation(graph, relationshipId, time);
+    }
+
+    /// <summary>
+    /// Validates whether a property can be mutated or removed on a relationship at the specified temporal coordinate.
+    /// </summary>
+    public static SorophyCanonResult ValidateRelationshipPropertyMutation(
+        SorophyGraph graph,
+        Guid relationshipId,
+        string propertyName,
+        SorophyTime time)
+    {
+        if (string.IsNullOrWhiteSpace(propertyName))
+        {
+            return SorophyCanonResult.Conflict(
+                SorophyCanonViolationKind.RelationshipNotFound,
+                "Property name cannot be null, empty, or whitespace.");
+        }
+
+        return ValidateRelationshipMutation(graph, relationshipId, time);
+    }
+
+    /// <summary>
     /// Derives the set of all established temporal coordinates across entity and relationship histories.
     /// Used solely by Canon Check for consequence and contradiction detection.
     /// </summary>

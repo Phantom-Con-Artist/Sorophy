@@ -89,10 +89,55 @@ public sealed partial class SorophyGraph
     {
         ArgumentNullException.ThrowIfNull(retirementTime);
 
-        return SorophyCanonValidator.ValidateRetirementReversal(
-            this,
+        return CanonCheck.CanRevertEntityRetirement(
             entityId,
             retirementTime);
+    }
+
+    /// <summary>
+    /// Validates whether an established retirement fact for an entity can be canonically reverted.
+    /// Alias for <see cref="CanRevertRetirement(Guid, SorophyTime)"/>.
+    /// </summary>
+    public SorophyCanonResult CanRevertEntityRetirement(
+        Guid entityId,
+        SorophyTime retirementTime)
+    {
+        return CanRevertRetirement(entityId, retirementTime);
+    }
+
+    /// <summary>
+    /// Validates whether a property can be mutated on an entity at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanSetEntityProperty(
+        Guid entityId,
+        string propertyName,
+        SorophyValue value,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(time);
+
+        return CanonCheck.CanSetEntityProperty(
+            entityId,
+            propertyName,
+            value,
+            time);
+    }
+
+    /// <summary>
+    /// Validates whether a property can be removed from an entity at the specified temporal coordinate.
+    /// </summary>
+    public SorophyCanonResult CanRemoveEntityProperty(
+        Guid entityId,
+        string propertyName,
+        SorophyTime time)
+    {
+        ArgumentNullException.ThrowIfNull(time);
+
+        return CanonCheck.CanRemoveEntityProperty(
+            entityId,
+            propertyName,
+            time);
     }
 
     /* =============================================================
@@ -240,23 +285,13 @@ public sealed partial class SorophyGraph
             throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
         }
 
-        if (!_entities.TryGetValue(entityId, out var entity))
+        var canonResult = CanSetEntityProperty(entityId, propertyName, value, time);
+        if (!canonResult.IsValid)
         {
-            throw new InvalidOperationException($"Entity '{entityId}' does not exist in the graph.");
+            throw new InvalidOperationException(canonResult.ErrorMessage);
         }
 
-        var status = GetEntityLifecycleStatus(entityId, time);
-        if (status == SorophyEntityLifecycleStatus.Uncreated)
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate entity '{entityId}' at '{time}': entity is uncreated at this coordinate.");
-        }
-        if (status == SorophyEntityLifecycleStatus.Retired)
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate entity '{entityId}' at '{time}': entity is retired at this coordinate.");
-        }
-
+        var entity = _entities[entityId];
         var history = GetOrCreateEntityHistory(entityId);
 
         var previousValue = GetEffectiveEntityPropertyValue(entity, history, propertyName, time);
@@ -329,23 +364,13 @@ public sealed partial class SorophyGraph
             throw new ArgumentException("Property name cannot be null, empty, or whitespace.", nameof(propertyName));
         }
 
-        if (!_entities.TryGetValue(entityId, out var entity))
+        var canonResult = CanRemoveEntityProperty(entityId, propertyName, time);
+        if (!canonResult.IsValid)
         {
-            throw new InvalidOperationException($"Entity '{entityId}' does not exist in the graph.");
+            throw new InvalidOperationException(canonResult.ErrorMessage);
         }
 
-        var status = GetEntityLifecycleStatus(entityId, time);
-        if (status == SorophyEntityLifecycleStatus.Uncreated)
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate entity '{entityId}' at '{time}': entity is uncreated at this coordinate.");
-        }
-        if (status == SorophyEntityLifecycleStatus.Retired)
-        {
-            throw new InvalidOperationException(
-                $"Cannot mutate entity '{entityId}' at '{time}': entity is retired at this coordinate.");
-        }
-
+        var entity = _entities[entityId];
         var history = GetOrCreateEntityHistory(entityId);
 
         var previousValue = GetEffectiveEntityPropertyValue(entity, history, propertyName, time);
